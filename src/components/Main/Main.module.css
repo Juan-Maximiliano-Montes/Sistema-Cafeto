@@ -26,8 +26,10 @@
     font-family: var(--fuente-subtitulo);
     font-size: 1.6rem;
     color: var(--ambar-cafeto);
-    margin-top: 2rem;
-    margin-bottom: 1rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    width: 100%;
 }
 
 .modulos {

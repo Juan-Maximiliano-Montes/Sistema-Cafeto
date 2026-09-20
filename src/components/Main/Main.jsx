@@ -1,5 +1,5 @@
 import Tarjeta from '../Tarjeta/Tarjeta';
-import styles from './main.module.css';
+import styles from './Main.module.css';
 
 function Main() {
     return (

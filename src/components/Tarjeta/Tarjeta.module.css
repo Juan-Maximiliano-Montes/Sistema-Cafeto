@@ -1,8 +1,9 @@
 .tarjeta {
+    position: relative;
     background-color: var(--purpura-medianoche);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radio);
-    padding: 1.5rem;
+    padding: 2.2rem 1.5rem 1.5rem 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
@@ -15,13 +16,15 @@
     margin-top: 0;
     margin-bottom: 0.5rem;
     font-size: 1.25rem;
+    text-align: center;
 }
 
 .tarjeta p {
     font-family: var(--fuente-cuerpo);
     color: var(--gris-claro);
     font-size: 0.95rem;
-    line-height: 1.5;
+    line-height: 1.6;
+    text-align: center;
 }
 
 .destacada {
@@ -29,16 +32,19 @@
 }
 
 .insignia {
-    align-self: center;
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: var(--ambar-cafeto);
-    display: inline-block;
     color: var(--morado-noche);
     font-family: var(--fuente-cuerpo);
     font-size: 0.75rem;
     font-weight: 700;
-    padding: 4px 10px;
+    padding: 4px 12px;
     border-radius: 999px;
-    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    white-space: nowrap;
 }
 
 .estado {
@@ -46,4 +52,5 @@
     font-size: 0.85rem;
     font-weight: 600;
     margin-top: 1rem;
+    text-align: center;
 }
