@@ -3,7 +3,7 @@ import styles from './main.module.css';
 
 function Main() {
     return (
-        <main className={estilos.contenido}>
+        <main className={styles.contenido}>
             <h2>Sistema Cafeto</h2>
             <p>
                 Plataforma integral diseñada para optimizar la gestión combinada de cafetería y minisúper, agilizando la atención al cliente y el control de inventarios.

@@ -1,26 +1,49 @@
 .tarjeta {
-    border: 1px solid #ccc;
+    background-color: var(--purpura-medianoche);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radio);
-    padding: 16px;
-    background: white; 
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+.tarjeta h3 {
+    font-family: var(--fuente-subtitulo);
+    color: var(--sol-tenue);
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.tarjeta p {
+    font-family: var(--fuente-cuerpo);
+    color: var(--gris-claro);
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 .destacada {
-    border-color: var(--principal);
-    border-width: 2px;
+    border: 2px solid var(--ambar-cafeto);
 }
 
 .insignia {
+    align-self: center;
+    background-color: var(--ambar-cafeto);
     display: inline-block;
-    background: var(--principal);
-    color: white;
+    color: var(--morado-noche);
+    font-family: var(--fuente-cuerpo);
     font-size: 0.75rem;
-    padding: 2px 8px;
+    font-weight: 700;
+    padding: 4px 10px;
     border-radius: 999px;
-    margin-bottom: 8px;
+    margin-bottom: 0.75rem;
 }
 
 .estado {
-    color: #666;
+    color: var(--sol-tenue);
     font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 1rem;
 }

@@ -1,8 +1,14 @@
 .pie {
-    background-color: var(--texto);
-    color: white;
+    background-color: var(--purpura-medianoche);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--gris-claro);
     text-align: center;
-    padding: 1rem;
+    padding: 1.2rem;
+    font-family: var(--fuente-cuerpo);
     font-size: 0.85rem;
     margin-top: auto;
+}
+
+.pie p {
+    margin: 0.25rem 0;
 }
