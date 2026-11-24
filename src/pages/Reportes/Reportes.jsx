@@ -353,7 +353,7 @@ function Reportes() {
                             </div>
                             {actualizado && (
                                 <span className={estilos.horaActualizacion}>
-                                    Actualizado {actualizado.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+                                    Actualizado a las {actualizado.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
                                 </span>
                             )}
                         </div>
@@ -591,7 +591,7 @@ function Reportes() {
                                     <div className={estilos.cabeceraSubpanel}>
                                         <h3 className={estilos.tituloSubpanel}>Productos por rubro</h3>
                                         <span className={estilos.totalSubpanel}>
-                                            {formatearNumero(radiografia.total)} en esta muestra
+                                            {formatearNumero(radiografia.total)} {radiografia.total === 1 ? 'producto' : 'productos'}
                                         </span>
                                     </div>
 
