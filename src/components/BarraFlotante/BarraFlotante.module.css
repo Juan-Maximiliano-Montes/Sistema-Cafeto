@@ -1,0 +1,79 @@
+.barra {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(18, 17, 40, 0.92);
+    border: 1.5px solid var(--borde-ambar);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(250, 180, 31, 0.35);
+    background: var(--purpura-medianoche);
+    color: var(--sol-tenue);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.boton:hover:not(:disabled) {
+    background: rgba(250, 180, 31, 0.16);
+    border-color: var(--ambar-cafeto);
+    color: var(--blanco-puro);
+}
+
+.boton:disabled {
+    opacity: 0.65;
+}
+
+.botonSubir {
+    background: var(--ambar-cafeto);
+    border-color: var(--ambar-cafeto);
+    color: var(--morado-noche);
+    font-weight: 700;
+}
+
+.botonSubir:hover:not(:disabled) {
+    background: var(--sol-tenue);
+    border-color: var(--sol-tenue);
+    color: var(--morado-noche);
+}
+
+.girando {
+    display: inline-flex;
+    animation: girar 0.9s linear infinite;
+}
+
+@keyframes girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 560px) {
+    .barra {
+        right: 12px;
+        bottom: 12px;
+    }
+
+    .textoBoton {
+        font-size: 0.82rem;
+    }
+}

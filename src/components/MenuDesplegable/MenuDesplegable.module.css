@@ -1,0 +1,166 @@
+.contenedor {
+    position: relative;
+    display: inline-block;
+}
+
+.disparador {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 44px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: var(--purpura-medianoche);
+    border: 1px solid var(--borde-ambar);
+    color: var(--gris-claro);
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.disparador:hover {
+    border-color: var(--ambar-cafeto);
+    background: rgba(250, 180, 31, 0.08);
+}
+
+.disparadorContenido {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flecha {
+    display: inline-flex;
+    color: var(--ambar-cafeto);
+    transition: transform 0.18s ease;
+}
+
+.flechaAbierta {
+    transform: rotate(180deg);
+}
+
+.panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    z-index: 1500;
+    min-width: 245px;
+    max-width: min(320px, calc(100vw - 24px));
+    padding: 8px;
+    border-radius: 12px;
+    background: var(--purpura-medianoche);
+    border: 1.5px solid var(--borde-ambar);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+    transition: opacity 0.15s ease;
+}
+
+.derecha {
+    right: 0;
+}
+
+.izquierda {
+    left: 0;
+}
+
+.encabezado {
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--borde-suave);
+}
+
+.lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.conSeparador {
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 1px solid var(--borde-suave);
+}
+
+.item {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--gris-claro);
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.item:hover,
+.item:focus-visible {
+    background: rgba(250, 180, 31, 0.1);
+    border-color: rgba(250, 180, 31, 0.35);
+    color: var(--blanco-puro);
+}
+
+.activa {
+    background: rgba(250, 180, 31, 0.14);
+    border-color: var(--ambar-cafeto);
+    color: var(--sol-tenue);
+}
+
+.peligro {
+    color: var(--peligro);
+}
+
+.peligro:hover,
+.peligro:focus-visible {
+    background: rgba(248, 113, 113, 0.14);
+    border-color: rgba(248, 113, 113, 0.5);
+    color: #FECACA;
+}
+
+.icono {
+    display: inline-flex;
+    flex: none;
+    color: var(--ambar-cafeto);
+}
+
+.peligro .icono {
+    color: var(--peligro);
+}
+
+.textos {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.etiqueta {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.descripcion {
+    font-size: 0.78rem;
+    color: rgba(226, 232, 240, 0.72);
+}
+
+.marcaActiva {
+    display: inline-flex;
+    flex: none;
+    color: var(--ambar-cafeto);
+}
+
+@media (max-width: 520px) {
+    .derecha,
+    .izquierda {
+        left: 0;
+        right: auto;
+    }
+}

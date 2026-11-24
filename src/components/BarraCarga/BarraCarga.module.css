@@ -1,0 +1,124 @@
+.pista {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    z-index: 2600;
+    background: rgba(250, 180, 31, 0.14);
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.relleno {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--ambar-cafeto), var(--sol-tenue));
+    box-shadow: 0 0 12px rgba(250, 180, 31, 0.65);
+    transition: width 0.22s ease;
+}
+
+.oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.gridEsqueleto {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 22px;
+}
+
+.tarjetaEsqueleto,
+.tarjetaPanelEsqueleto {
+    background: var(--purpura-medianoche);
+    border: 1px solid var(--borde-suave);
+    border-radius: var(--radio);
+    overflow: hidden;
+}
+
+.tarjetaPanelEsqueleto {
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.grillaPanel {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.6fr);
+    gap: 22px;
+}
+
+.ancho {
+    grid-column: 1 / -1;
+}
+
+.fotoEsqueleto {
+    aspect-ratio: 4 / 3;
+    border-radius: 0;
+}
+
+.cuerpoEsqueleto {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bloque {
+    border-radius: 6px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(250, 180, 31, 0.11) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: pulso 1.4s ease-in-out infinite;
+}
+
+.lineaCorta {
+    height: 12px;
+    width: 38%;
+}
+
+.lineaTitulo {
+    height: 20px;
+    width: 78%;
+}
+
+.lineaTexto {
+    height: 14px;
+    width: 92%;
+}
+
+.lineaPrecio {
+    height: 22px;
+    width: 45%;
+    margin-top: 8px;
+}
+
+.numeroEsqueleto {
+    height: 44px;
+    width: 35%;
+}
+
+@keyframes pulso {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media (max-width: 760px) {
+    .grillaPanel {
+        grid-template-columns: 1fr;
+    }
+}

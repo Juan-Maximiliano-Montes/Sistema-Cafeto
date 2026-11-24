@@ -1,0 +1,306 @@
+.bloqueAviso {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.ficha {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) minmax(300px, 1.15fr);
+    gap: 28px;
+    padding: 26px;
+    border-radius: 16px;
+    background: var(--purpura-medianoche);
+    border: 1px solid var(--borde-ambar);
+    box-shadow: var(--sombra);
+}
+
+.columnaFoto {
+    display: flex;
+    flex-direction: column;
+}
+
+.marcoFoto {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle, rgba(250, 180, 31, 0.14), transparent 70%), var(--morado-noche);
+    border: 1px solid var(--borde-suave);
+}
+
+.foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder {
+    width: 36%;
+    height: auto;
+    opacity: 0.9;
+}
+
+.badgeOferta {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--ambar-cafeto);
+    color: var(--morado-noche);
+    font-size: 0.84rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.columnaDatos {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cabeceraDatos {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.categoria {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ambar-cafeto);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.disponible {
+    background-color: rgba(74, 222, 128, 0.15);
+    color: var(--exito);
+    border: 1.5px solid var(--borde-exito);
+}
+
+.agotado {
+    background-color: rgba(248, 113, 113, 0.15);
+    color: #FECACA;
+    border: 1.5px dashed var(--borde-error);
+}
+
+.cajaPrecio {
+    padding: 16px 18px;
+    border-radius: 12px;
+    background: rgba(18, 17, 40, 0.7);
+    border: 1px solid var(--borde-suave);
+}
+
+.etiquetaPrecio {
+    display: block;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--sol-tenue);
+    margin-bottom: 4px;
+}
+
+.filaPrecios {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.precioActual {
+    font-size: clamp(1.8rem, 4vw, 2.3rem);
+    font-weight: 700;
+    color: var(--blanco-puro);
+    line-height: 1.1;
+}
+
+.precioAnterior {
+    font-size: 1rem;
+    text-decoration: line-through;
+    color: rgba(226, 232, 240, 0.58);
+}
+
+.bloqueDescripcion {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.subtitulo {
+    font-family: var(--fuente-subtitulo);
+    color: var(--sol-tenue);
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.descripcion {
+    margin: 0;
+    font-size: 0.96rem;
+    color: var(--gris-claro);
+    line-height: 1.6;
+}
+
+.listaDatos {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+}
+
+.dato {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(18, 17, 40, 0.55);
+    border: 1px solid var(--borde-suave);
+}
+
+.dato dt {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ambar-cafeto);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.dato dd {
+    margin: 0;
+    font-size: 0.94rem;
+    color: var(--blanco-puro);
+    font-weight: 600;
+}
+
+.acciones {
+    margin-top: auto;
+    padding-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.botonVolver,
+.botonDjango {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.94rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, filter 0.2s ease;
+}
+
+.botonVolver {
+    background: transparent;
+    color: var(--sol-tenue);
+    border: 1.5px solid var(--borde-ambar);
+}
+
+.botonVolver:hover {
+    background: rgba(250, 180, 31, 0.12);
+    border-color: var(--ambar-cafeto);
+}
+
+.botonDjango {
+    background: var(--ambar-cafeto);
+    color: var(--morado-noche);
+    border: 1.5px solid var(--ambar-cafeto);
+}
+
+.botonDjango:hover {
+    filter: brightness(1.08);
+}
+
+.esqueleto {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) minmax(300px, 1.15fr);
+    gap: 28px;
+    padding: 26px;
+    border-radius: 16px;
+    background: var(--purpura-medianoche);
+    border: 1px solid var(--borde-suave);
+}
+
+.esqueletoFoto {
+    aspect-ratio: 4 / 3;
+}
+
+.esqueletoInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.bloque {
+    border-radius: 8px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(250, 180, 31, 0.11) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: pulso 1.4s ease-in-out infinite;
+}
+
+.lineaCorta {
+    height: 14px;
+    width: 34%;
+}
+
+.lineaTitulo {
+    height: 28px;
+    width: 70%;
+}
+
+.lineaTexto {
+    height: 16px;
+    width: 90%;
+}
+
+.oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+@keyframes pulso {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media (max-width: 820px) {
+    .ficha,
+    .esqueleto {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+}

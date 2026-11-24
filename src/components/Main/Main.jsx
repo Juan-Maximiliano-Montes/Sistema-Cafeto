@@ -1,33 +1,60 @@
 import Tarjeta from '../Tarjeta/Tarjeta';
-import styles from './Main.module.css';
+import { IconoCaja, IconoTaza, IconoUsuarios } from '../Iconos/Iconos';
+import { getUsuarioActual } from '../../api/api';
+import { saludoSegunHora } from '../../utils/formato';
+import estilos from './Main.module.css';
+
+const MODULOS = [
+    {
+        to: '/productos',
+        titulo: 'Productos',
+        descripcion: 'Carta de cafetería y góndola del minisúper con precios, ofertas y disponibilidad al momento.',
+        icono: <IconoTaza />,
+        accion: 'Ver el catálogo',
+        insignia: 'Más usado',
+        principal: true,
+    },
+    {
+        to: '/cajas',
+        titulo: 'Cajas',
+        descripcion: 'Cuántas cajas hay abiertas, lo vendido hoy y los avisos del día que necesitan atención.',
+        icono: <IconoCaja />,
+        accion: 'Ver el panel del día',
+    },
+    {
+        to: '/usuarios',
+        titulo: 'Usuarios',
+        descripcion: 'Tu perfil, tu rol y lo que tenés habilitado para hacer dentro del sistema.',
+        icono: <IconoUsuarios />,
+        accion: 'Ver mi perfil',
+    },
+];
 
 function Main() {
-    return (
-        <main className={styles.contenido}>
-            <h2>Sistema Cafeto</h2>
-            <p>
-                Plataforma integral diseñada para optimizar la gestión combinada de cafetería y minisúper, agilizando la atención al cliente y el control de inventarios.
-            </p>
+    const usuario = getUsuarioActual();
+    const saludo = saludoSegunHora();
 
-            <h3>Módulos Previstos</h3>
-            <section className={styles.modulos}>
-                <Tarjeta
-                    titulo="Módulo Cafetería"
-                    descripcion="Gestión de pedidos de bebidas, combos de desayunos y pedidos en tiempo real"
-                    estado="Activo"
-                    principal
-                />
-                <Tarjeta
-                    titulo="Módulo Minisúper"
-                    descripcion="Control de stock de golosinas, fiambres, bebidas y prodcutos de góndola."
-                    estado="Activo"
-                />
-                <Tarjeta
-                    titulo="Módulo Caja y Ventas"
-                    descripcion="Facturación rápida, aruqeo diario y soporte para múltiples medios de pago."
-                />
-            </section>
-        </main>
+    return (
+        <section className={estilos.contenido}>
+            <header className={estilos.bienvenida}>
+                <span className={estilos.etiqueta}>Panel de inicio</span>
+                <h1 className={estilos.titulo}>
+                    {saludo}{usuario?.nombre ? `, ${usuario.nombre}` : ''}
+                </h1>
+                <p className={estilos.texto}>
+                    ¿Qué querés hacer ahora? Elegí un módulo para empezar.
+                    {usuario?.perfil && (
+                        <> Estás trabajando como <strong className={estilos.perfil}>{usuario.perfil}</strong>.</>
+                    )}
+                </p>
+            </header>
+
+            <div className={estilos.modulos}>
+                {MODULOS.map((modulo) => (
+                    <Tarjeta key={modulo.to} {...modulo} />
+                ))}
+            </div>
+        </section>
     );
 }
 

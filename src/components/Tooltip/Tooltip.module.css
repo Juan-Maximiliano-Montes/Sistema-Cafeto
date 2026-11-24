@@ -1,0 +1,37 @@
+.envoltura {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.interactiva {
+    cursor: help;
+    border-radius: 999px;
+}
+
+.globo {
+    position: fixed;
+    z-index: 2500;
+    max-width: 240px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--morado-noche);
+    border: 1.5px solid var(--ambar-cafeto);
+    color: var(--sol-tenue);
+    font-family: var(--fuente-cuerpo);
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-align: center;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+    transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.arriba {
+    transform: translateY(0);
+}
+
+.abajo {
+    transform: translateY(0);
+}

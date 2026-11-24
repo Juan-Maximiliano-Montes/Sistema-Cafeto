@@ -1,0 +1,63 @@
+.contenedor {
+    text-align: center;
+    padding: 64px 16px;
+}
+
+.codigo {
+    display: block;
+    font-family: var(--fuente-titulo);
+    font-size: 6rem;
+    line-height: 1;
+    color: var(--ambar-cafeto);
+}
+
+.titulo {
+    font-family: var(--fuente-subtitulo);
+    color: var(--sol-tenue);
+    font-size: 1.6rem;
+    margin: 12px 0 8px;
+}
+
+.texto {
+    margin: 0 auto 28px;
+    max-width: 440px;
+}
+
+.acciones {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.boton,
+.botonSecundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: var(--radio);
+    transition: filter 0.2s ease, background-color 0.2s ease;
+}
+
+.boton {
+    background: var(--ambar-cafeto);
+    color: var(--morado-noche);
+}
+
+.boton:hover {
+    filter: brightness(1.08);
+}
+
+.botonSecundario {
+    background: transparent;
+    color: var(--sol-tenue);
+    border: 1.5px solid var(--borde-ambar);
+}
+
+.botonSecundario:hover {
+    background: rgba(250, 180, 31, 0.12);
+}

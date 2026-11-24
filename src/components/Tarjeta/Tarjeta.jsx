@@ -1,13 +1,17 @@
-import styles from './Tarjeta.module.css';
+import { Link } from 'react-router-dom';
+import estilos from './Tarjeta.module.css';
 
-function Tarjeta ({ titulo, descripcion, estado = 'Pendiente', principal = false}) {
+function Tarjeta({ to, titulo, descripcion, icono, accion = 'Entrar', insignia, principal = false }) {
     return (
-        <article className={`${styles.tarjeta} ${principal ? styles.destacada : ''}`}>
-            <h3>{titulo}</h3>
-            <p>{descripcion}</p>
-            {principal && <span className={styles.insignia}>Módulo Central</span>}
-            <p className={styles.estado}>Estado: {estado}</p>
-        </article>
+        <Link to={to} className={`${estilos.tarjeta} ${principal ? estilos.destacada : ''}`}>
+            {insignia && <span className={estilos.insignia}>{insignia}</span>}
+            <span className={estilos.icono}>{icono}</span>
+            <h2 className={estilos.titulo}>{titulo}</h2>
+            <p className={estilos.descripcion}>{descripcion}</p>
+            <span className={estilos.accion}>
+                {accion} <span aria-hidden="true">→</span>
+            </span>
+        </Link>
     );
 }
 

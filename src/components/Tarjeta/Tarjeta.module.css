@@ -1,56 +1,76 @@
 .tarjeta {
     position: relative;
-    background-color: var(--purpura-medianoche);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radio);
-    padding: 2.2rem 1.5rem 1.5rem 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
-    justify-content: space-between; 
-}
-
-.tarjeta h3 {
-    font-family: var(--fuente-subtitulo);
-    color: var(--sol-tenue);
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1.25rem;
-    text-align: center;
-}
-
-.tarjeta p {
-    font-family: var(--fuente-cuerpo);
+    gap: 10px;
+    background-color: var(--purpura-medianoche);
+    border: 1px solid var(--borde-suave);
+    border-radius: var(--radio);
+    padding: 26px 24px 22px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     color: var(--gris-claro);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    text-align: center;
+    text-decoration: none;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tarjeta:hover,
+.tarjeta:focus-visible {
+    transform: translateY(-4px);
+    border-color: var(--ambar-cafeto);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
 .destacada {
-    border: 2px solid var(--ambar-cafeto);
+    border-color: rgba(250, 180, 31, 0.55);
 }
 
 .insignia {
     position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: -11px;
+    right: 18px;
     background-color: var(--ambar-cafeto);
     color: var(--morado-noche);
-    font-family: var(--fuente-cuerpo);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    padding: 4px 12px;
+    letter-spacing: 0.04em;
+    padding: 3px 12px;
     border-radius: 999px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    white-space: nowrap;
 }
 
-.estado {
+.icono {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: rgba(250, 180, 31, 0.12);
+    color: var(--ambar-cafeto);
+}
+
+.titulo {
+    font-family: var(--fuente-subtitulo);
     color: var(--sol-tenue);
-    font-size: 0.85rem;
+    font-size: 1.3rem;
+    margin: 6px 0 0;
+}
+
+.descripcion {
+    margin: 0;
+    font-size: 0.93rem;
+    line-height: 1.55;
+    flex: 1;
+}
+
+.accion {
+    margin-top: 8px;
     font-weight: 600;
-    margin-top: 1rem;
-    text-align: center;
+    font-size: 0.9rem;
+    color: var(--ambar-cafeto);
+}
+
+.tarjeta:hover .accion span {
+    display: inline-block;
+    transform: translateX(3px);
+    transition: transform 0.2s ease;
 }

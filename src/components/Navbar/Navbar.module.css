@@ -1,29 +1,332 @@
 .barra {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 24px;
-    background-color: var(--purpura-medianoche);
-    color: white;
-    border-bottom: 2px solid var(--ambar-cafeto);
-}
-
-.logo {height: 40px; }
-
-.titulo {
-    font-family: var(--fuente-titulo);
-    color: var(--sol-tenue);
-    font-size: 1.2rem;
-    margin: 0;
-}
-
-.menu {
-    margin-left: auto;
-    display: flex;
     gap: 16px;
+    padding: 10px 28px;
+    background: rgba(18, 17, 40, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(250, 180, 31, 0.24);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
-.menu a {
-    color: white;
+.enlaceLogo {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 4px;
+    border-radius: 8px;
+    flex: none;
+}
+
+.logo {
+    height: 52px;
+    width: auto;
+    transition: transform 0.2s ease;
+}
+
+.enlaceLogo:hover .logo {
+    transform: scale(1.03);
+}
+
+.controlesMovil {
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+.menu,
+.menuPublico {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.enlace {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--gris-claro);
     text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.enlace:hover {
+    color: var(--ambar-cafeto);
+    background-color: rgba(250, 180, 31, 0.08);
+}
+
+.enlace:global(.active) {
+    color: var(--ambar-cafeto);
+}
+
+.enlace:global(.active)::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 4px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ambar-cafeto);
+}
+
+.controlTextoEscritorio {
+    display: inline-flex;
+    align-items: center;
+}
+
+.botonTexto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--borde-ambar);
+    color: var(--sol-tenue);
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.botonTexto:hover {
+    background: rgba(250, 180, 31, 0.14);
+    border-color: var(--ambar-cafeto);
+}
+
+.botonTextoActivo {
+    background: var(--ambar-cafeto);
+    border-color: var(--ambar-cafeto);
+    color: var(--morado-noche);
+}
+
+.botonTextoActivo:hover {
+    background: var(--sol-tenue);
+    border-color: var(--sol-tenue);
+}
+
+.etiquetaTamano {
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.menuCuenta {
+    display: inline-flex;
+    align-items: center;
+}
+
+.disparadorCuenta {
+    padding: 5px 12px 5px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.avatar {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ambar-cafeto);
+    color: var(--morado-noche);
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex: none;
+}
+
+.infoCuenta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+    text-align: left;
+}
+
+.nombreCuenta {
+    font-size: 0.88rem;
+    color: var(--sol-tenue);
+    font-weight: 700;
+}
+
+.rolCuenta {
+    font-size: 0.72rem;
+    color: rgba(226, 232, 240, 0.78);
+    font-weight: 500;
+}
+
+.encabezadoCuenta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.encabezadoCuenta strong {
+    color: var(--sol-tenue);
+    font-size: 0.92rem;
+}
+
+.encabezadoCuenta span {
+    color: rgba(226, 232, 240, 0.78);
+    font-size: 0.78rem;
+}
+
+.enlaceLogin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    background: var(--ambar-cafeto);
+    color: var(--morado-noche);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: filter 0.2s ease;
+}
+
+.enlaceLogin:hover {
+    filter: brightness(1.08);
+}
+
+.botonMenu {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--borde-ambar);
+    border-radius: 8px;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    position: relative;
+}
+
+.lineas,
+.lineas::before,
+.lineas::after {
+    position: absolute;
+    left: 11px;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ambar-cafeto);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.lineas {
+    top: 20px;
+}
+
+.lineas::before,
+.lineas::after {
+    content: '';
+    left: 0;
+}
+
+.lineas::before {
+    top: -6px;
+}
+
+.lineas::after {
+    top: 6px;
+}
+
+.botonMenu[aria-expanded='true'] .lineas {
+    background: transparent;
+}
+
+.botonMenu[aria-expanded='true'] .lineas::before {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.botonMenu[aria-expanded='true'] .lineas::after {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+.oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+    .barra {
+        padding: 8px 16px;
+        flex-wrap: wrap;
+    }
+
+    .controlesMovil {
+        display: flex;
+    }
+
+    .controlTextoEscritorio {
+        display: none;
+    }
+
+    .botonMenu {
+        display: block;
+    }
+
+    .menu {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 10px 0 6px;
+        border-top: 1px solid var(--borde-suave);
+    }
+
+    .menuAbierto {
+        display: flex;
+    }
+
+    .enlace:global(.active) {
+        background-color: rgba(250, 180, 31, 0.1);
+    }
+
+    .enlace:global(.active)::after {
+        left: 0;
+        right: auto;
+        top: 8px;
+        bottom: 8px;
+        width: 3px;
+        height: auto;
+    }
+
+    .menuCuenta {
+        margin-top: 4px;
+    }
+}
+
+@media (max-width: 560px) {
+    .etiquetaTamano {
+        display: none;
+    }
+
+    .menuPublico {
+        gap: 6px;
+    }
+
+    .enlaceLogin {
+        padding: 8px 14px;
+        font-size: 0.9rem;
+    }
 }

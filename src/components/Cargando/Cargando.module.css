@@ -1,0 +1,24 @@
+.contenedor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 48px 16px;
+    color: var(--sol-tenue);
+    font-weight: 600;
+}
+
+.spinner {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 3px solid rgba(250, 180, 31, 0.2);
+    border-top-color: var(--ambar-cafeto);
+    animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
