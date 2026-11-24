@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
 import {
     crearMarca,
     crearRubro,
@@ -19,6 +20,9 @@ import AvisoError from '../../components/AvisoError/AvisoError';
 import { BarraCarga } from '../../components/BarraCarga/BarraCarga';
 import BarraFlotante from '../../components/BarraFlotante/BarraFlotante';
 import Confirmacion from '../../components/Confirmacion/Confirmacion';
+import Paginacion from '../../components/Paginacion/Paginacion';
+import Tooltip from '../../components/Tooltip/Tooltip';
+import { desplazarAlInicioListado } from '../../utils/desplazamiento';
 import {
     IconoActualizar,
     IconoBuscar,
@@ -36,6 +40,7 @@ import { formatearNumero } from '../../utils/formato';
 import estilos from './CatalogoAbm.module.css';
 
 function CatalogoAbm() {
+    const [searchParams, setSearchParams] = useSearchParams();
     const usuario = getUsuarioActual();
 
     const permisosMarca = {
@@ -51,14 +56,22 @@ function CatalogoAbm() {
         eliminar: tienePermiso(usuario, 'eliminar_rubro'),
     };
 
-    const [pestana, setPestana] = useState(permisosMarca.ver || !permisosRubro.ver ? 'MARCAS' : 'RUBROS');
-    const [busqueda, setBusqueda] = useState('');
-    const [consulta, setConsulta] = useState('');
+    const pestanaDefecto = permisosMarca.ver || !permisosRubro.ver ? 'MARCAS' : 'RUBROS';
+    const pestanaParam = searchParams.get('pestana');
+    const pestana =
+        pestanaParam === 'RUBROS' && permisosRubro.ver
+            ? 'RUBROS'
+            : pestanaParam === 'MARCAS' && permisosMarca.ver
+                ? 'MARCAS'
+                : pestanaDefecto;
+    const consulta = (searchParams.get('q') || '').trim();
+    const paginaRaw = Number.parseInt(searchParams.get('pagina') || '1', 10);
+    const pagina = Number.isFinite(paginaRaw) && paginaRaw >= 1 ? paginaRaw : 1;
+
+    const [busqueda, setBusqueda] = useState(consulta);
     const [items, setItems] = useState([]);
-    const [pagina, setPagina] = useState(1);
     const [hayMas, setHayMas] = useState(false);
     const [cargando, setCargando] = useState(permisosMarca.ver || permisosRubro.ver);
-    const [cargandoMas, setCargandoMas] = useState(false);
     const [errorCarga, setErrorCarga] = useState(null);
     const [intento, setIntento] = useState(0);
     const [conteos, setConteos] = useState({ MARCAS: null, RUBROS: null });
@@ -75,6 +88,7 @@ function CatalogoAbm() {
     const [objetivoEliminar, setObjetivoEliminar] = useState(null);
     const [eliminando, setEliminando] = useState(false);
 
+    const inicioListadoRef = useRef(null);
     const dialogoRef = useRef(null);
     const idTituloPanel = useId();
 
@@ -99,9 +113,19 @@ function CatalogoAbm() {
     const puedeEscribirAlgo = permisosActuales.crear || permisosActuales.editar || permisosActuales.eliminar;
 
     useEffect(() => {
-        const espera = setTimeout(() => setConsulta(busqueda.trim()), 300);
+        const limpio = busqueda.trim();
+        if (limpio === consulta) return undefined;
+        const espera = setTimeout(() => {
+            setSearchParams((prev) => {
+                const copia = new URLSearchParams(prev);
+                if (limpio) copia.set('q', limpio);
+                else copia.delete('q');
+                copia.delete('pagina');
+                return copia;
+            }, { replace: true });
+        }, 300);
         return () => clearTimeout(espera);
-    }, [busqueda]);
+    }, [busqueda, consulta, setSearchParams]);
 
     useEffect(() => {
         const dialogo = dialogoRef.current;
@@ -149,13 +173,12 @@ function CatalogoAbm() {
                 setCargando(true);
                 setErrorCarga(null);
                 const fetcher = esMarcas ? getMarcas : getRubros;
-                const datos = await fetcher({ q: consulta, pagina: 1, signal: controlador.signal });
+                const datos = await fetcher({ q: consulta, pagina, signal: controlador.signal });
                 const lista = Array.isArray(datos?.resultados) ? datos.resultados.filter(Boolean) : [];
                 if (!controlador.signal.aborted) {
                     setItems(lista);
                     setHayMas(Boolean(datos?.hayMas));
-                    setPagina(1);
-                    if (!consulta) {
+                    if (!consulta && pagina === 1) {
                         setConteos((prev) => ({
                             ...prev,
                             [esMarcas ? 'MARCAS' : 'RUBROS']: {
@@ -175,47 +198,44 @@ function CatalogoAbm() {
 
         cargarLista();
         return () => controlador.abort();
-    }, [esMarcas, consulta, intento, permisosActuales.ver]);
+    }, [esMarcas, consulta, pagina, intento, permisosActuales.ver]);
 
     const cambiarPestana = (nueva) => {
         if (nueva === pestana) return;
-        setPestana(nueva);
         setItems([]);
         setBusqueda('');
-        setConsulta('');
         setErrorCarga(null);
         setErrorOperacion('');
         setAvisoExito('');
+        setSearchParams((prev) => {
+            const copia = new URLSearchParams(prev);
+            if (nueva === pestanaDefecto) copia.delete('pestana');
+            else copia.set('pestana', nueva);
+            copia.delete('q');
+            copia.delete('pagina');
+            return copia;
+        }, { replace: true });
     };
 
-    const cargarMas = async () => {
-        try {
-            setCargandoMas(true);
-            setErrorOperacion('');
-            const siguiente = pagina + 1;
-            const fetcher = esMarcas ? getMarcas : getRubros;
-            const datos = await fetcher({ q: consulta, pagina: siguiente });
-            const nuevos = Array.isArray(datos?.resultados) ? datos.resultados.filter(Boolean) : [];
-            setItems((previos) => {
-                const actualizados = [...(Array.isArray(previos) ? previos : []), ...nuevos];
-                if (!consulta) {
-                    setConteos((prev) => ({
-                        ...prev,
-                        [esMarcas ? 'MARCAS' : 'RUBROS']: {
-                            cantidad: actualizados.length,
-                            hayMas: Boolean(datos?.hayMas),
-                        },
-                    }));
-                }
-                return actualizados;
-            });
-            setHayMas(Boolean(datos?.hayMas));
-            setPagina(siguiente);
-        } catch (err) {
-            setErrorOperacion(mensajeDeError(err, 'No pudimos traer más registros.'));
-        } finally {
-            setCargandoMas(false);
-        }
+    const limpiarBusqueda = () => {
+        setBusqueda('');
+        setSearchParams((prev) => {
+            const copia = new URLSearchParams(prev);
+            copia.delete('q');
+            copia.delete('pagina');
+            return copia;
+        }, { replace: true });
+    };
+
+    const cambiarPagina = (nuevaPagina) => {
+        if (nuevaPagina < 1 || cargando) return;
+        setSearchParams((prev) => {
+            const copia = new URLSearchParams(prev);
+            if (nuevaPagina <= 1) copia.delete('pagina');
+            else copia.set('pagina', String(nuevaPagina));
+            return copia;
+        });
+        desplazarAlInicioListado(inicioListadoRef.current);
     };
 
     const abrirCrear = (nombreInicial = '') => {
@@ -294,7 +314,6 @@ function CatalogoAbm() {
 
             const nombre = String(datosForm?.nombre ?? '').trim();
             const descripcion = String(datosForm?.descripcion ?? '').trim();
-            const claveTab = esMarcas ? 'MARCAS' : 'RUBROS';
 
             if (esMarcas) {
                 if (editando) {
@@ -307,14 +326,14 @@ function CatalogoAbm() {
                     setAvisoExito(`Actualizaste la marca "${actualizada?.nombre || nombre}".`);
                 } else {
                     const creada = await crearMarca({ nombre, descripcion });
-                    if (creada) {
-                        setItems((previos) => [creada, ...(Array.isArray(previos) ? previos : [])]);
+                    if (pagina > 1) {
+                        setSearchParams((prev) => {
+                            const copia = new URLSearchParams(prev);
+                            copia.delete('pagina');
+                            return copia;
+                        }, { replace: true });
                     }
-                    setConteos((prev) =>
-                        prev[claveTab]
-                            ? { ...prev, [claveTab]: { ...prev[claveTab], cantidad: prev[claveTab].cantidad + 1 } }
-                            : prev
-                    );
+                    setIntento((n) => n + 1);
                     setAvisoExito(`Creaste la marca "${creada?.nombre || nombre}".`);
                 }
             } else if (editando) {
@@ -335,14 +354,14 @@ function CatalogoAbm() {
                     descripcion,
                     activo: Boolean(datosForm?.activo),
                 });
-                if (creado) {
-                    setItems((previos) => [creado, ...(Array.isArray(previos) ? previos : [])]);
+                if (pagina > 1) {
+                    setSearchParams((prev) => {
+                        const copia = new URLSearchParams(prev);
+                        copia.delete('pagina');
+                        return copia;
+                    }, { replace: true });
                 }
-                setConteos((prev) =>
-                    prev[claveTab]
-                        ? { ...prev, [claveTab]: { ...prev[claveTab], cantidad: prev[claveTab].cantidad + 1 } }
-                        : prev
-                );
+                setIntento((n) => n + 1);
                 setAvisoExito(`Creaste el rubro "${creado?.nombre || nombre}".`);
             }
 
@@ -379,19 +398,16 @@ function CatalogoAbm() {
                 await eliminarRubro(objetivoEliminar.id);
             }
 
-            const claveTab = esMarcas ? 'MARCAS' : 'RUBROS';
-            setItems((previos) => previos.filter((item) => item.id !== objetivoEliminar.id));
-            setConteos((prev) =>
-                prev[claveTab]
-                    ? {
-                        ...prev,
-                        [claveTab]: {
-                            ...prev[claveTab],
-                            cantidad: Math.max(0, prev[claveTab].cantidad - 1),
-                        },
-                    }
-                    : prev
-            );
+            if (items.length === 1 && pagina > 1) {
+                setSearchParams((prev) => {
+                    const copia = new URLSearchParams(prev);
+                    if (pagina - 1 <= 1) copia.delete('pagina');
+                    else copia.set('pagina', String(pagina - 1));
+                    return copia;
+                }, { replace: true });
+            } else {
+                setIntento((n) => n + 1);
+            }
             setAvisoExito(`Diste de baja ${esMarcas ? 'la marca' : 'el rubro'} "${objetivoEliminar.nombre}".`);
             setObjetivoEliminar(null);
         } catch (err) {
@@ -412,7 +428,7 @@ function CatalogoAbm() {
 
     return (
         <section className={estilos.pagina}>
-            <BarraCarga activa={cargando || cargandoMas || guardando || eliminando} etiqueta="Actualizando catálogo" />
+            <BarraCarga activa={cargando || guardando || eliminando} etiqueta="Actualizando catálogo" />
 
             <EncabezadoPagina
                 compacto
@@ -437,7 +453,7 @@ function CatalogoAbm() {
                 )}
             </EncabezadoPagina>
 
-            <div className={estilos.barraSuperior}>
+            <div ref={inicioListadoRef} className={estilos.barraSuperior}>
                 <div className={estilos.pestanas} role="tablist" aria-label="Tipo de catálogo">
                     <button
                         type="button"
@@ -478,14 +494,18 @@ function CatalogoAbm() {
                             onChange={(e) => setBusqueda(e.target.value)}
                         />
                         {busqueda && (
-                            <button
-                                type="button"
-                                className={estilos.limpiar}
-                                onClick={() => setBusqueda('')}
-                                aria-label="Limpiar búsqueda"
-                            >
-                                ×
-                            </button>
+                            <span className={estilos.contenedorLimpiar}>
+                                <Tooltip texto="Borrar el texto buscado" posicion="abajo">
+                                    <button
+                                        type="button"
+                                        className={estilos.limpiar}
+                                        onClick={limpiarBusqueda}
+                                        aria-label="Limpiar búsqueda"
+                                    >
+                                        ×
+                                    </button>
+                                </Tooltip>
+                            </span>
                         )}
                     </div>
                 )}
@@ -555,19 +575,27 @@ function CatalogoAbm() {
                     <p>
                         {consulta
                             ? `No encontramos ${esMarcas ? 'marcas' : 'rubros'} que coincidan con "${consulta}".`
-                            : `Todavía no hay ${esMarcas ? 'marcas' : 'rubros'} cargados.`}
+                            : pagina > 1
+                                ? `No hay ${esMarcas ? 'marcas' : 'rubros'} en la página ${formatearNumero(pagina)}.`
+                                : `Todavía no hay ${esMarcas ? 'marcas' : 'rubros'} cargados.`}
                     </p>
                     <div className={estilos.accionesVacio}>
                         {consulta && (
                             <button
                                 type="button"
                                 className={estilos.botonSecundario}
-                                onClick={() => {
-                                    setBusqueda('');
-                                    setConsulta('');
-                                }}
+                                onClick={limpiarBusqueda}
                             >
                                 Limpiar búsqueda
+                            </button>
+                        )}
+                        {!consulta && pagina > 1 && (
+                            <button
+                                type="button"
+                                className={estilos.botonSecundario}
+                                onClick={() => cambiarPagina(1)}
+                            >
+                                Volver a la página 1
                             </button>
                         )}
                         {permisosActuales.crear && (
@@ -589,7 +617,7 @@ function CatalogoAbm() {
                     </div>
                 </div>
             ) : (
-                <>
+                <div className={estilos.bloqueListado}>
                     <div className={`${estilos.tablaContenedor} ${cargando ? estilos.actualizando : ''}`}>
                         <table className={estilos.tabla}>
                             <thead>
@@ -612,26 +640,37 @@ function CatalogoAbm() {
                                         {!esMarcas && (
                                             <td>
                                                 {permisosRubro.editar ? (
-                                                    <button
-                                                        type="button"
-                                                        role="switch"
-                                                        aria-checked={Boolean(item.activo)}
-                                                        aria-label={`${item.nombre}: ${item.activo ? 'Activo' : 'Pausado'}. Tocá para cambiar`}
-                                                        disabled={cambiandoEstadoId === item.id}
-                                                        onClick={() => alternarEstadoRubro(item)}
-                                                        className={`${estilos.switchBadge} ${
-                                                            item.activo ? estilos.badgeOk : estilos.badgeInactivo
-                                                        }`}
+                                                    <Tooltip
+                                                        texto={item.activo ? 'Clic para pausar' : 'Clic para activar'}
+                                                        posicion="arriba"
                                                     >
-                                                        {item.activo ? <IconoEstadoOk size={13} /> : <IconoEstadoAlerta size={13} />}
-                                                        <span>
-                                                            {cambiandoEstadoId === item.id
-                                                                ? 'Guardando...'
-                                                                : item.activo
-                                                                    ? 'Activo'
-                                                                    : 'Pausado'}
-                                                        </span>
-                                                    </button>
+                                                        <button
+                                                            type="button"
+                                                            role="switch"
+                                                            aria-checked={Boolean(item.activo)}
+                                                            aria-label={`${item.nombre}: ${
+                                                                item.activo ? 'Activo' : 'Pausado'
+                                                            }. ${item.activo ? 'Clic para pausar' : 'Clic para activar'}`}
+                                                            disabled={cambiandoEstadoId === item.id}
+                                                            onClick={() => alternarEstadoRubro(item)}
+                                                            className={`${estilos.controlSwitch} ${
+                                                                item.activo
+                                                                    ? estilos.controlSwitchActivo
+                                                                    : estilos.controlSwitchPausado
+                                                            }`}
+                                                        >
+                                                            <span className={estilos.rielSwitch} aria-hidden="true">
+                                                                <span className={estilos.puntoSwitch} />
+                                                            </span>
+                                                            <span className={estilos.textoSwitch}>
+                                                                {cambiandoEstadoId === item.id
+                                                                    ? 'Guardando...'
+                                                                    : item.activo
+                                                                        ? 'Activo'
+                                                                        : 'Pausado'}
+                                                            </span>
+                                                        </button>
+                                                    </Tooltip>
                                                 ) : (
                                                     <span
                                                         className={`${estilos.badge} ${item.activo ? estilos.badgeOk : estilos.badgeInactivo}`}
@@ -674,19 +713,17 @@ function CatalogoAbm() {
                         </table>
                     </div>
 
-                    {hayMas && (
-                        <div className={estilos.cargarMas}>
-                            <button
-                                type="button"
-                                className={estilos.botonSecundario}
-                                onClick={cargarMas}
-                                disabled={cargandoMas}
-                            >
-                                {cargandoMas ? 'Trayendo más...' : 'Cargar más'}
-                            </button>
-                        </div>
-                    )}
-                </>
+                    <Paginacion
+                        pagina={pagina}
+                        hayMas={hayMas}
+                        cargando={cargando}
+                        cantidad={items.length}
+                        etiquetaSingular={esMarcas ? 'marca' : 'rubro'}
+                        etiquetaPlural={esMarcas ? 'marcas' : 'rubros'}
+                        ariaLabel={`Paginación de ${esMarcas ? 'marcas' : 'rubros'}`}
+                        onCambiarPagina={cambiarPagina}
+                    />
+                </div>
             )}
 
             <dialog

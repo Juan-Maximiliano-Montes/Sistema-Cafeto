@@ -113,10 +113,12 @@ function Cajas() {
                         <span>{loading && hayDatos ? 'Actualizando...' : 'Actualizar'}</span>
                     </button>
                 </Tooltip>
-                <a href={URL_CAJA_WEB} target="_blank" rel="noreferrer" className={estilos.botonPrincipal}>
-                    <span>Abrir o cerrar caja en el panel completo</span>
-                    <IconoExterno size={16} />
-                </a>
+                <Tooltip texto="Abrir, arquear o cerrar caja en el panel completo" posicion="abajo">
+                    <a href={URL_CAJA_WEB} target="_blank" rel="noreferrer" className={estilos.botonPrincipal}>
+                        <span>Ir a caja en panel completo</span>
+                        <IconoExterno size={16} />
+                    </a>
+                </Tooltip>
             </EncabezadoPagina>
 
             {loading && !hayDatos && <EsqueletoPanel />}

@@ -2,6 +2,7 @@
     position: relative;
     display: inline-flex;
     align-items: center;
+    flex: 0 0 auto;
 }
 
 .interactiva {
@@ -9,10 +10,27 @@
     border-radius: 999px;
 }
 
+.ocultoAccesible {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+    pointer-events: none;
+}
+
 .globo {
-    position: fixed;
+    position: absolute;
     z-index: 2500;
-    max-width: 240px;
+    width: max-content;
+    max-width: min(240px, calc(100vw - 24px));
     padding: 8px 12px;
     border-radius: 8px;
     background: var(--superficie-modal);
@@ -25,15 +43,41 @@
     font-weight: 500;
     line-height: 1.4;
     text-align: center;
+    white-space: normal;
     box-shadow: var(--sombra-modal);
     pointer-events: none;
-    transition: opacity 0.14s ease, transform 0.14s ease;
+    transition: opacity 0.14s ease;
+}
+
+.globoDerecha {
+    position: fixed;
+    max-width: 220px;
 }
 
 .arriba {
-    transform: translateY(0);
+    bottom: calc(100% + 8px);
+    top: auto;
 }
 
 .abajo {
-    transform: translateY(0);
+    top: calc(100% + 8px);
+    bottom: auto;
+}
+
+.alineacionCentro {
+    left: 50%;
+    right: auto;
+    transform: translateX(calc(-50% + var(--ajuste-x, 0px)));
+}
+
+.alineacionInicio {
+    left: 0;
+    right: auto;
+    transform: translateX(var(--ajuste-x, 0px));
+}
+
+.alineacionFin {
+    right: 0;
+    left: auto;
+    transform: translateX(var(--ajuste-x, 0px));
 }

@@ -13,6 +13,7 @@ import {
     IconoEscudo,
     IconoEstadoOk,
 } from '../Iconos/Iconos';
+import Tooltip from '../Tooltip/Tooltip';
 import estilos from './BarraEstado.module.css';
 
 const inicialesDe = (usuario) => {
@@ -86,48 +87,56 @@ function BarraEstado({ onAbrirBuscador }) {
         <div className={estilos.contenedor}>
             <header className={estilos.pildora} aria-label="Estado en vivo y acceso rápido">
                 <div className={estilos.grupoEstado}>
-                    <Link
-                        to="/cajas"
-                        className={`${estilos.chipEstado} ${cajasAbiertas > 0 ? estilos.chipOk : estilos.chipNeutro}`}
-                    >
-                        {cajasAbiertas > 0 ? <IconoEstadoOk size={14} /> : <IconoCaja size={15} />}
-                        <span>{etiquetaCajas}</span>
-                    </Link>
+                    <Tooltip texto="Ver estado de cajas" posicion="abajo" alineacion="inicio">
+                        <Link
+                            to="/cajas"
+                            className={`${estilos.chipEstado} ${cajasAbiertas > 0 ? estilos.chipOk : estilos.chipNeutro}`}
+                        >
+                            {cajasAbiertas > 0 ? <IconoEstadoOk size={14} /> : <IconoCaja size={15} />}
+                            <span>{etiquetaCajas}</span>
+                        </Link>
+                    </Tooltip>
 
                     {puedeAutorizar && pendientesAutorizar > 0 && (
-                        <Link
-                            to="/stock"
-                            state={{ pestana: 'AUTORIZACIONES' }}
-                            className={`${estilos.chipEstado} ${estilos.chipAlerta}`}
-                        >
-                            <IconoEscudo size={14} />
-                            <span>{formatearNumero(pendientesAutorizar)} por autorizar</span>
-                        </Link>
+                        <Tooltip texto="Revisar autorizaciones pendientes" posicion="abajo" alineacion="inicio">
+                            <Link
+                                to="/stock"
+                                state={{ pestana: 'AUTORIZACIONES' }}
+                                className={`${estilos.chipEstado} ${estilos.chipAlerta}`}
+                            >
+                                <IconoEscudo size={14} />
+                                <span>{formatearNumero(pendientesAutorizar)} por autorizar</span>
+                            </Link>
+                        </Tooltip>
                     )}
                 </div>
 
                 <div className={estilos.grupoAcciones}>
-                    <button
-                        type="button"
-                        className={estilos.botonBuscar}
-                        onClick={onAbrirBuscador}
-                        aria-label="Buscar pantallas o productos (Ctrl+K)"
-                    >
-                        <IconoBuscar size={16} />
-                        <span>Buscar</span>
-                        <kbd className={estilos.atajo}>Ctrl+K</kbd>
-                    </button>
+                    <Tooltip texto="Buscar pantallas o productos (Ctrl + K)" posicion="abajo" alineacion="fin">
+                        <button
+                            type="button"
+                            className={estilos.botonBuscar}
+                            onClick={onAbrirBuscador}
+                            aria-label="Buscar pantallas o productos (Ctrl + K)"
+                        >
+                            <IconoBuscar size={16} />
+                            <span>Buscar</span>
+                            <kbd className={estilos.atajo}>Ctrl+K</kbd>
+                        </button>
+                    </Tooltip>
 
-                    <Link
-                        to="/perfil"
-                        className={estilos.enlacePerfil}
-                        aria-label={`Mi perfil: ${usuario?.nombre || 'Cuenta'}`}
-                    >
-                        <span className={estilos.avatar} aria-hidden="true">
-                            {inicialesDe(usuario)}
-                        </span>
-                        <span className={estilos.nombrePerfil}>{usuario?.nombre || 'Mi perfil'}</span>
-                    </Link>
+                    <Tooltip texto="Mi perfil y permisos" posicion="abajo" alineacion="fin">
+                        <Link
+                            to="/perfil"
+                            className={estilos.enlacePerfil}
+                            aria-label={`Mi perfil: ${usuario?.nombre || 'Cuenta'}`}
+                        >
+                            <span className={estilos.avatar} aria-hidden="true">
+                                {inicialesDe(usuario)}
+                            </span>
+                            <span className={estilos.nombrePerfil}>{usuario?.nombre || 'Mi perfil'}</span>
+                        </Link>
+                    </Tooltip>
                 </div>
             </header>
         </div>

@@ -4,6 +4,10 @@
     gap: 18px;
 }
 
+.pagina > header {
+    margin-bottom: 0;
+}
+
 .botonPrincipal,
 .botonSecundario {
     display: inline-flex;

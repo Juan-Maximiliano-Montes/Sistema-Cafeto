@@ -1,9 +1,18 @@
 import { cloneElement, isValidElement, useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import estilos from './Tooltip.module.css';
 
-function Tooltip({ texto, children, posicion = 'arriba', esEtiqueta = false }) {
+const CLASES_ALINEACION = {
+    inicio: estilos.alineacionInicio,
+    centro: estilos.alineacionCentro,
+    fin: estilos.alineacionFin,
+};
+
+function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', esEtiqueta = false }) {
     const [abierto, setAbierto] = useState(false);
-    const [coords, setCoords] = useState({ top: 0, left: 0, ubicacion: posicion });
+    const [ubicacionLocal, setUbicacionLocal] = useState(posicion);
+    const [ajusteX, setAjusteX] = useState(0);
+    const [coordsDerecha, setCoordsDerecha] = useState({ top: 0, left: 0 });
     const disparadorRef = useRef(null);
     const globoRef = useRef(null);
     const bloqueadoPorClickRef = useRef(false);
@@ -18,45 +27,55 @@ function Tooltip({ texto, children, posicion = 'arriba', esEtiqueta = false }) {
         const anchoGlobo = globo.offsetWidth || 200;
         const altoGlobo = globo.offsetHeight || 40;
         const margen = 12;
-        const separacion = 10;
 
-        let ubicacion = posicion;
-        let top = 0;
-        let left = 0;
-
-        if (ubicacion === 'derecha') {
-            if (rect.right + anchoGlobo + separacion > window.innerWidth - margen) {
-                ubicacion = 'arriba';
-            } else {
-                left = rect.right + separacion;
+        if (posicion === 'derecha') {
+            const separacion = 10;
+            if (rect.right + anchoGlobo + separacion <= window.innerWidth - margen) {
                 const centroY = rect.top + rect.height / 2 - altoGlobo / 2;
-                top = Math.min(
+                const top = Math.min(
                     Math.max(margen, centroY),
                     Math.max(margen, window.innerHeight - altoGlobo - margen)
                 );
-                setCoords({ top, left, ubicacion });
+                setUbicacionLocal('derecha');
+                setCoordsDerecha({ top, left: rect.right + separacion });
                 return;
             }
+
+            const ubicacionFallback = rect.top - altoGlobo - separacion < margen ? 'abajo' : 'arriba';
+            const topFallback = ubicacionFallback === 'abajo'
+                ? Math.min(window.innerHeight - altoGlobo - margen, rect.bottom + separacion)
+                : Math.max(margen, rect.top - altoGlobo - separacion);
+            const centroX = rect.left + rect.width / 2 - anchoGlobo / 2;
+            const leftFallback = Math.min(
+                Math.max(margen, centroX),
+                Math.max(margen, window.innerWidth - anchoGlobo - margen)
+            );
+            setUbicacionLocal(ubicacionFallback);
+            setCoordsDerecha({ top: topFallback, left: leftFallback });
+            return;
         }
 
-        if (ubicacion === 'arriba' && rect.top - altoGlobo - separacion < margen) {
-            ubicacion = 'abajo';
-        } else if (ubicacion === 'abajo' && rect.bottom + altoGlobo + separacion > window.innerHeight - margen) {
-            ubicacion = 'arriba';
+        const separacion = 8;
+        let nuevaUbicacion = posicion === 'abajo' ? 'abajo' : 'arriba';
+        if (nuevaUbicacion === 'arriba' && rect.top - altoGlobo - separacion < margen) {
+            nuevaUbicacion = 'abajo';
+        } else if (nuevaUbicacion === 'abajo' && rect.bottom + altoGlobo + separacion > window.innerHeight - margen) {
+            nuevaUbicacion = 'arriba';
         }
 
-        top = ubicacion === 'abajo'
-            ? Math.min(window.innerHeight - altoGlobo - margen, rect.bottom + separacion)
-            : Math.max(margen, rect.top - altoGlobo - separacion);
+        let leftEsperado = rect.left + rect.width / 2 - anchoGlobo / 2;
+        if (alineacion === 'inicio') {
+            leftEsperado = rect.left;
+        } else if (alineacion === 'fin') {
+            leftEsperado = rect.right - anchoGlobo;
+        }
 
-        const centroX = rect.left + rect.width / 2 - anchoGlobo / 2;
-        left = Math.min(
-            Math.max(margen, centroX),
-            Math.max(margen, window.innerWidth - anchoGlobo - margen)
-        );
+        const maxLeft = Math.max(margen, window.innerWidth - anchoGlobo - margen);
+        const leftSeguro = Math.min(Math.max(margen, leftEsperado), maxLeft);
 
-        setCoords({ top, left, ubicacion });
-    }, [posicion]);
+        setUbicacionLocal(nuevaUbicacion);
+        setAjusteX(Math.round(leftSeguro - leftEsperado));
+    }, [posicion, alineacion]);
 
     useLayoutEffect(() => {
         if (!abierto) return;
@@ -158,6 +177,8 @@ function Tooltip({ texto, children, posicion = 'arriba', esEtiqueta = false }) {
         }
     };
 
+    const claseAlineacion = CLASES_ALINEACION[alineacion] || estilos.alineacionCentro;
+
     return (
         <span
             ref={disparadorRef}
@@ -173,21 +194,37 @@ function Tooltip({ texto, children, posicion = 'arriba', esEtiqueta = false }) {
             onKeyDown={alPresionarEnEtiqueta}
         >
             {contenidoHijo}
-            <span
-                ref={globoRef}
-                id={idTooltip}
-                role="tooltip"
-                aria-hidden={!abierto}
-                className={`${estilos.globo} ${coords.ubicacion === 'abajo' ? estilos.abajo : estilos.arriba}`}
-                style={{
-                    top: `${coords.top}px`,
-                    left: `${coords.left}px`,
-                    opacity: abierto ? 1 : 0,
-                    visibility: abierto ? 'visible' : 'hidden',
-                }}
-            >
-                {texto}
-            </span>
+            {!abierto ? (
+                <span id={idTooltip} role="tooltip" className={estilos.ocultoAccesible}>
+                    {texto}
+                </span>
+            ) : posicion === 'derecha' && typeof document !== 'undefined' ? (
+                createPortal(
+                    <span
+                        ref={globoRef}
+                        id={idTooltip}
+                        role="tooltip"
+                        className={`${estilos.globo} ${estilos.globoDerecha}`}
+                        style={{
+                            top: `${coordsDerecha.top}px`,
+                            left: `${coordsDerecha.left}px`,
+                        }}
+                    >
+                        {texto}
+                    </span>,
+                    document.body
+                )
+            ) : (
+                <span
+                    ref={globoRef}
+                    id={idTooltip}
+                    role="tooltip"
+                    className={`${estilos.globo} ${ubicacionLocal === 'abajo' ? estilos.abajo : estilos.arriba} ${claseAlineacion}`}
+                    style={{ '--ajuste-x': `${ajusteX}px` }}
+                >
+                    {texto}
+                </span>
+            )}
         </span>
     );
 }

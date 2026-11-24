@@ -516,6 +516,15 @@ function StockOperativo() {
                         const bloqueado = ajuste?.puede_aprobar === false;
                         const motivoTexto = formatearMotivo(ajuste?.motivo);
                         const detalleTexto = textoSeguro(ajuste?.detalle);
+                        const tipoNormalizado = normalizar(
+                            ajuste?.tipo_codigo ??
+                                (typeof ajuste?.tipo === 'object' ? ajuste?.tipo?.codigo : '') ??
+                                textoSeguro(ajuste?.tipo)
+                        );
+                        const esMerma = tipoNormalizado.includes('merma');
+                        const tieneDatosConteo = renglones.some((r) => r?.teorica != null || r?.contada != null);
+                        const mostrarColumnasConteo =
+                            !esMerma && (tipoNormalizado.includes('conteo') || tieneDatosConteo);
 
                         return (
                             <article key={ajusteId} className={estilos.bloqueAjuste}>
@@ -526,7 +535,7 @@ function StockOperativo() {
                                             <span>{textoSeguro(ajuste?.estado, 'PENDIENTE')}</span>
                                         </span>
                                         <h2 className={estilos.tituloAjuste}>
-                                            {textoSeguro(ajuste?.tipo, 'Ajuste de stock')} #{ajuste?.id ?? idx + 1}
+                                            {formatearMotivo(ajuste?.tipo) || 'Ajuste de stock'} #{ajuste?.id ?? idx + 1}
                                         </h2>
                                     </div>
                                     <div className={estilos.ajusteMeta}>
@@ -553,9 +562,9 @@ function StockOperativo() {
                                                 <tr>
                                                     <th scope="col">Producto</th>
                                                     <th scope="col">Lote</th>
-                                                    <th scope="col">Teórico</th>
-                                                    <th scope="col">Contado</th>
-                                                    <th scope="col">Diferencia / Cantidad</th>
+                                                    {mostrarColumnasConteo && <th scope="col">Teórico</th>}
+                                                    {mostrarColumnasConteo && <th scope="col">Contado</th>}
+                                                    <th scope="col">{mostrarColumnasConteo ? 'Diferencia' : 'Cantidad'}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -584,8 +593,20 @@ function StockOperativo() {
                                                                 {destinoTexto ? ` → ${destinoTexto}` : ''}
                                                             </td>
                                                             <td>{loteRenglon}</td>
-                                                            <td>{r?.teorica != null ? formatearCantidad(r.teorica, unidadRenglon) : '—'}</td>
-                                                            <td>{r?.contada != null ? formatearCantidad(r.contada, unidadRenglon) : '—'}</td>
+                                                            {mostrarColumnasConteo && (
+                                                                <td>
+                                                                    {r?.teorica != null
+                                                                        ? formatearCantidad(r.teorica, unidadRenglon)
+                                                                        : '—'}
+                                                                </td>
+                                                            )}
+                                                            {mostrarColumnasConteo && (
+                                                                <td>
+                                                                    {r?.contada != null
+                                                                        ? formatearCantidad(r.contada, unidadRenglon)
+                                                                        : '—'}
+                                                                </td>
+                                                            )}
                                                             <td className={estilos.celdaFuerte}>
                                                                 {r?.diferencia != null
                                                                     ? (Number(r.diferencia) > 0

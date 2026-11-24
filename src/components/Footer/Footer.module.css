@@ -84,19 +84,25 @@
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 4px 14px;
+    gap: 0 14px;
 }
 
 .enlace {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    min-height: 44px;
-    padding: 4px 2px;
+    min-height: 36px;
+    padding: 2px 2px;
     color: var(--texto-principal);
     text-decoration: none;
     font-weight: 600;
     transition: color 0.16s ease;
+}
+
+@media (pointer: coarse) {
+    .enlace {
+        min-height: 44px;
+    }
 }
 
 .enlace:hover {
@@ -111,13 +117,88 @@
     color: var(--texto-secundario);
 }
 
+.pieCompacto {
+    background-color: transparent;
+    padding: 6px 24px;
+    font-size: 0.82rem;
+}
+
+.franjaCompacta {
+    max-width: 1132px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 16px;
+    flex-wrap: wrap;
+}
+
+.izquierdaCompacta {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+}
+
+.marcaCompacta {
+    color: var(--texto-titular);
+    font-weight: 600;
+}
+
+.separadorCompacto {
+    color: var(--texto-secundario);
+}
+
+.enlaceCompacto {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 44px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: var(--texto-acento);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.enlaceCompacto:hover {
+    color: var(--texto-titular);
+    background-color: var(--superficie-hover);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.creditosCompactos {
+    margin: 0;
+    color: var(--texto-secundario);
+}
+
 @media (max-width: 820px) {
     .pie {
         padding: 20px 16px calc(86px + env(safe-area-inset-bottom, 0px));
     }
 
+    .pieCompacto {
+        padding: 8px 16px calc(76px + env(safe-area-inset-bottom, 0px));
+    }
+
     .grilla {
         grid-template-columns: 1fr;
         gap: 18px;
+    }
+}
+
+@media (max-width: 720px) {
+    .franjaCompacta {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 2px;
+    }
+
+    .izquierdaCompacta {
+        justify-content: center;
     }
 }

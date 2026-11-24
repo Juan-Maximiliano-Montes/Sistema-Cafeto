@@ -37,9 +37,23 @@
 
 .texto {
     margin: 0;
-    max-width: 480px;
+    max-width: 560px;
     font-size: 0.94rem;
     color: var(--texto-secundario);
+}
+
+.insigniaRol {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-ambar);
+    color: var(--texto-secundario);
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 
 .perfil {

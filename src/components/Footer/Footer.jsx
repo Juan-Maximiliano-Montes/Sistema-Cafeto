@@ -9,6 +9,7 @@ function Footer({ modoAutenticado = false }) {
     const [enLinea, setEnLinea] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true));
 
     useEffect(() => {
+        if (modoAutenticado) return undefined;
         const marcarEnLinea = () => setEnLinea(true);
         const marcarSinConexion = () => setEnLinea(false);
         window.addEventListener('online', marcarEnLinea);
@@ -17,7 +18,33 @@ function Footer({ modoAutenticado = false }) {
             window.removeEventListener('online', marcarEnLinea);
             window.removeEventListener('offline', marcarSinConexion);
         };
-    }, []);
+    }, [modoAutenticado]);
+
+    if (modoAutenticado) {
+        return (
+            <footer className={`${styles.pie} ${styles.pieCompacto}`}>
+                <div className={styles.franjaCompacta}>
+                    <div className={styles.izquierdaCompacta}>
+                        <span className={styles.marcaCompacta}>Cafeto Las Lomitas · Campo Quijano</span>
+                        <span className={styles.separadorCompacto} aria-hidden="true">·</span>
+                        <a
+                            href={URL_WEB_DJANGO}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={styles.enlaceCompacto}
+                        >
+                            <span>Panel completo</span>
+                            <span aria-hidden="true">↗</span>
+                        </a>
+                    </div>
+
+                    <p className={styles.creditosCompactos}>
+                        Camila Aramayo, Facundo Espinosa, Juan Montes y Ariel Roldán · 2026
+                    </p>
+                </div>
+            </footer>
+        );
+    }
 
     return (
         <footer className={styles.pie}>
@@ -39,40 +66,27 @@ function Footer({ modoAutenticado = false }) {
                 <nav className={styles.columna} aria-label="Accesos rápidos del pie de página">
                     <span className={styles.tituloColumna}>Accesos rápidos</span>
                     <ul className={styles.listaEnlaces}>
-                        {modoAutenticado ? (
-                            <>
-                                <li><Link to="/inicio" className={styles.enlace}>Inicio</Link></li>
-                                <li><Link to="/productos" className={styles.enlace}>Productos</Link></li>
-                                <li><Link to="/stock" className={styles.enlace}>Stock</Link></li>
-                                <li><Link to="/catalogo" className={styles.enlace}>Marcas y rubros</Link></li>
-                                <li><Link to="/cajas" className={styles.enlace}>Cajas</Link></li>
-                                <li><Link to="/reportes" className={styles.enlace}>Reportes</Link></li>
-                            </>
-                        ) : (
-                            <>
-                                <li>
-                                    <Link to={sesionActiva ? '/inicio' : '/login'} className={styles.enlace}>
-                                        {sesionActiva ? 'Ir a mi panel' : 'Ingresar'}
-                                    </Link>
-                                </li>
-                                <li>
-                                    <a href="/#modulos-sistema" className={styles.enlace}>
-                                        Recorrer módulos
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href={URL_WEB_DJANGO}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className={styles.enlace}
-                                    >
-                                        <span>Panel completo</span>
-                                        <IconoExterno size={13} />
-                                    </a>
-                                </li>
-                            </>
-                        )}
+                        <li>
+                            <Link to={sesionActiva ? '/inicio' : '/login'} className={styles.enlace}>
+                                {sesionActiva ? 'Ir a mi panel' : 'Ingresar'}
+                            </Link>
+                        </li>
+                        <li>
+                            <a href="/#modulos-sistema" className={styles.enlace}>
+                                Recorrer módulos
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href={URL_WEB_DJANGO}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={styles.enlace}
+                            >
+                                <span>Panel completo</span>
+                                <IconoExterno size={13} />
+                            </a>
+                        </li>
                     </ul>
                 </nav>
 

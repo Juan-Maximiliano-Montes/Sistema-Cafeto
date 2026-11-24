@@ -24,6 +24,7 @@
     flex: 1;
     display: flex;
     min-height: 100vh;
+    overflow-x: clip;
     --offset-flotante-bottom: 78px;
 }
 
@@ -32,6 +33,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
+    overflow-x: clip;
 }
 
 .contenidoApp {
@@ -41,6 +43,7 @@
     margin: 0 auto;
     padding: 96px 24px 64px;
     scroll-margin-top: 96px;
+    overflow-x: clip;
 }
 
 .contenido {

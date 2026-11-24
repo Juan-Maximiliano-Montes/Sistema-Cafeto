@@ -24,6 +24,8 @@
 }
 
 .columnaPrincipal {
+    flex: 1 1 320px;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -77,8 +79,15 @@
 }
 
 .acciones {
+    flex: none;
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+    .acciones {
+        flex: 1 1 auto;
+    }
 }

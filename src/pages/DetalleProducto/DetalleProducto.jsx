@@ -176,7 +176,11 @@ function DetalleProducto() {
 
     const lotesSeguros = Array.isArray(lotes) ? lotes.filter(Boolean) : [];
 
-    const volverAProductos = () => navigate('/productos');
+    const rutaVolver =
+        typeof location.state?.volverA === 'string' && location.state.volverA.startsWith('/productos')
+            ? location.state.volverA
+            : '/productos';
+    const volverAProductos = () => navigate(rutaVolver);
     const usarFoto = Boolean(producto?.imagen) && !falloFoto;
     const tieneOferta = producto?.precio_oferta != null;
 
@@ -185,7 +189,7 @@ function DetalleProducto() {
             <BarraCarga activa={cargando || cargandoLotes} etiqueta="Cargando detalle y lotes del producto" />
 
             <EncabezadoPagina
-                volverA="/productos"
+                volverA={rutaVolver}
                 textoVolver="Volver a productos"
                 etiqueta={producto?.rubro?.nombre || 'Detalle del catálogo'}
                 titulo={producto?.nombre || 'Producto'}

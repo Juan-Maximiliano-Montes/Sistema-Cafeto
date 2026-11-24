@@ -4,6 +4,10 @@
     gap: 18px;
 }
 
+.pagina > header {
+    margin-bottom: 0;
+}
+
 .botonPrincipal,
 .botonSecundario {
     display: inline-flex;
@@ -46,6 +50,7 @@
 }
 
 .barraSuperior {
+    scroll-margin-top: 96px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -121,19 +126,30 @@
     display: none;
 }
 
-.limpiar {
+.contenedorLimpiar {
     position: absolute;
-    right: 2px;
+    right: 3px;
     top: 50%;
     transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
+    display: inline-flex;
+}
+
+.limpiar {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
     border: none;
     border-radius: 50%;
     background: transparent;
     color: var(--texto-principal);
     font-size: 1.3rem;
+    line-height: 1;
     cursor: pointer;
+}
+
+.limpiar:hover {
+    background: var(--superficie-hover);
 }
 
 .avisoSoloLectura,
@@ -296,8 +312,7 @@
     background: var(--peligro-fondo);
 }
 
-.badge,
-.switchBadge {
+.badge {
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -306,22 +321,6 @@
     font-size: 0.74rem;
     font-weight: 700;
     white-space: nowrap;
-}
-
-.switchBadge {
-    min-height: 44px;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: filter 0.16s ease, transform 0.14s ease;
-}
-
-.switchBadge:hover:not(:disabled) {
-    filter: brightness(1.06);
-    transform: translateY(-1px);
-}
-
-.switchBadge:disabled {
-    opacity: 0.65;
 }
 
 .badgeOk {
@@ -336,10 +335,90 @@
     border: 1.5px dotted var(--aviso-borde);
 }
 
-.cargarMas {
+.controlSwitch {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 6px 12px 6px 8px;
+    border-radius: 999px;
+    border: 1.5px solid var(--borde-fuerte);
+    background: var(--superficie-sutil);
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.controlSwitch:hover:not(:disabled) {
+    border-color: var(--borde-acento);
+    background: var(--superficie-hover);
+}
+
+.controlSwitch:disabled {
+    opacity: 0.65;
+}
+
+.rielSwitch {
+    position: relative;
+    width: 32px;
+    height: 18px;
+    border-radius: 999px;
+    flex: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.puntoSwitch {
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    transform: translate(0, -50%);
+    transition: transform 0.18s ease, background-color 0.18s ease;
+}
+
+.textoSwitch {
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.controlSwitchActivo {
+    border-color: var(--exito-borde);
+    background: var(--exito-fondo);
+}
+
+.controlSwitchActivo .rielSwitch {
+    background: var(--exito-fondo);
+    border: 1.5px solid var(--exito-borde);
+}
+
+.controlSwitchActivo .puntoSwitch {
+    transform: translate(14px, -50%);
+    background: var(--exito-borde);
+}
+
+.controlSwitchActivo .textoSwitch {
+    color: var(--exito);
+}
+
+.controlSwitchPausado .rielSwitch {
+    background: var(--superficie-profunda);
+    border: 1.5px solid var(--borde-fuerte);
+}
+
+.controlSwitchPausado .puntoSwitch {
+    transform: translate(0, -50%);
+    background: var(--texto-secundario);
+}
+
+.controlSwitchPausado .textoSwitch {
+    color: var(--texto-secundario);
+}
+
+.bloqueListado {
     display: flex;
-    justify-content: center;
-    margin-top: 8px;
+    flex-direction: column;
 }
 
 .vacio {

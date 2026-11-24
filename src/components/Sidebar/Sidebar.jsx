@@ -120,13 +120,13 @@ function Sidebar({ colapsado, onAlternarColapso }) {
                         />
                     </Link>
 
-                    <Tooltip texto={colapsado ? 'Expandir menú' : 'Colapsar menú'} posicion="derecha">
+                    <Tooltip texto={colapsado ? 'Expandir menú' : 'Contraer menú'} posicion="derecha">
                         <button
                             type="button"
                             className={estilos.botonColapsar}
                             onClick={onAlternarColapso}
                             aria-expanded={!colapsado}
-                            aria-label={colapsado ? 'Expandir menú lateral' : 'Colapsar menú lateral'}
+                            aria-label={colapsado ? 'Expandir menú' : 'Contraer menú'}
                         >
                             {colapsado ? <IconoExpandir size={18} /> : <IconoColapsar size={18} />}
                         </button>

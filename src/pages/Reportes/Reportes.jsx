@@ -71,7 +71,6 @@ function Reportes() {
     const [panel, setPanel] = useState(null);
     const [productosCafeteria, setProductosCafeteria] = useState([]);
     const [productosMinisuper, setProductosMinisuper] = useState([]);
-    const [muestraTruncada, setMuestraTruncada] = useState(false);
     const [alertasStock, setAlertasStock] = useState(null);
     const [ajustesPendientes, setAjustesPendientes] = useState(null);
 
@@ -121,11 +120,9 @@ function Reportes() {
                     if (msg) errores.push(msg);
                 }
 
-                let truncado = false;
                 if (resCafeteria.status === 'fulfilled') {
                     const itemsCaf = Array.isArray(resCafeteria.value?.items) ? resCafeteria.value.items.filter(Boolean) : [];
                     setProductosCafeteria(itemsCaf);
-                    truncado = truncado || Boolean(resCafeteria.value?.truncada);
                 } else {
                     const msg = mensajeDeError(resCafeteria.reason, 'No pudimos cargar el catálogo de Cafetería.');
                     if (msg) errores.push(msg);
@@ -134,12 +131,10 @@ function Reportes() {
                 if (resMinisuper.status === 'fulfilled') {
                     const itemsMini = Array.isArray(resMinisuper.value?.items) ? resMinisuper.value.items.filter(Boolean) : [];
                     setProductosMinisuper(itemsMini);
-                    truncado = truncado || Boolean(resMinisuper.value?.truncada);
                 } else {
                     const msg = mensajeDeError(resMinisuper.reason, 'No pudimos cargar el catálogo de Minisúper.');
                     if (msg) errores.push(msg);
                 }
-                setMuestraTruncada(truncado);
 
                 if (resAlertas.status === 'fulfilled') {
                     setAlertasStock(
@@ -306,9 +301,9 @@ function Reportes() {
             ? 'Minisúper'
             : 'Cafetería y Minisúper';
 
-    const textoMuestra = muestraTruncada
-        ? `Muestra analizada: primeros ${formatearNumero(radiografia.total)} productos de ${etiquetaSeccionMuestra} (hasta ${MAX_PAGINAS_CATALOGO} páginas por sección)`
-        : `Muestra analizada: ${formatearNumero(radiografia.total)} productos cargados de ${etiquetaSeccionMuestra}`;
+    const textoMuestra = `Base analizada: ${formatearNumero(radiografia.total)} ${
+        radiografia.total === 1 ? 'producto activo' : 'productos activos'
+    } de ${etiquetaSeccionMuestra}`;
 
     return (
         <section className={estilos.pagina}>
@@ -493,7 +488,7 @@ function Reportes() {
                                 </div>
                                 <p className={estilos.kpiDetalle}>
                                     {cantidadAlertasStock != null
-                                        ? 'Stock bajo, sin stock y lotes próximos a vencer.'
+                                        ? 'Stock bajo, faltantes y vencimientos.'
                                         : 'Tu perfil no incluye consulta de alertas de stock.'}
                                 </p>
                             </Link>
@@ -532,7 +527,7 @@ function Reportes() {
                                 </div>
                                 <p className={estilos.kpiDetalle}>
                                     {cantidadAjustes != null
-                                        ? 'Revisá y resolvé ajustes en doble control.'
+                                        ? 'Revisá y resolvé ajustes con doble control.'
                                         : 'Reservado para perfiles que autorizan ajustes.'}
                                 </p>
                             </Link>

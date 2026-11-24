@@ -1,6 +1,9 @@
 .contenedor {
     position: sticky;
     top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     z-index: 900;
     display: flex;
     justify-content: center;
@@ -11,9 +14,32 @@
     pointer-events: none;
 }
 
+.contenedor::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 96px;
+    background: linear-gradient(to bottom, var(--fondo-pagina) 70%, transparent 100%);
+    background: linear-gradient(
+        to bottom,
+        var(--fondo-pagina) 0%,
+        var(--fondo-pagina) 70%,
+        color-mix(in srgb, var(--fondo-pagina) 68%, transparent) 86%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+
 .pildora {
+    position: relative;
+    z-index: 1;
     pointer-events: auto;
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     max-width: 960px;
     margin-top: 12px;
     display: flex;
@@ -151,6 +177,20 @@
         top: 0;
         height: auto;
         padding: 8px 14px 0;
+    }
+
+    .contenedor::before {
+        left: 0;
+        right: 0;
+        height: calc(100% + 18px);
+        background: linear-gradient(to bottom, var(--fondo-pagina) 76%, transparent 100%);
+        background: linear-gradient(
+            to bottom,
+            var(--fondo-pagina) 0%,
+            var(--fondo-pagina) 76%,
+            color-mix(in srgb, var(--fondo-pagina) 68%, transparent) 90%,
+            transparent 100%
+        );
     }
 
     .pildora {

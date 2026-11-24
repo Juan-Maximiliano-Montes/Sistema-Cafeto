@@ -42,7 +42,7 @@ const MODULOS_FILA_INFERIOR = [
         titulo: 'Marcas y rubros',
         descripcion: 'Altas, ediciones y bajas seguras de marcas y rubros del catálogo.',
         icono: <IconoEtiqueta size={24} />,
-        accion: 'Gestionar catálogo',
+        accion: 'Gestionar marcas y rubros',
     },
     {
         to: '/cajas',
@@ -110,10 +110,12 @@ function Main() {
                     </h1>
                     <p className={estilos.texto}>
                         Elegí el módulo con el que querés trabajar ahora.
-                        {usuario?.perfil && (
-                            <> Perfil activo: <strong className={estilos.perfil}>{usuario.perfil}</strong>.</>
-                        )}
                     </p>
+                    {usuario?.perfil && (
+                        <span className={estilos.insigniaRol}>
+                            Rol: <strong className={estilos.perfil}>{usuario.perfil}</strong>
+                        </span>
+                    )}
                 </div>
 
                 <aside className={estilos.resumenVivo} aria-label="Resumen rápido del turno">

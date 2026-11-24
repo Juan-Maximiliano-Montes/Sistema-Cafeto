@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
     getProductos,
     getProductosStock,
@@ -14,8 +14,11 @@ import AvisoError from '../../components/AvisoError/AvisoError';
 import { BarraCarga, EsqueletoCatalogo } from '../../components/BarraCarga/BarraCarga';
 import BarraFlotante from '../../components/BarraFlotante/BarraFlotante';
 import MenuDesplegable from '../../components/MenuDesplegable/MenuDesplegable';
+import Paginacion from '../../components/Paginacion/Paginacion';
 import Tooltip from '../../components/Tooltip/Tooltip';
+import { desplazarAlInicioListado } from '../../utils/desplazamiento';
 import {
+    IconoChevron,
     IconoCodigoBarras,
     IconoEstadoAlerta,
     IconoEstadoError,
@@ -100,7 +103,9 @@ const precioVigente = (item) => Number(item?.precio_oferta ?? item?.precio ?? 0)
 const esCodigoBarras = (texto) => /^\d{8,}$/.test(texto.trim());
 
 function Productos() {
+    const location = useLocation();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const usuario = getUsuarioActual();
     const puedeVerStockInterno = tienePermiso(usuario, 'ver_productos');
     const { esClaro } = useTema();
@@ -112,24 +117,26 @@ function Productos() {
         ...(puedeVerStockInterno ? [{ valor: 'STOCK', texto: 'Stock interno' }] : []),
     ];
 
+    const seccionParam = searchParams.get('seccion') || 'CAFETERIA';
+    const seccion = secciones.some((s) => s.valor === seccionParam) ? seccionParam : 'CAFETERIA';
+    const rubroSeleccionado = seccion === 'STOCK' ? '' : (searchParams.get('rubro') || '');
+    const consulta = (searchParams.get('q') || '').trim();
+    const paginaRaw = Number.parseInt(searchParams.get('pagina') || '1', 10);
+    const pagina = Number.isFinite(paginaRaw) && paginaRaw >= 1 ? paginaRaw : 1;
+
     const [productos, setProductos] = useState([]);
     const [rubros, setRubros] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
 
-    const [seccion, setSeccion] = useState('CAFETERIA');
-    const [rubroSeleccionado, setRubroSeleccionado] = useState('');
-    const [busqueda, setBusqueda] = useState('');
-    const [consulta, setConsulta] = useState('');
+    const [busqueda, setBusqueda] = useState(consulta);
     const [orden, setOrden] = useState('nombre-asc');
     const [soloConStock, setSoloConStock] = useState(false);
     const [vista, setVista] = useState(leerVistaGuardada);
     const [intento, setIntento] = useState(0);
-
-    const [pagina, setPagina] = useState(1);
     const [hayMas, setHayMas] = useState(false);
-    const [cargandoMas, setCargandoMas] = useState(false);
-    const [errorMas, setErrorMas] = useState(null);
+
+    const inicioListadoRef = useRef(null);
 
     const consultaPorCodigo = puedeVerStockInterno && esCodigoBarras(consulta);
     const modoStock = seccion === 'STOCK' || consultaPorCodigo;
@@ -144,9 +151,19 @@ function Productos() {
     };
 
     useEffect(() => {
-        const espera = setTimeout(() => setConsulta(busqueda.trim()), 300);
+        const limpio = busqueda.trim();
+        if (limpio === consulta) return undefined;
+        const espera = setTimeout(() => {
+            setSearchParams((prev) => {
+                const copia = new URLSearchParams(prev);
+                if (limpio) copia.set('q', limpio);
+                else copia.delete('q');
+                copia.delete('pagina');
+                return copia;
+            }, { replace: true });
+        }, 300);
         return () => clearTimeout(espera);
-    }, [busqueda]);
+    }, [busqueda, consulta, setSearchParams]);
 
     useEffect(() => {
         if (seccion === 'STOCK') {
@@ -179,33 +196,34 @@ function Productos() {
             try {
                 setCargando(true);
                 setError(null);
-                setErrorMas(null);
 
                 let datos;
                 if (modoStock) {
                     if (consultaPorCodigo) {
-                        datos = await getProductosStock({ codigo: consulta, signal: controlador.signal });
-                        if ((datos?.resultados?.length ?? 0) === 0) {
-                            datos = await getProductosStock({ q: consulta, signal: controlador.signal });
+                        datos = await getProductosStock({ codigo: consulta, pagina, signal: controlador.signal });
+                        if ((datos?.resultados?.length ?? 0) === 0 && pagina === 1) {
+                            datos = await getProductosStock({ q: consulta, pagina, signal: controlador.signal });
                         }
                     } else {
-                        datos = await getProductosStock({ q: consulta, signal: controlador.signal });
+                        datos = await getProductosStock({ q: consulta, pagina, signal: controlador.signal });
                     }
                 } else {
                     datos = await getProductos({
                         seccion,
                         rubro: rubroSeleccionado,
                         q: consulta,
+                        pagina,
                         signal: controlador.signal,
                     });
                 }
 
-                setProductos(Array.isArray(datos?.resultados) ? datos.resultados.filter(Boolean) : []);
-                setHayMas(Boolean(datos?.hayMas));
-                setPagina(1);
+                if (!controlador.signal.aborted) {
+                    setProductos(Array.isArray(datos?.resultados) ? datos.resultados.filter(Boolean) : []);
+                    setHayMas(Boolean(datos?.hayMas));
+                }
             } catch (err) {
                 const mensaje = mensajeDeError(err, 'No se pudo cargar el catálogo.');
-                if (mensaje) setError(mensaje);
+                if (mensaje && !controlador.signal.aborted) setError(mensaje);
             } finally {
                 if (!controlador.signal.aborted) setCargando(false);
             }
@@ -213,36 +231,7 @@ function Productos() {
 
         cargarCatalogo();
         return () => controlador.abort();
-    }, [seccion, rubroSeleccionado, consulta, modoStock, consultaPorCodigo, intento]);
-
-    const cargarMas = async () => {
-        try {
-            setCargandoMas(true);
-            setErrorMas(null);
-            const siguientePagina = pagina + 1;
-            const datos = modoStock
-                ? await getProductosStock({
-                    q: consultaPorCodigo ? '' : consulta,
-                    codigo: consultaPorCodigo ? consulta : '',
-                    pagina: siguientePagina,
-                })
-                : await getProductos({
-                    seccion,
-                    rubro: rubroSeleccionado,
-                    q: consulta,
-                    pagina: siguientePagina,
-                });
-
-            const nuevos = Array.isArray(datos?.resultados) ? datos.resultados.filter(Boolean) : [];
-            setProductos((anteriores) => [...(Array.isArray(anteriores) ? anteriores : []), ...nuevos]);
-            setHayMas(Boolean(datos?.hayMas));
-            setPagina(siguientePagina);
-        } catch (err) {
-            setErrorMas(mensajeDeError(err, 'No se pudieron traer más productos.'));
-        } finally {
-            setCargandoMas(false);
-        }
-    };
+    }, [seccion, rubroSeleccionado, consulta, pagina, modoStock, consultaPorCodigo, intento]);
 
     const productosSeguros = Array.isArray(productos) ? productos.filter(Boolean) : [];
     const rubrosSeguros = Array.isArray(rubros) ? rubros.filter(Boolean) : [];
@@ -264,24 +253,70 @@ function Productos() {
     const cambiarSeccion = (valor) => {
         if (valor === seccion) return;
         setProductos([]);
-        setRubroSeleccionado('');
         if (valor === 'STOCK') {
             setRubros([]);
         }
-        setSeccion(valor);
+        setSearchParams((prev) => {
+            const copia = new URLSearchParams(prev);
+            if (valor === 'CAFETERIA') copia.delete('seccion');
+            else copia.set('seccion', valor);
+            copia.delete('rubro');
+            copia.delete('pagina');
+            return copia;
+        }, { replace: true });
+    };
+
+    const cambiarRubro = (nuevoRubro) => {
+        setSearchParams((prev) => {
+            const copia = new URLSearchParams(prev);
+            if (nuevoRubro) copia.set('rubro', nuevoRubro);
+            else copia.delete('rubro');
+            copia.delete('pagina');
+            return copia;
+        }, { replace: true });
+    };
+
+    const limpiarBusqueda = () => {
+        setBusqueda('');
+        setSearchParams((prev) => {
+            const copia = new URLSearchParams(prev);
+            copia.delete('q');
+            copia.delete('pagina');
+            return copia;
+        }, { replace: true });
     };
 
     const limpiarFiltros = () => {
         setBusqueda('');
-        setConsulta('');
-        setRubroSeleccionado('');
         setSoloConStock(false);
+        setSearchParams((prev) => {
+            const copia = new URLSearchParams(prev);
+            copia.delete('q');
+            copia.delete('rubro');
+            copia.delete('pagina');
+            return copia;
+        }, { replace: true });
+    };
+
+    const cambiarPagina = (nuevaPagina) => {
+        if (nuevaPagina < 1 || cargando) return;
+        setSearchParams((prev) => {
+            const copia = new URLSearchParams(prev);
+            if (nuevaPagina <= 1) copia.delete('pagina');
+            else copia.set('pagina', String(nuevaPagina));
+            return copia;
+        });
+        desplazarAlInicioListado(inicioListadoRef.current);
     };
 
     const abrirDetalle = (item) => {
         if (!item?.id) return;
         navigate(`/productos/${item.id}`, {
-            state: { producto: item, seccion: seccionActual },
+            state: {
+                producto: item,
+                seccion: seccionActual,
+                volverA: `${location.pathname}${location.search}`,
+            },
         });
     };
 
@@ -361,7 +396,7 @@ function Productos() {
 
     return (
         <section>
-            <BarraCarga activa={cargando || cargandoMas} etiqueta="Cargando catálogo de productos" />
+            <BarraCarga activa={cargando} etiqueta="Cargando catálogo de productos" />
 
             <EncabezadoPagina
                 compacto
@@ -374,115 +409,140 @@ function Productos() {
                 }
             />
 
-            <div className={estilos.barraAcciones}>
-                <div className={estilos.selectorSeccion} role="group" aria-label="Sección o modo de consulta">
-                    {secciones.map(({ valor, texto }) => (
-                        <button
-                            key={valor}
-                            type="button"
-                            className={`${estilos.botonSeccion} ${seccion === valor ? estilos.botonSeccionActivo : ''}`}
-                            aria-pressed={seccion === valor}
-                            disabled={cargandoMas}
-                            onClick={() => cambiarSeccion(valor)}
-                        >
-                            {texto}
-                        </button>
-                    ))}
-                </div>
-
-                {seccion !== 'STOCK' && rubrosSeguros.length > 0 && (
-                    <div className={estilos.selectorRubro}>
-                        <label htmlFor="filtro-rubro" className={estilos.oculto}>
-                            Filtrar por rubro
-                        </label>
-                        <select
-                            id="filtro-rubro"
-                            className={estilos.selectRubro}
-                            value={rubroSeleccionado}
-                            onChange={(e) => setRubroSeleccionado(e.target.value)}
-                            disabled={cargandoMas}
-                            aria-label="Filtrar por rubro"
-                        >
-                            <option value="">Todos los rubros</option>
-                            {rubrosSeguros.map((rubro) => (
-                                <option key={rubro.id} value={rubro.id}>
-                                    {rubro.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                )}
-
-                <div className={estilos.barraBusqueda}>
-                    <input
-                        type="search"
-                        className={estilos.inputBusqueda}
-                        placeholder={
-                            puedeVerStockInterno
-                                ? 'Buscar por nombre, rubro, marca o código...'
-                                : 'Buscar por nombre, rubro o marca...'
-                        }
-                        aria-label="Buscar productos"
-                        value={busqueda}
-                        onChange={(e) => setBusqueda(e.target.value)}
-                    />
-                    {busqueda && (
-                        <Tooltip texto="Borrar el texto buscado" posicion="abajo">
+            <div ref={inicioListadoRef} className={estilos.cabeceraListado}>
+                <div className={estilos.barraAcciones}>
+                    <div className={estilos.selectorSeccion} role="group" aria-label="Sección o modo de consulta">
+                        {secciones.map(({ valor, texto }) => (
                             <button
+                                key={valor}
                                 type="button"
-                                className={estilos.limpiar}
-                                onClick={() => setBusqueda('')}
-                                aria-label="Limpiar búsqueda"
+                                className={`${estilos.botonSeccion} ${seccion === valor ? estilos.botonSeccionActivo : ''}`}
+                                aria-pressed={seccion === valor}
+                                onClick={() => cambiarSeccion(valor)}
                             >
-                                ×
+                                {texto}
                             </button>
-                        </Tooltip>
+                        ))}
+                    </div>
+
+                    {seccion !== 'STOCK' && rubrosSeguros.length > 0 && (
+                        <div className={estilos.selectorRubro}>
+                            <label htmlFor="filtro-rubro" className={estilos.oculto}>
+                                Filtrar por rubro
+                            </label>
+                            <select
+                                id="filtro-rubro"
+                                className={estilos.selectRubro}
+                                value={rubroSeleccionado}
+                                onChange={(e) => cambiarRubro(e.target.value)}
+                                aria-label="Filtrar por rubro"
+                            >
+                                <option value="">Todos los rubros</option>
+                                {rubrosSeguros.map((rubro) => (
+                                    <option key={rubro.id} value={rubro.id}>
+                                        {rubro.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                            <span className={estilos.iconoSelect} aria-hidden="true">
+                                <IconoChevron size={16} />
+                            </span>
+                        </div>
                     )}
+
+                    <div className={estilos.barraBusqueda}>
+                        <input
+                            type="search"
+                            className={estilos.inputBusqueda}
+                            placeholder={
+                                puedeVerStockInterno
+                                    ? 'Buscar por nombre, rubro, marca o código...'
+                                    : 'Buscar por nombre, rubro o marca...'
+                            }
+                            aria-label="Buscar productos"
+                            value={busqueda}
+                            onChange={(e) => setBusqueda(e.target.value)}
+                        />
+                        {busqueda && (
+                            <span className={estilos.contenedorLimpiar}>
+                                <Tooltip texto="Borrar el texto buscado" posicion="abajo">
+                                    <button
+                                        type="button"
+                                        className={estilos.limpiar}
+                                        onClick={limpiarBusqueda}
+                                        aria-label="Limpiar búsqueda"
+                                    >
+                                        ×
+                                    </button>
+                                </Tooltip>
+                            </span>
+                        )}
+                    </div>
                 </div>
 
-                <div className={estilos.controlesDerecha}>
-                    <Tooltip texto="Ordenar por nombre o precio, o ver solo productos con stock" posicion="abajo">
-                        <MenuDesplegable
-                            etiquetaAria="Ordenar y filtrar catálogo"
-                            alineacion="derecha"
-                            disparador={
-                                <>
-                                    <IconoFiltro size={17} />
-                                    <span>
-                                        {ordenActual?.etiqueta}
-                                        {soloConStock ? ' · Con stock' : ''}
-                                    </span>
-                                </>
-                            }
-                            encabezado={<span className={estilos.tituloMenu}>Ordenar y filtrar vista</span>}
-                            opciones={opcionesOrdenYFiltro}
-                        />
-                    </Tooltip>
+                <div className={estilos.barraSecundaria}>
+                    <div className={estilos.controlesDerecha}>
+                        <Tooltip texto="Ordenar por nombre o precio, o ver solo productos con stock" posicion="abajo">
+                            <MenuDesplegable
+                                etiquetaAria="Ordenar y filtrar catálogo"
+                                alineacion="izquierda"
+                                disparador={
+                                    <>
+                                        <IconoFiltro size={17} />
+                                        <span>
+                                            {ordenActual?.etiqueta}
+                                            {soloConStock ? ' · Con stock' : ''}
+                                        </span>
+                                    </>
+                                }
+                                encabezado={<span className={estilos.tituloMenu}>Ordenar y filtrar vista</span>}
+                                opciones={opcionesOrdenYFiltro}
+                            />
+                        </Tooltip>
 
-                    <div className={estilos.selectorVista} role="group" aria-label="Formato de visualización">
-                        <Tooltip texto="Ver en lista compacta" posicion="abajo">
-                            <button
-                                type="button"
-                                className={`${estilos.botonVista} ${vista === 'lista' ? estilos.botonVistaActiva : ''}`}
-                                aria-pressed={vista === 'lista'}
-                                aria-label="Vista en lista"
-                                onClick={() => cambiarVista('lista')}
-                            >
-                                <IconoLista size={18} />
-                            </button>
-                        </Tooltip>
-                        <Tooltip texto="Ver en tarjetas" posicion="abajo">
-                            <button
-                                type="button"
-                                className={`${estilos.botonVista} ${vista === 'tarjetas' ? estilos.botonVistaActiva : ''}`}
-                                aria-pressed={vista === 'tarjetas'}
-                                aria-label="Vista en tarjetas"
-                                onClick={() => cambiarVista('tarjetas')}
-                            >
-                                <IconoGrilla size={18} />
-                            </button>
-                        </Tooltip>
+                        <div className={estilos.selectorVista} role="group" aria-label="Formato de visualización">
+                            <Tooltip texto="Vista en lista" posicion="abajo">
+                                <button
+                                    type="button"
+                                    className={`${estilos.botonVista} ${vista === 'lista' ? estilos.botonVistaActiva : ''}`}
+                                    aria-pressed={vista === 'lista'}
+                                    aria-label="Vista en lista"
+                                    onClick={() => cambiarVista('lista')}
+                                >
+                                    <IconoLista size={18} />
+                                </button>
+                            </Tooltip>
+                            <Tooltip texto="Vista en tarjetas" posicion="abajo">
+                                <button
+                                    type="button"
+                                    className={`${estilos.botonVista} ${vista === 'tarjetas' ? estilos.botonVistaActiva : ''}`}
+                                    aria-pressed={vista === 'tarjetas'}
+                                    aria-label="Vista en tarjetas"
+                                    onClick={() => cambiarVista('tarjetas')}
+                                >
+                                    <IconoGrilla size={18} />
+                                </button>
+                            </Tooltip>
+                        </div>
                     </div>
+
+                    {!error && (
+                        <p className={estilos.resumen} aria-live="polite">
+                            {cargaInicial
+                                ? 'Cargando catálogo...'
+                                : (
+                                    <>
+                                        {cargando && 'Actualizando... · '}
+                                        {consultaPorCodigo && 'Código de barras · '}
+                                        {`Mostrando ${formatearNumero(productosFiltrados.length)} ${
+                                            productosFiltrados.length === 1 ? 'producto' : 'productos'
+                                        }`}
+                                        {soloConStock ? ' con stock' : ''}
+                                        {` · Página ${formatearNumero(pagina)}`}
+                                    </>
+                                )}
+                        </p>
+                    )}
                 </div>
             </div>
 
@@ -498,16 +558,6 @@ function Productos() {
 
             {!cargaInicial && !error && (
                 <>
-                    <p className={estilos.resumen} aria-live="polite">
-                        {cargando && 'Buscando en el catálogo... · '}
-                        {consultaPorCodigo && 'Modo lectura de código de barras · '}
-                        {productosFiltrados.length === 1
-                            ? '1 producto'
-                            : `${productosFiltrados.length} productos`}
-                        {soloConStock ? ' con stock' : ''}
-                        {orden !== 'nombre-asc' ? ` · Orden: ${ordenActual?.etiqueta}` : ''}
-                        {hayMas ? ' (hay más para ver)' : ''}
-                    </p>
 
                     {productosFiltrados.length > 0 ? (
                         vista === 'tarjetas' ? (
@@ -639,21 +689,33 @@ function Productos() {
                                         Limpiar búsqueda
                                     </button>
                                 </>
+                            ) : pagina > 1 ? (
+                                <>
+                                    <p>No encontramos productos en la página {formatearNumero(pagina)}.</p>
+                                    <button
+                                        type="button"
+                                        className={estilos.botonLimpiarVacio}
+                                        onClick={() => cambiarPagina(1)}
+                                    >
+                                        Volver a la página 1
+                                    </button>
+                                </>
                             ) : (
                                 <p>Todavía no hay productos publicados en {seccionActual}.</p>
                             )}
                         </div>
                     )}
 
-                    {errorMas && <p className={estilos.errorMas} role="alert">{errorMas}</p>}
-
-                    {hayMas && (
-                        <div className={estilos.cargarMas}>
-                            <button type="button" className={estilos.botonMas} onClick={cargarMas} disabled={cargandoMas}>
-                                {cargandoMas ? 'Trayendo más...' : 'Ver más productos'}
-                            </button>
-                        </div>
-                    )}
+                    <Paginacion
+                        pagina={pagina}
+                        hayMas={hayMas}
+                        cargando={cargando}
+                        cantidad={productosFiltrados.length}
+                        etiquetaSingular="producto"
+                        etiquetaPlural="productos"
+                        ariaLabel="Paginación de productos"
+                        onCambiarPagina={cambiarPagina}
+                    />
                 </>
             )}
 
