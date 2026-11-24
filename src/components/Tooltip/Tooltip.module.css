@@ -15,15 +15,17 @@
     max-width: 240px;
     padding: 8px 12px;
     border-radius: 8px;
-    background: var(--morado-noche);
-    border: 1.5px solid var(--ambar-cafeto);
-    color: var(--sol-tenue);
+    background: var(--superficie-modal);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid var(--borde-acento);
+    color: var(--texto-titular);
     font-family: var(--fuente-cuerpo);
     font-size: 0.8rem;
     font-weight: 500;
     line-height: 1.4;
     text-align: center;
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
+    box-shadow: var(--sombra-modal);
     pointer-events: none;
     transition: opacity 0.14s ease, transform 0.14s ease;
 }

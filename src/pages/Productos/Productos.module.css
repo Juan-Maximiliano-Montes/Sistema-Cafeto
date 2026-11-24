@@ -1,62 +1,86 @@
 .barraAcciones {
     display: flex;
-    gap: 14px;
+    gap: 10px;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .selectorSeccion {
     display: inline-flex;
-    padding: 4px;
-    gap: 4px;
+    flex-wrap: wrap;
+    padding: 3px;
+    gap: 3px;
     border-radius: 10px;
-    background: var(--purpura-medianoche);
+    background: var(--superficie-sutil);
     border: 1px solid var(--borde-suave);
 }
 
 .botonSeccion {
     min-height: 44px;
     background: transparent;
-    color: var(--gris-claro);
+    color: var(--texto-principal);
     border: none;
-    padding: 8px 18px;
+    padding: 7px 15px;
     border-radius: 8px;
     cursor: pointer;
+    font-size: 0.92rem;
     font-weight: 600;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .botonSeccion:hover:not(:disabled) {
-    color: var(--ambar-cafeto);
+    color: var(--texto-acento);
 }
 
 .botonSeccionActivo,
 .botonSeccionActivo:hover:not(:disabled) {
     background-color: var(--ambar-cafeto);
-    color: var(--morado-noche);
+    color: var(--texto-sobre-ambar);
+    font-weight: 700;
+}
+
+.selectorRubro {
+    flex: 0 1 200px;
+}
+
+.selectRubro {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: var(--input-fondo);
+    border: 1.5px solid var(--input-borde);
+    color: var(--texto-fuerte);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.selectRubro:focus {
+    border-color: var(--borde-acento);
 }
 
 .barraBusqueda {
     position: relative;
-    flex: 1 1 250px;
-    max-width: 420px;
+    flex: 1 1 240px;
+    min-width: 240px;
 }
 
 .inputBusqueda {
     width: 100%;
     min-height: 44px;
-    padding: 10px 46px 10px 16px;
-    background: var(--purpura-medianoche);
-    border: 1.5px solid rgba(250, 180, 31, 0.3);
+    padding: 8px 44px 8px 14px;
+    background: var(--input-fondo);
+    border: 1.5px solid var(--input-borde);
     border-radius: 10px;
-    color: var(--blanco-puro);
+    color: var(--texto-fuerte);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .inputBusqueda::placeholder {
-    color: rgba(226, 232, 240, 0.45);
+    color: var(--input-placeholder);
 }
 
 .inputBusqueda::-webkit-search-cancel-button {
@@ -64,8 +88,8 @@
 }
 
 .inputBusqueda:focus {
-    border-color: var(--ambar-cafeto);
-    box-shadow: 0 0 0 3px rgba(250, 180, 31, 0.2);
+    border-color: var(--borde-acento);
+    box-shadow: 0 0 0 3px var(--aviso-fondo);
 }
 
 .limpiar {
@@ -78,14 +102,54 @@
     border: none;
     border-radius: 50%;
     background: transparent;
-    color: var(--gris-claro);
+    color: var(--texto-principal);
     font-size: 1.35rem;
     line-height: 1;
     cursor: pointer;
 }
 
 .limpiar:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--superficie-hover);
+}
+
+.controlesDerecha {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.selectorVista {
+    display: inline-flex;
+    padding: 3px;
+    gap: 3px;
+    border-radius: 10px;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-suave);
+}
+
+.botonVista {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-principal);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.botonVista:hover {
+    color: var(--texto-acento);
+    background: var(--superficie-hover);
+}
+
+.botonVistaActiva,
+.botonVistaActiva:hover {
+    background: var(--ambar-cafeto);
+    color: var(--texto-sobre-ambar);
 }
 
 .tituloMenu {
@@ -94,19 +158,19 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--ambar-cafeto);
+    color: var(--texto-acento);
 }
 
 .resumen {
-    margin: 0 0 16px;
-    font-size: 0.9rem;
-    color: rgba(226, 232, 240, 0.8);
+    margin: 0 0 12px;
+    font-size: 0.88rem;
+    color: var(--texto-secundario);
 }
 
 .gridProductos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(244px, 1fr));
+    gap: 18px;
 }
 
 .actualizando {
@@ -118,21 +182,22 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background-color: var(--purpura-medianoche);
-    border: 1px solid rgba(250, 180, 31, 0.2);
+    background-color: var(--superficie-sutil);
+    border: 1px solid var(--borde-suave);
     border-radius: var(--radio);
     overflow: hidden;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .tarjeta:hover {
-    transform: translateY(-4px);
-    border-color: var(--ambar-cafeto);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+    transform: translateY(-2px);
+    border-color: var(--borde-acento);
+    background-color: var(--superficie);
 }
 
-.zonaNavegable {
+.tarjetaBoton {
     flex: 1;
+    width: 100%;
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -145,71 +210,163 @@
 
 .foto {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    height: 118px;
     display: grid;
     place-items: center;
-    background: radial-gradient(circle, rgba(250, 180, 31, 0.1), transparent 70%), var(--morado-noche);
+    background: var(--superficie-profunda);
+    overflow: hidden;
+}
+
+.miniatura {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background: var(--superficie-profunda);
+    overflow: hidden;
+    flex: none;
+    border: 1px solid var(--borde-suave);
+}
+
+.fotoVacia {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: var(--superficie-profunda);
+    border-bottom: 1px solid var(--borde-suave);
 }
 
 .imagen {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
 }
 
 .placeholder {
-    width: 36%;
-    height: auto;
-    opacity: 0.9;
+    width: 38px;
+    height: 38px;
+    opacity: 0.42;
+}
+
+.placeholderMini {
+    width: 24px;
+    height: 24px;
+    opacity: 0.45;
+}
+
+.leyendaSinFoto {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--texto-secundario);
+}
+
+.badgeOferta,
+.badgeOfertaInline {
+    background: var(--ambar-cafeto);
+    color: var(--texto-sobre-ambar);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 999px;
 }
 
 .badgeOferta {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    background: var(--ambar-cafeto);
-    color: var(--morado-noche);
-    font-size: 0.78rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 999px;
+    top: 8px;
+    left: 8px;
 }
 
 .cuerpo {
     flex: 1;
-    padding: 16px 18px 8px;
+    padding: 10px 14px 6px;
 }
 
 .categoria {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    color: var(--ambar-cafeto);
-    font-weight: 600;
+    color: var(--texto-acento);
+    font-weight: 700;
     letter-spacing: 0.12em;
 }
 
 .nombreProducto {
     font-family: var(--fuente-subtitulo);
-    color: var(--sol-tenue);
-    font-size: 1.12rem;
-    line-height: 1.3;
-    margin: 4px 0 6px;
+    color: var(--texto-titular);
+    font-size: 1.06rem;
+    line-height: 1.28;
+    margin: 3px 0 4px;
 }
 
 .descripcion {
-    font-size: 0.86rem;
-    line-height: 1.45;
+    font-size: 0.84rem;
+    line-height: 1.4;
     margin: 0;
-    color: rgba(226, 232, 240, 0.82);
+    color: var(--texto-secundario);
+}
+
+.metaStock {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--texto-principal);
+}
+
+.datoStock {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--texto-secundario);
+}
+
+.datoStock strong {
+    color: var(--texto-titular);
+}
+
+.filaAlertas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.badgeAlerta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.alertaError {
+    background: var(--peligro-fondo);
+    color: var(--peligro);
+    border: 1px dashed var(--peligro-borde);
+}
+
+.alertaAviso {
+    background: var(--aviso-fondo);
+    color: var(--aviso-texto);
+    border: 1px solid var(--aviso-borde);
 }
 
 .pieTarjeta {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
     border-top: 1px solid var(--borde-suave);
-    padding: 12px 18px;
+    padding: 9px 14px;
 }
 
 .precios {
@@ -218,15 +375,15 @@
 }
 
 .precio {
-    color: var(--blanco-puro);
-    font-size: 1.15rem;
+    color: var(--texto-fuerte);
+    font-size: 1.1rem;
     font-weight: 700;
 }
 
 .precioAnterior {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     text-decoration: line-through;
-    color: rgba(226, 232, 240, 0.55);
+    color: var(--texto-secundario);
 }
 
 .badge {
@@ -241,23 +398,24 @@
 }
 
 .disponible {
-    background-color: rgba(74, 222, 128, 0.15);
+    background-color: var(--exito-fondo);
     color: var(--exito);
-    border: 1.5px solid var(--borde-exito);
+    border: 1.5px solid var(--exito-borde);
 }
 
 .agotado {
-    background-color: rgba(248, 113, 113, 0.15);
-    color: #FECACA;
-    border: 1.5px dashed var(--borde-error);
+    background-color: var(--peligro-fondo);
+    color: var(--peligro);
+    border: 1.5px dashed var(--peligro-borde);
 }
 
 .barraDetalle {
-    padding: 0 18px 14px;
+    width: 100%;
+    padding: 0 14px 12px;
 }
 
-.botonDetalle {
-    width: 100%;
+.botonDetalle,
+.botonDetalleLista {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
@@ -265,62 +423,191 @@
     gap: 6px;
     border-radius: 8px;
     border: 1px solid var(--borde-ambar);
-    background: rgba(250, 180, 31, 0.08);
-    color: var(--sol-tenue);
-    font-size: 0.88rem;
-    font-weight: 600;
+    background: var(--aviso-fondo);
+    color: var(--texto-titular);
+    font-size: 0.86rem;
+    font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.botonDetalle:hover {
+.botonDetalle {
+    width: 100%;
+}
+
+.botonDetalleLista {
+    padding: 8px 14px;
+    white-space: nowrap;
+}
+
+.tarjeta:hover .botonDetalle,
+.filaLista:hover .botonDetalleLista,
+.botonDetalle:hover,
+.botonDetalleLista:hover {
     background: var(--ambar-cafeto);
     border-color: var(--ambar-cafeto);
-    color: var(--morado-noche);
+    color: var(--texto-sobre-ambar);
+}
+
+.listaProductos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--borde-suave);
+}
+
+.itemLista {
+    border-bottom: 1px solid var(--borde-suave);
+}
+
+.filaLista {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 8px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.filaLista:hover {
+    background: var(--superficie-hover);
+}
+
+.filaInfo {
+    min-width: 0;
+}
+
+.filaTitular {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.nombreLista {
+    margin: 0;
+    font-family: var(--fuente-subtitulo);
+    color: var(--texto-titular);
+    font-size: 1.02rem;
+}
+
+.subDatosLista {
+    margin: 2px 0 0;
+    font-size: 0.84rem;
+    color: var(--texto-secundario);
+}
+
+.filaPrecio {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    white-space: nowrap;
 }
 
 .vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
     text-align: center;
-    padding: 48px 16px;
+    padding: 40px 16px;
     border: 1px dashed var(--borde-ambar);
     border-radius: var(--radio);
+    color: var(--texto-secundario);
+}
+
+.vacio p {
+    margin: 0;
+}
+
+.botonLimpiarVacio {
+    min-height: 44px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: 1.5px solid var(--borde-ambar);
+    background: var(--aviso-fondo);
+    color: var(--texto-titular);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.botonLimpiarVacio:hover {
+    background: var(--ambar-cafeto);
+    border-color: var(--ambar-cafeto);
+    color: var(--texto-sobre-ambar);
 }
 
 .vacioIcono {
-    width: 64px;
-    margin: 0 auto 12px;
-    opacity: 0.8;
+    width: 48px;
+    margin: 0 auto;
+    opacity: 0.4;
 }
 
 .errorMas {
     text-align: center;
-    color: #FECACA;
+    color: var(--peligro);
     margin: 20px 0 0;
 }
 
 .cargarMas {
     display: flex;
     justify-content: center;
-    margin-top: 28px;
+    margin-top: 24px;
 }
 
 .botonMas {
     min-height: 44px;
     background: transparent;
-    color: var(--ambar-cafeto);
-    border: 1.5px solid var(--ambar-cafeto);
+    color: var(--texto-acento);
+    border: 1.5px solid var(--borde-acento);
     padding: 10px 24px;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .botonMas:hover:not(:disabled) {
     background: var(--ambar-cafeto);
-    color: var(--morado-noche);
+    border-color: var(--ambar-cafeto);
+    color: var(--texto-sobre-ambar);
 }
 
 .botonMas:disabled {
     opacity: 0.6;
+}
+
+.oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+@media (max-width: 820px) {
+    .filaLista {
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .filaPrecio {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 420px) {
+    .barraBusqueda {
+        min-width: 0;
+        width: 100%;
+    }
 }

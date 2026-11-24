@@ -2,71 +2,65 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    background-color: var(--purpura-medianoche);
+    gap: 8px;
+    background-color: var(--superficie-sutil);
     border: 1px solid var(--borde-suave);
     border-radius: var(--radio);
-    padding: 26px 24px 22px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    color: var(--gris-claro);
+    padding: 18px 20px;
+    color: var(--texto-principal);
     text-decoration: none;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .tarjeta:hover,
 .tarjeta:focus-visible {
-    transform: translateY(-4px);
-    border-color: var(--ambar-cafeto);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    transform: translateY(-2px);
+    border-color: var(--borde-acento);
+    background-color: var(--superficie);
 }
 
 .destacada {
-    border-color: rgba(250, 180, 31, 0.55);
+    border-color: var(--borde-ambar);
 }
 
-.insignia {
-    position: absolute;
-    top: -11px;
-    right: 18px;
-    background-color: var(--ambar-cafeto);
-    color: var(--morado-noche);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    padding: 3px 12px;
-    border-radius: 999px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+.cabecera {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .icono {
     display: grid;
     place-items: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 12px;
-    background: rgba(250, 180, 31, 0.12);
-    color: var(--ambar-cafeto);
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: var(--aviso-fondo);
+    border: 1px solid var(--borde-ambar);
+    color: var(--texto-acento);
+    flex: none;
 }
 
 .titulo {
     font-family: var(--fuente-subtitulo);
-    color: var(--sol-tenue);
-    font-size: 1.3rem;
-    margin: 6px 0 0;
+    color: var(--texto-titular);
+    font-size: 1.2rem;
+    margin: 0;
 }
 
 .descripcion {
     margin: 0;
-    font-size: 0.93rem;
-    line-height: 1.55;
+    font-size: 0.91rem;
+    line-height: 1.5;
+    color: var(--texto-secundario);
     flex: 1;
 }
 
 .accion {
-    margin-top: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--ambar-cafeto);
+    margin-top: 4px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--texto-acento);
 }
 
 .tarjeta:hover .accion span {

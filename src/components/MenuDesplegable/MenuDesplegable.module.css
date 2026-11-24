@@ -11,17 +11,17 @@
     min-height: 44px;
     padding: 8px 14px;
     border-radius: 10px;
-    background: var(--purpura-medianoche);
+    background: var(--superficie-sutil);
     border: 1px solid var(--borde-ambar);
-    color: var(--gris-claro);
+    color: var(--texto-principal);
     font-weight: 600;
     cursor: pointer;
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .disparador:hover {
-    border-color: var(--ambar-cafeto);
-    background: rgba(250, 180, 31, 0.08);
+    border-color: var(--borde-acento);
+    background: var(--superficie-hover);
 }
 
 .disparadorContenido {
@@ -32,7 +32,7 @@
 
 .flecha {
     display: inline-flex;
-    color: var(--ambar-cafeto);
+    color: var(--texto-acento);
     transition: transform 0.18s ease;
 }
 
@@ -48,9 +48,11 @@
     max-width: min(320px, calc(100vw - 24px));
     padding: 8px;
     border-radius: 12px;
-    background: var(--purpura-medianoche);
+    background: var(--superficie-desplegable);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1.5px solid var(--borde-ambar);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--sombra-modal);
     transition: opacity 0.15s ease;
 }
 
@@ -93,7 +95,7 @@
     border: 1px solid transparent;
     border-radius: 8px;
     background: transparent;
-    color: var(--gris-claro);
+    color: var(--texto-principal);
     text-decoration: none;
     text-align: left;
     cursor: pointer;
@@ -102,15 +104,15 @@
 
 .item:hover,
 .item:focus-visible {
-    background: rgba(250, 180, 31, 0.1);
-    border-color: rgba(250, 180, 31, 0.35);
-    color: var(--blanco-puro);
+    background: var(--superficie-hover);
+    border-color: var(--borde-ambar);
+    color: var(--texto-fuerte);
 }
 
 .activa {
-    background: rgba(250, 180, 31, 0.14);
-    border-color: var(--ambar-cafeto);
-    color: var(--sol-tenue);
+    background: var(--aviso-fondo);
+    border-color: var(--borde-acento);
+    color: var(--texto-titular);
 }
 
 .peligro {
@@ -119,15 +121,15 @@
 
 .peligro:hover,
 .peligro:focus-visible {
-    background: rgba(248, 113, 113, 0.14);
-    border-color: rgba(248, 113, 113, 0.5);
-    color: #FECACA;
+    background: var(--peligro-fondo);
+    border-color: var(--peligro-borde);
+    color: var(--peligro);
 }
 
 .icono {
     display: inline-flex;
     flex: none;
-    color: var(--ambar-cafeto);
+    color: var(--texto-acento);
 }
 
 .peligro .icono {
@@ -148,13 +150,13 @@
 
 .descripcion {
     font-size: 0.78rem;
-    color: rgba(226, 232, 240, 0.72);
+    color: var(--texto-secundario);
 }
 
 .marcaActiva {
     display: inline-flex;
     flex: none;
-    color: var(--ambar-cafeto);
+    color: var(--texto-acento);
 }
 
 @media (max-width: 520px) {

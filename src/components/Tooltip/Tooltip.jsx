@@ -6,6 +6,7 @@ function Tooltip({ texto, children, posicion = 'arriba', esEtiqueta = false }) {
     const [coords, setCoords] = useState({ top: 0, left: 0, ubicacion: posicion });
     const disparadorRef = useRef(null);
     const globoRef = useRef(null);
+    const bloqueadoPorClickRef = useRef(false);
     const idTooltip = useId();
 
     const recalcularPosicion = useCallback(() => {
@@ -20,18 +21,36 @@ function Tooltip({ texto, children, posicion = 'arriba', esEtiqueta = false }) {
         const separacion = 10;
 
         let ubicacion = posicion;
+        let top = 0;
+        let left = 0;
+
+        if (ubicacion === 'derecha') {
+            if (rect.right + anchoGlobo + separacion > window.innerWidth - margen) {
+                ubicacion = 'arriba';
+            } else {
+                left = rect.right + separacion;
+                const centroY = rect.top + rect.height / 2 - altoGlobo / 2;
+                top = Math.min(
+                    Math.max(margen, centroY),
+                    Math.max(margen, window.innerHeight - altoGlobo - margen)
+                );
+                setCoords({ top, left, ubicacion });
+                return;
+            }
+        }
+
         if (ubicacion === 'arriba' && rect.top - altoGlobo - separacion < margen) {
             ubicacion = 'abajo';
         } else if (ubicacion === 'abajo' && rect.bottom + altoGlobo + separacion > window.innerHeight - margen) {
             ubicacion = 'arriba';
         }
 
-        const top = ubicacion === 'abajo'
+        top = ubicacion === 'abajo'
             ? Math.min(window.innerHeight - altoGlobo - margen, rect.bottom + separacion)
             : Math.max(margen, rect.top - altoGlobo - separacion);
 
         const centroX = rect.left + rect.width / 2 - anchoGlobo / 2;
-        const left = Math.min(
+        left = Math.min(
             Math.max(margen, centroX),
             Math.max(margen, window.innerWidth - anchoGlobo - margen)
         );
@@ -59,15 +78,19 @@ function Tooltip({ texto, children, posicion = 'arriba', esEtiqueta = false }) {
             }
         };
 
+        const cerrarAlHacerScroll = () => {
+            setAbierto(false);
+        };
+
         window.addEventListener('keydown', alPresionarTecla);
         window.addEventListener('pointerdown', alTocarAfuera);
-        window.addEventListener('scroll', recalcularPosicion, true);
+        window.addEventListener('scroll', cerrarAlHacerScroll, { capture: true, passive: true });
         window.addEventListener('resize', recalcularPosicion);
 
         return () => {
             window.removeEventListener('keydown', alPresionarTecla);
             window.removeEventListener('pointerdown', alTocarAfuera);
-            window.removeEventListener('scroll', recalcularPosicion, true);
+            window.removeEventListener('scroll', cerrarAlHacerScroll, true);
             window.removeEventListener('resize', recalcularPosicion);
         };
     }, [abierto, recalcularPosicion]);
@@ -84,10 +107,47 @@ function Tooltip({ texto, children, posicion = 'arriba', esEtiqueta = false }) {
         })
         : children;
 
+    const alEntrarMouse = () => {
+        if (bloqueadoPorClickRef.current) return;
+        setAbierto(true);
+    };
+
+    const alSalirMouse = () => {
+        bloqueadoPorClickRef.current = false;
+        setAbierto(false);
+    };
+
+    const alEnfocar = (evento) => {
+        if (bloqueadoPorClickRef.current) return;
+        let esFocoTeclado = true;
+        try {
+            esFocoTeclado = evento.target?.matches?.(':focus-visible') ?? false;
+        } catch {
+            esFocoTeclado = false;
+        }
+        if (esFocoTeclado) {
+            setAbierto(true);
+        }
+    };
+
+    const alPerderFoco = () => {
+        setAbierto(false);
+    };
+
+    const alPresionarPuntero = () => {
+        if (!esEtiqueta) {
+            bloqueadoPorClickRef.current = true;
+            setAbierto(false);
+        }
+    };
+
     const alHacerClick = () => {
         if (esEtiqueta) {
             setAbierto((previo) => !previo);
+            return;
         }
+        bloqueadoPorClickRef.current = true;
+        setAbierto(false);
     };
 
     const alPresionarEnEtiqueta = (evento) => {
@@ -104,10 +164,11 @@ function Tooltip({ texto, children, posicion = 'arriba', esEtiqueta = false }) {
             className={`${estilos.envoltura} ${esEtiqueta ? estilos.interactiva : ''}`}
             tabIndex={esEtiqueta ? 0 : undefined}
             aria-describedby={esEtiqueta ? idTooltip : undefined}
-            onMouseEnter={() => setAbierto(true)}
-            onMouseLeave={() => setAbierto(false)}
-            onFocus={() => setAbierto(true)}
-            onBlur={() => setAbierto(false)}
+            onMouseEnter={alEntrarMouse}
+            onMouseLeave={alSalirMouse}
+            onFocus={alEnfocar}
+            onBlur={alPerderFoco}
+            onPointerDown={alPresionarPuntero}
             onClick={alHacerClick}
             onKeyDown={alPresionarEnEtiqueta}
         >

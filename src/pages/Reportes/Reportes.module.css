@@ -1,0 +1,546 @@
+.pagina {
+    display: flex;
+    flex-direction: column;
+}
+
+.botonPrincipal,
+.botonSecundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: filter 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.botonPrincipal {
+    background: var(--ambar-cafeto);
+    color: var(--texto-sobre-ambar);
+    border: 1.5px solid var(--ambar-cafeto);
+}
+
+.botonPrincipal:hover {
+    filter: brightness(1.06);
+}
+
+.botonSecundario {
+    background: transparent;
+    color: var(--texto-titular);
+    border: 1.5px solid var(--borde-ambar);
+}
+
+.botonSecundario:hover:not(:disabled) {
+    background: var(--superficie-hover);
+    border-color: var(--borde-acento);
+}
+
+.botonSecundario:disabled {
+    opacity: 0.6;
+}
+
+.bloques {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.actualizando {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.bloque {
+    display: flex;
+    flex-direction: column;
+}
+
+.bloque + .bloque,
+.bloqueExportacion {
+    padding-top: 28px;
+    border-top: 1px solid var(--borde-suave);
+}
+
+.cabeceraBloque {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.etiquetaBloque {
+    display: block;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--texto-acento);
+}
+
+.tituloBloque {
+    margin: 4px 0 0;
+    font-family: var(--fuente-subtitulo);
+    color: var(--texto-titular);
+    font-size: 1.35rem;
+}
+
+.notaMuestra {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: var(--texto-secundario);
+}
+
+.horaActualizacion {
+    font-size: 0.82rem;
+    color: var(--texto-secundario);
+}
+
+.grillaKpi {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    align-items: stretch;
+}
+
+@media (max-width: 960px) {
+    .grillaKpi {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .grillaKpi {
+        grid-template-columns: 1fr;
+    }
+}
+
+.kpi,
+.kpiEnlace {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    gap: 8px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-suave);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+
+.tiraComplementaria {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.chipComplementario {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-suave);
+    font-size: 0.84rem;
+    color: var(--texto-secundario);
+}
+
+.chipComplementario strong {
+    color: var(--texto-titular);
+}
+
+.kpiEnlace:hover,
+.kpiEnlace:focus-visible {
+    border-color: var(--borde-acento);
+    background: var(--superficie);
+    transform: translateY(-2px);
+}
+
+.kpiDestacado {
+    border-color: var(--borde-ambar);
+}
+
+.kpiCabecera {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.kpiIcono {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--aviso-fondo);
+    border: 1px solid var(--borde-ambar);
+    color: var(--texto-acento);
+    flex: none;
+}
+
+.iconoOk {
+    background: var(--exito-fondo);
+    border-color: var(--exito-borde);
+    color: var(--exito);
+}
+
+.iconoPeligro {
+    background: var(--peligro-fondo);
+    border-color: var(--peligro-borde);
+    color: var(--peligro);
+}
+
+.iconoAtencion {
+    background: var(--aviso-fondo);
+    border-color: var(--aviso-borde);
+    color: var(--aviso-texto);
+}
+
+.kpiTitulo {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+}
+
+.kpiFilaValor {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.kpiValor {
+    margin: 0;
+    font-size: clamp(1.45rem, 2.8vw, 1.85rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--texto-titular);
+}
+
+.kpiDetalle {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    color: var(--texto-secundario);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badgeOk {
+    background: var(--exito-fondo);
+    color: var(--exito);
+    border: 1.5px solid var(--exito-borde);
+}
+
+.badgePeligro {
+    background: var(--peligro-fondo);
+    color: var(--peligro);
+    border: 1.5px dashed var(--peligro-borde);
+}
+
+.badgeAtencion {
+    background: var(--aviso-fondo);
+    color: var(--aviso-texto);
+    border: 1.5px solid var(--aviso-borde);
+}
+
+.badgeNeutro {
+    background: var(--superficie-profunda);
+    color: var(--texto-secundario);
+    border: 1.5px dotted var(--borde-fuerte);
+}
+
+.selectorSeccion {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 10px;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-suave);
+}
+
+.botonFiltro {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--texto-principal);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.botonFiltro:hover {
+    color: var(--texto-acento);
+    background: var(--superficie-hover);
+}
+
+.botonFiltroActivo,
+.botonFiltroActivo:hover {
+    background: var(--aviso-fondo);
+    border-color: var(--borde-acento);
+    color: var(--texto-titular);
+}
+
+.conteoFiltro {
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--superficie-profunda);
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.sinDatos {
+    margin: 0;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px dashed var(--borde-ambar);
+    text-align: center;
+    color: var(--texto-secundario);
+}
+
+.grillaRadiografia {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.panelGrafico,
+.panelResumen {
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-suave);
+}
+
+.columnaResumen {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cabeceraSubpanel {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.tituloSubpanel {
+    margin: 0 0 14px;
+    font-family: var(--fuente-subtitulo);
+    color: var(--texto-titular);
+    font-size: 1.1rem;
+}
+
+.cabeceraSubpanel .tituloSubpanel {
+    margin-bottom: 0;
+}
+
+.totalSubpanel {
+    font-size: 0.82rem;
+    color: var(--texto-secundario);
+}
+
+.listaBarras {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.filaBarra {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.metaBarra {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.9rem;
+}
+
+.nombreRubro {
+    color: var(--texto-principal);
+    font-weight: 600;
+}
+
+.datosRubro {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    color: var(--texto-titular);
+    white-space: nowrap;
+}
+
+.datosRubro span {
+    font-size: 0.8rem;
+    color: var(--texto-secundario);
+}
+
+.pistaBarra,
+.pistaCobertura {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--superficie-profunda);
+    border: 1px solid var(--borde-suave);
+    overflow: hidden;
+}
+
+.rellenoBarra {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--ambar-cafeto), var(--sol-tenue));
+    transition: width 0.35s ease;
+}
+
+.listaPrecios {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.datoPrecio {
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--superficie);
+    border: 1px solid var(--borde-suave);
+}
+
+.datoPrecio dt {
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--texto-acento);
+    margin-bottom: 4px;
+}
+
+.datoPrecio dd {
+    margin: 0;
+    font-size: 1.06rem;
+    font-weight: 700;
+    color: var(--texto-fuerte);
+}
+
+.subDato {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.78rem;
+    color: var(--texto-secundario);
+    line-height: 1.35;
+}
+
+.grupoCobertura + .grupoCobertura {
+    margin-top: 16px;
+}
+
+.metaCobertura {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.etiquetaCobertura {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    color: var(--texto-principal);
+}
+
+.etiquetaCobertura svg {
+    color: var(--texto-acento);
+}
+
+.valorCobertura {
+    font-size: 0.86rem;
+    color: var(--texto-titular);
+}
+
+.rellenoCobertura {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.35s ease;
+}
+
+.coberturaOk {
+    background: var(--exito-borde);
+}
+
+.coberturaAmbar {
+    background: var(--ambar-cafeto);
+}
+
+.bloqueExportacion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.textoExportacion {
+    flex: 1 1 320px;
+}
+
+.detalleExportacion {
+    margin: 8px 0 0;
+    max-width: 640px;
+    font-size: 0.94rem;
+    color: var(--texto-secundario);
+}
+
+@media (max-width: 900px) {
+    .grillaRadiografia {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .listaPrecios {
+        grid-template-columns: 1fr;
+    }
+}

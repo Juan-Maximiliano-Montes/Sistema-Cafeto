@@ -1,66 +1,58 @@
-.separado {
-    margin-bottom: 20px;
+.pagina {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-.tablaContenedor {
-    background-color: var(--purpura-medianoche);
-    border: 1px solid var(--borde-ambar);
-    border-radius: var(--radio);
-    overflow-x: auto;
-    box-shadow: var(--sombra);
-}
-
-.tabla {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 0.92rem;
-}
-
-.tabla th {
-    background-color: rgba(18, 17, 40, 0.9);
-    color: var(--ambar-cafeto);
-    padding: 14px 18px;
-    font-size: 0.76rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border-bottom: 1px solid var(--borde-ambar);
-    white-space: nowrap;
-}
-
-.tabla td {
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--borde-suave);
-    white-space: nowrap;
-}
-
-.tabla tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.tabla tbody tr:hover {
-    background-color: rgba(250, 180, 31, 0.04);
-}
-
-.nombreUsuario {
+.fichaCuenta {
     display: flex;
     align-items: center;
-    gap: 12px;
-    color: var(--blanco-puro);
-    font-weight: 600;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 18px 22px;
+    border-radius: 12px;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-ambar);
+}
+
+.datosPersona {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
 }
 
 .avatar {
     display: grid;
     place-items: center;
-    width: 36px;
-    height: 36px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
-    background: rgba(250, 180, 31, 0.15);
-    color: var(--ambar-cafeto);
-    font-size: 0.85rem;
+    background: var(--ambar-cafeto);
+    color: var(--texto-sobre-ambar);
+    font-size: 1.05rem;
     font-weight: 700;
+    flex: none;
+}
+
+.nombreCompleto {
+    margin: 0 0 6px;
+    font-family: var(--fuente-subtitulo);
+    font-size: 1.3rem;
+    color: var(--texto-titular);
+}
+
+.metaCuenta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tipoCuenta {
+    font-size: 0.88rem;
+    color: var(--texto-secundario);
 }
 
 .badge,
@@ -71,52 +63,104 @@
     padding: 4px 11px;
     border-radius: 999px;
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .badgePerfil {
-    background-color: rgba(242, 226, 164, 0.1);
-    color: var(--sol-tenue);
-    border: 1px solid rgba(242, 226, 164, 0.4);
+    background-color: var(--aviso-fondo);
+    color: var(--texto-titular);
+    border: 1px solid var(--borde-ambar);
 }
 
 .activo {
-    background-color: rgba(74, 222, 128, 0.15);
+    background-color: var(--exito-fondo);
     color: var(--exito);
-    border: 1.5px solid var(--borde-exito);
+    border: 1.5px solid var(--exito-borde);
 }
 
 .inactivo {
-    background-color: rgba(248, 113, 113, 0.15);
-    color: #FECACA;
-    border: 1.5px dashed var(--borde-error);
+    background-color: var(--peligro-fondo);
+    color: var(--peligro);
+    border: 1.5px dashed var(--peligro-borde);
 }
 
 .neutro {
-    background-color: rgba(255, 255, 255, 0.06);
-    color: var(--gris-claro);
-    border: 1.5px dotted rgba(226, 232, 240, 0.5);
+    background-color: var(--superficie-profunda);
+    color: var(--texto-secundario);
+    border: 1.5px dotted var(--borde-fuerte);
 }
 
-.paneles {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 22px;
-    margin-top: 24px;
+.bloquePermisos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.panel {
-    background-color: var(--purpura-medianoche);
-    border: 1px solid var(--borde-suave);
-    border-radius: var(--radio);
-    padding: 22px 24px;
+.cabeceraPermisos {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
 }
 
 .tituloPanel {
     font-family: var(--fuente-subtitulo);
-    color: var(--sol-tenue);
-    font-size: 1.15rem;
-    margin: 0 0 14px;
+    color: var(--texto-titular);
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.bajadaPermisos {
+    margin: 4px 0 0;
+    font-size: 0.9rem;
+    color: var(--texto-secundario);
+}
+
+.leyenda {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.grillaGrupos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    align-items: start;
+}
+
+.columnaGrupos {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+@media (max-width: 780px) {
+    .grillaGrupos {
+        grid-template-columns: 1fr;
+    }
+}
+
+.grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-suave);
+}
+
+.tituloGrupo {
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--borde-suave);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--texto-acento);
 }
 
 .listaPermisos {
@@ -124,22 +168,61 @@
     margin: 0;
     padding: 0;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
 }
 
-.permiso {
-    padding: 5px 12px;
+.itemPermiso {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.88rem;
+}
+
+.nombrePermiso {
+    color: var(--texto-principal);
+}
+
+.etiquetaAlcance {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 9px;
     border-radius: 999px;
-    font-size: 0.82rem;
-    background: rgba(250, 180, 31, 0.08);
-    border: 1px solid var(--borde-ambar);
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.alcanceApp {
+    background: var(--exito-fondo);
+    color: var(--exito);
+    border: 1px solid var(--exito-borde);
+}
+
+.alcanceWeb {
+    background: var(--info-fondo);
+    color: var(--info-texto);
+    border: 1px dotted var(--info-borde);
+}
+
+.bloqueAdministracion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding-top: 22px;
+    border-top: 1px solid var(--borde-suave);
 }
 
 .texto {
-    margin: 0;
+    margin: 6px 0 0;
+    max-width: 660px;
     font-size: 0.92rem;
-    line-height: 1.6;
+    line-height: 1.55;
+    color: var(--texto-secundario);
 }
 
 .enlace {
@@ -147,15 +230,18 @@
     align-items: center;
     gap: 8px;
     min-height: 44px;
-    margin-top: 14px;
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 8px;
     border: 1px solid var(--borde-ambar);
-    color: var(--ambar-cafeto);
-    font-weight: 600;
+    background: var(--aviso-fondo);
+    color: var(--texto-titular);
+    font-weight: 700;
     text-decoration: none;
+    white-space: nowrap;
 }
 
 .enlace:hover {
-    background: rgba(250, 180, 31, 0.1);
+    background: var(--ambar-cafeto);
+    border-color: var(--ambar-cafeto);
+    color: var(--texto-sobre-ambar);
 }

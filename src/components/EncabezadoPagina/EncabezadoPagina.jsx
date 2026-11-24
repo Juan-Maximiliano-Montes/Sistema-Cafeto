@@ -8,10 +8,11 @@ function EncabezadoPagina({
     subtitulo,
     volverA,
     textoVolver = 'Volver al inicio',
+    compacto = false,
     children,
 }) {
     return (
-        <header className={estilos.encabezado}>
+        <header className={`${estilos.encabezado} ${compacto ? estilos.compacto : ''}`}>
             <div className={estilos.columnaPrincipal}>
                 {volverA && (
                     <Link to={volverA} className={estilos.volver}>

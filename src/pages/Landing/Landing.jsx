@@ -1,208 +1,157 @@
 import { Link } from 'react-router-dom';
 import { haySesion, URL_WEB_DJANGO } from '../../api/api';
+import { useTema } from '../../hooks/useTema';
 import BarraFlotante from '../../components/BarraFlotante/BarraFlotante';
+import VistaModulos from '../../components/VistaModulos/VistaModulos';
 import {
+    IconoEscudo,
     IconoEstadoOk,
-    IconoEstrella,
     IconoExterno,
-    IconoMinisuper,
+    IconoLote,
     IconoTaza,
 } from '../../components/Iconos/Iconos';
 import fotoFachada from '../../assets/foto de fachada nocturna del local.jpg';
-import fotoTaza from '../../assets/taza_amarrilla_humeante.jpg';
-import capturaSistema from '../../assets/captura-sistema-cafeto.png';
-import isologoNegativo from '../../assets/cafeto-isologotipo-negativo.svg';
 import isotipoBlanco from '../../assets/cafeto-isotipo-blanco.svg';
+import isotipoNegro from '../../assets/cafeto-isotipo-negro.svg';
 import estilos from './Landing.module.css';
 
-const PILARES = [
+const PILARES_OPERATIVOS = [
     {
-        titulo: 'Cafetería artesanal',
-        descripcion: 'Café recién molido, bebidas calientes y frías, desayunos y panificados listos para disfrutar en salón o llevar.',
-        icono: <IconoTaza size={28} />,
+        titulo: 'Productos y vencimientos al día',
+        descripcion: 'Consultá precios de Cafetería y Minisúper, buscá por código de barras y mirá qué vence primero.',
+        icono: <IconoLote size={24} />,
     },
     {
-        titulo: 'Minisúper de paso',
-        descripcion: 'Bebidas, lácteos, fiambres, golosinas y productos esenciales de góndola ordenados por rubro y stock real.',
-        icono: <IconoMinisuper size={28} />,
+        titulo: 'Control de ajustes y alertas',
+        descripcion: 'Detectá productos vencidos o con stock bajo y aprobá o rechazá ajustes pendientes con doble control.',
+        icono: <IconoEscudo size={24} />,
     },
     {
-        titulo: 'Club Cafeto y beneficios',
-        descripcion: 'Promociones activas, ofertas visibles en el catálogo y atención ágil pensada para cada cliente del barrio.',
-        icono: <IconoEstrella size={28} />,
-    },
-];
-
-const BENEFICIOS_SISTEMA = [
-    {
-        titulo: 'Catálogo y stock al día',
-        detalle: 'Consultá precios, ofertas y disponibilidad de cafetería y minisúper sin buscar planillas ni preguntar por radio.',
-    },
-    {
-        titulo: 'Control de cajas',
-        detalle: 'Mirá cuántas cajas están abiertas hoy, lo vendido en el turno y el estado general en una sola pantalla.',
-    },
-    {
-        titulo: 'Avisos claros',
-        detalle: 'Alertas fáciles de leer con íconos, texto directo y acceso al sistema web cuando hace falta resolver algo.',
+        titulo: 'Pensado para el ritmo del turno',
+        descripcion: 'Lectura cómoda en tema oscuro o claro, letras ampliables y estados claros con íconos y texto directo.',
+        icono: <IconoTaza size={24} />,
     },
 ];
 
 function Landing() {
     const sesionActiva = haySesion();
+    const { esClaro } = useTema();
     const rutaPrincipal = sesionActiva ? '/inicio' : '/login';
-    const textoPrincipal = sesionActiva ? 'Ir a mi panel' : 'Ingresar al sistema';
+    const textoPrincipal = sesionActiva ? 'Ir a mi panel' : 'Ingresar al turno';
+    const isotipo = esClaro ? isotipoNegro : isotipoBlanco;
 
     return (
         <div className={estilos.pagina}>
-            <section
-                className={estilos.hero}
-                style={{ '--foto-fachada': `url("${fotoFachada}")` }}
-                aria-labelledby="titulo-hero"
-            >
+            <section className={estilos.hero} aria-labelledby="titulo-hero">
                 <div className={estilos.heroGrilla}>
                     <div className={estilos.heroTexto}>
-                        <div className={estilos.marcoMarca}>
-                            <img
-                                src={isologoNegativo}
-                                alt="Cafeto Las Lomitas"
-                                className={estilos.isologo}
-                            />
-                        </div>
-
-                        <span className={estilos.etiqueta}>Las Lomitas · Campo Quijano</span>
+                        <span className={estilos.etiqueta}>Sistema del equipo · Cafeto Las Lomitas</span>
 
                         <h1 id="titulo-hero" className={estilos.tituloHero}>
-                            Tu pausa de café y compras de todos los días, más simple y organizada
+                            La herramienta diaria para organizar tu turno sin vueltas
                         </h1>
 
                         <p className={estilos.subtituloHero}>
-                            Un espacio cálido que combina cafetería de especialidad y minisúper de cercanía,
-                            respaldado por un sistema claro para que cada turno trabaje con tranquilidad.
+                            La herramienta diaria para el equipo de mostrador, depósito y caja: consultá precios, revisá
+                            qué vence primero, seguí las alertas de stock y chequeá los movimientos del día sin dar vueltas.
                         </p>
 
                         <div className={estilos.accionesHero}>
                             <Link to={rutaPrincipal} className={estilos.botonPrincipal}>
                                 {textoPrincipal}
                             </Link>
-                            <a href="#conocer-cafeto" className={estilos.botonSecundario}>
-                                Conocer Cafeto
+                            <a href="#modulos-sistema" className={estilos.botonSecundario}>
+                                Recorrer módulos
                             </a>
                         </div>
                     </div>
 
                     <figure className={estilos.heroFoto}>
-                        <img
-                            src={fotoTaza}
-                            alt="Taza amarilla humeante de café recién servido frente al local de Cafeto"
-                            className={estilos.imagenTaza}
-                        />
+                        <div className={estilos.marcoFachada}>
+                            <img
+                                src={fotoFachada}
+                                alt="Fachada nocturna iluminada del local Cafeto Las Lomitas en Campo Quijano"
+                                className={estilos.imagenFachada}
+                            />
+                            <div className={estilos.pildoraFoto}>
+                                <span className={estilos.puntoEnLinea} aria-hidden="true">
+                                    <IconoEstadoOk size={10} />
+                                </span>
+                                <span>En línea · Las Lomitas, Campo Quijano</span>
+                            </div>
+                        </div>
                         <figcaption className={estilos.pieFoto}>
-                            <span className={estilos.pieFotoTitulo}>Café de verdad, atención cercana</span>
-                            <span className={estilos.pieFotoDetalle}>Salón abierto y minisúper equipado todos los días</span>
+                            <span className={estilos.pieFotoTitulo}>Las Lomitas · Campo Quijano</span>
+                            <span className={estilos.pieFotoDetalle}>Cafetería, minisúper y control diario del mostrador</span>
                         </figcaption>
                     </figure>
                 </div>
             </section>
 
-            <section id="conocer-cafeto" className={estilos.seccion} aria-labelledby="titulo-pilares">
+            <section id="modulos-sistema" className={estilos.seccionDividida} aria-labelledby="titulo-modulos">
                 <header className={estilos.encabezadoSeccion}>
-                    <span className={estilos.etiqueta}>Nuestra propuesta</span>
-                    <h2 id="titulo-pilares" className={estilos.tituloSeccion}>
-                        Qué encontrás en Cafeto
+                    <span className={estilos.etiqueta}>Recorrido interactivo</span>
+                    <h2 id="titulo-modulos" className={estilos.tituloSeccion}>
+                        Probá qué podés resolver en cada módulo
                     </h2>
                     <p className={estilos.bajadaSeccion}>
-                        Todo pensado para resolver el desayuno, la merienda o las compras rápidas en un solo lugar.
+                        Elegí una pestaña y tocá los controles de muestra para ver cómo funciona cada parte del sistema.
                     </p>
                 </header>
 
+                <VistaModulos />
+            </section>
+
+            <section className={estilos.seccionDividida} aria-labelledby="titulo-pilares">
+                <header className={estilos.encabezadoSeccion}>
+                    <span className={estilos.etiqueta}>Trabajo diario</span>
+                    <h2 id="titulo-pilares" className={estilos.tituloSeccion}>
+                        Hecho para trabajar sin vueltas
+                    </h2>
+                </header>
+
                 <div className={estilos.grillaPilares}>
-                    {PILARES.map((pilar) => (
-                        <article key={pilar.titulo} className={estilos.tarjetaPilar}>
+                    {PILARES_OPERATIVOS.map((pilar) => (
+                        <article key={pilar.titulo} className={estilos.pilar}>
                             <span className={estilos.iconoPilar}>{pilar.icono}</span>
-                            <h3 className={estilos.tituloTarjeta}>{pilar.titulo}</h3>
-                            <p className={estilos.textoTarjeta}>{pilar.descripcion}</p>
+                            <h3 className={estilos.tituloPilar}>{pilar.titulo}</h3>
+                            <p className={estilos.textoPilar}>{pilar.descripcion}</p>
                         </article>
                     ))}
                 </div>
             </section>
 
-            <section className={estilos.seccionSistema} aria-labelledby="titulo-sistema">
-                <div className={estilos.sistemaGrilla}>
-                    <div className={estilos.marcoCaptura}>
-                        <div className={estilos.barraVentana} aria-hidden="true">
-                            <span className={estilos.puntoVentana} />
-                            <span className={estilos.puntoVentana} />
-                            <span className={estilos.puntoVentana} />
-                            <span className={estilos.tituloVentana}>Sistema Cafeto · Vista operativa</span>
-                        </div>
-                        <img
-                            src={capturaSistema}
-                            alt="Captura de pantalla del Sistema Cafeto mostrando sus módulos de Cafetería, Minisúper y Caja"
-                            className={estilos.imagenCaptura}
-                            loading="lazy"
-                        />
-                    </div>
-
-                    <div className={estilos.sistemaContenido}>
-                        <span className={estilos.etiqueta}>Herramienta del equipo</span>
-                        <h2 id="titulo-sistema" className={estilos.tituloSeccion}>
-                            El sistema por dentro
-                        </h2>
-                        <p className={estilos.bajadaSistema}>
-                            Conectado en vivo con la base central de Django para que el personal consulte precios,
-                            cajas y permisos desde cualquier pantalla sin complicaciones.
-                        </p>
-
-                        <ul className={estilos.listaBeneficios}>
-                            {BENEFICIOS_SISTEMA.map((beneficio) => (
-                                <li key={beneficio.titulo} className={estilos.beneficio}>
-                                    <span className={estilos.iconoOk} aria-hidden="true">
-                                        <IconoEstadoOk size={16} />
-                                    </span>
-                                    <div>
-                                        <strong className={estilos.tituloBeneficio}>{beneficio.titulo}</strong>
-                                        <p className={estilos.detalleBeneficio}>{beneficio.detalle}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-
-                        <div className={estilos.accionFinal}>
-                            <Link to={rutaPrincipal} className={estilos.botonPrincipal}>
-                                {textoPrincipal}
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section className={estilos.seccionUbicacion} aria-labelledby="titulo-ubicacion">
-                <div className={estilos.tarjetaUbicacion}>
+            <section className={estilos.franjaInstitucional} aria-labelledby="titulo-ubicacion">
+                <div className={estilos.bloqueInstitucional}>
                     <img
-                        src={isotipoBlanco}
+                        src={isotipo}
                         alt="Isotipo oficial de Cafeto"
                         className={estilos.isotipo}
                         loading="lazy"
                     />
                     <div className={estilos.textoUbicacion}>
-                        <span className={estilos.etiqueta}>Dónde estamos</span>
+                        <span className={estilos.etiqueta}>Un solo lugar para el equipo</span>
                         <h2 id="titulo-ubicacion" className={estilos.tituloUbicacion}>
-                            Las Lomitas, Campo Quijano, Salta
+                            Cafeto Las Lomitas, Campo Quijano, Salta
                         </h2>
                         <p className={estilos.detalleUbicacion}>
-                            Portal de la Quebrada del Toro. Atención en salón, mostrador de minisúper y gestión web centralizada.
+                            ¿Necesitás emitir comprobantes, hacer arqueos de caja o dar de alta personal? Entrá al panel completo en otra pestaña.
                         </p>
                     </div>
-                    <a
-                        href={URL_WEB_DJANGO}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={estilos.enlaceDjango}
-                    >
-                        <span>Ir al sistema web en Django</span>
-                        <IconoExterno size={17} />
-                    </a>
+                    <div className={estilos.accionesFinales}>
+                        <Link to={rutaPrincipal} className={estilos.botonPrincipal}>
+                            {textoPrincipal}
+                        </Link>
+                        <a
+                            href={URL_WEB_DJANGO}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={estilos.enlacePanelWeb}
+                        >
+                            <span>Abrir panel completo de Cafeto</span>
+                            <IconoExterno size={17} />
+                        </a>
+                    </div>
                 </div>
             </section>
 

@@ -1,3 +1,9 @@
+.pagina {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
 .bloqueAviso {
     display: flex;
     flex-direction: column;
@@ -7,13 +13,10 @@
 
 .ficha {
     display: grid;
-    grid-template-columns: minmax(280px, 1fr) minmax(300px, 1.15fr);
+    grid-template-columns: minmax(260px, 0.95fr) minmax(300px, 1.2fr);
     gap: 28px;
-    padding: 26px;
-    border-radius: 16px;
-    background: var(--purpura-medianoche);
-    border: 1px solid var(--borde-ambar);
-    box-shadow: var(--sombra);
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--borde-suave);
 }
 
 .columnaFoto {
@@ -28,28 +31,49 @@
     overflow: hidden;
     display: grid;
     place-items: center;
-    background: radial-gradient(circle, rgba(250, 180, 31, 0.14), transparent 70%), var(--morado-noche);
+    background: var(--superficie-profunda);
     border: 1px solid var(--borde-suave);
+}
+
+.marcoVacio {
+    background: var(--superficie-sutil);
+}
+
+.sinFoto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .foto {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
 }
 
 .placeholder {
-    width: 36%;
-    height: auto;
-    opacity: 0.9;
+    width: 52px;
+    height: 52px;
+    opacity: 0.4;
+}
+
+.leyendaSinFoto {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--texto-secundario);
 }
 
 .badgeOferta {
     position: absolute;
-    top: 14px;
-    left: 14px;
+    top: 12px;
+    left: 12px;
     background: var(--ambar-cafeto);
-    color: var(--morado-noche);
+    color: var(--texto-sobre-ambar);
     font-size: 0.84rem;
     font-weight: 700;
     padding: 4px 12px;
@@ -59,7 +83,7 @@
 .columnaDatos {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
 }
 
 .cabeceraDatos {
@@ -71,11 +95,11 @@
 }
 
 .categoria {
-    font-size: 0.78rem;
-    font-weight: 600;
+    font-size: 0.76rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.16em;
-    color: var(--ambar-cafeto);
+    color: var(--texto-acento);
 }
 
 .badge {
@@ -90,30 +114,30 @@
 }
 
 .disponible {
-    background-color: rgba(74, 222, 128, 0.15);
+    background-color: var(--exito-fondo);
     color: var(--exito);
-    border: 1.5px solid var(--borde-exito);
+    border: 1.5px solid var(--exito-borde);
 }
 
 .agotado {
-    background-color: rgba(248, 113, 113, 0.15);
-    color: #FECACA;
-    border: 1.5px dashed var(--borde-error);
+    background-color: var(--peligro-fondo);
+    color: var(--peligro);
+    border: 1.5px dashed var(--peligro-borde);
 }
 
 .cajaPrecio {
-    padding: 16px 18px;
-    border-radius: 12px;
-    background: rgba(18, 17, 40, 0.7);
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: var(--superficie-sutil);
     border: 1px solid var(--borde-suave);
 }
 
 .etiquetaPrecio {
     display: block;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--sol-tenue);
+    color: var(--texto-secundario);
     margin-bottom: 4px;
 }
 
@@ -125,78 +149,78 @@
 }
 
 .precioActual {
-    font-size: clamp(1.8rem, 4vw, 2.3rem);
+    font-size: clamp(1.75rem, 3.8vw, 2.2rem);
     font-weight: 700;
-    color: var(--blanco-puro);
+    color: var(--texto-fuerte);
     line-height: 1.1;
 }
 
 .precioAnterior {
     font-size: 1rem;
     text-decoration: line-through;
-    color: rgba(226, 232, 240, 0.58);
+    color: var(--texto-secundario);
 }
 
 .bloqueDescripcion {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
 }
 
 .subtitulo {
     font-family: var(--fuente-subtitulo);
-    color: var(--sol-tenue);
+    color: var(--texto-titular);
     font-size: 1.05rem;
     margin: 0;
 }
 
 .descripcion {
     margin: 0;
-    font-size: 0.96rem;
-    color: var(--gris-claro);
-    line-height: 1.6;
+    font-size: 0.95rem;
+    color: var(--texto-principal);
+    line-height: 1.55;
 }
 
 .listaDatos {
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    gap: 10px;
 }
 
 .dato {
-    padding: 12px 14px;
+    padding: 10px 14px;
     border-radius: 10px;
-    background: rgba(18, 17, 40, 0.55);
+    background: var(--superficie-sutil);
     border: 1px solid var(--borde-suave);
 }
 
 .dato dt {
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--ambar-cafeto);
-    font-weight: 600;
+    color: var(--texto-acento);
+    font-weight: 700;
     margin-bottom: 4px;
 }
 
 .dato dd {
     margin: 0;
     font-size: 0.94rem;
-    color: var(--blanco-puro);
+    color: var(--texto-fuerte);
     font-weight: 600;
 }
 
 .acciones {
     margin-top: auto;
-    padding-top: 8px;
+    padding-top: 6px;
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
 }
 
 .botonVolver,
-.botonDjango {
+.botonPanelWeb {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -213,33 +237,159 @@
 
 .botonVolver {
     background: transparent;
-    color: var(--sol-tenue);
+    color: var(--texto-titular);
     border: 1.5px solid var(--borde-ambar);
 }
 
 .botonVolver:hover {
-    background: rgba(250, 180, 31, 0.12);
-    border-color: var(--ambar-cafeto);
+    background: var(--superficie-hover);
+    border-color: var(--borde-acento);
 }
 
-.botonDjango {
+.botonPanelWeb {
     background: var(--ambar-cafeto);
-    color: var(--morado-noche);
+    color: var(--texto-sobre-ambar);
     border: 1.5px solid var(--ambar-cafeto);
 }
 
-.botonDjango:hover {
-    filter: brightness(1.08);
+.botonPanelWeb:hover {
+    filter: brightness(1.06);
+}
+
+.seccionLotes {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.cabeceraLotes {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.tituloLotes {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 0;
+    font-family: var(--fuente-subtitulo);
+    color: var(--texto-titular);
+    font-size: 1.25rem;
+}
+
+.tituloLotes svg {
+    color: var(--texto-acento);
+}
+
+.aclaracionVencimientos {
+    font-size: 0.85rem;
+    color: var(--texto-secundario);
+}
+
+.estadoLotes,
+.vacioLotes {
+    margin: 0;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px dashed var(--borde-suave);
+    color: var(--texto-secundario);
+    font-size: 0.92rem;
+}
+
+.errorLotes {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px dashed var(--borde-ambar);
+    background: var(--aviso-fondo);
+    color: var(--aviso-texto);
+    font-size: 0.9rem;
+}
+
+.tablaContenedor {
+    overflow-x: auto;
+    border: 1px solid var(--borde-suave);
+    border-radius: 10px;
+    background: var(--superficie-sutil);
+}
+
+.tablaLotes {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.92rem;
+}
+
+.tablaLotes th {
+    padding: 12px 16px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--texto-acento);
+    border-bottom: 1px solid var(--borde-suave);
+    background: var(--superficie-profunda);
+}
+
+.tablaLotes td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--borde-suave);
+}
+
+.tablaLotes tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.celdaFuerte {
+    font-weight: 700;
+    color: var(--texto-titular);
+}
+
+.badgeLote {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.loteOk {
+    background: var(--exito-fondo);
+    color: var(--exito);
+    border: 1.5px solid var(--exito-borde);
+}
+
+.loteAviso {
+    background: var(--aviso-fondo);
+    color: var(--aviso-texto);
+    border: 1.5px solid var(--aviso-borde);
+}
+
+.loteError {
+    background: var(--peligro-fondo);
+    color: var(--peligro);
+    border: 1.5px dashed var(--peligro-borde);
+}
+
+.loteNeutro {
+    background: var(--superficie-profunda);
+    color: var(--texto-secundario);
+    border: 1.5px dotted var(--borde-fuerte);
 }
 
 .esqueleto {
     display: grid;
-    grid-template-columns: minmax(280px, 1fr) minmax(300px, 1.15fr);
+    grid-template-columns: minmax(260px, 0.95fr) minmax(300px, 1.2fr);
     gap: 28px;
-    padding: 26px;
-    border-radius: 16px;
-    background: var(--purpura-medianoche);
-    border: 1px solid var(--borde-suave);
 }
 
 .esqueletoFoto {
@@ -254,13 +404,7 @@
 
 .bloque {
     border-radius: 8px;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.05) 25%,
-        rgba(250, 180, 31, 0.11) 50%,
-        rgba(255, 255, 255, 0.05) 75%
-    );
-    background-size: 200% 100%;
+    background: var(--superficie-sutil);
     animation: pulso 1.4s ease-in-out infinite;
 }
 
@@ -289,11 +433,12 @@
 }
 
 @keyframes pulso {
-    0% {
-        background-position: 200% 0;
-    }
+    0%,
     100% {
-        background-position: -200% 0;
+        opacity: 0.55;
+    }
+    50% {
+        opacity: 0.9;
     }
 }
 
@@ -301,6 +446,5 @@
     .ficha,
     .esqueleto {
         grid-template-columns: 1fr;
-        padding: 20px;
     }
 }

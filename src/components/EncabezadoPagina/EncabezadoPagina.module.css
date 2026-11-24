@@ -2,9 +2,25 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    gap: 20px;
+    gap: 18px;
     flex-wrap: wrap;
-    margin-bottom: 28px;
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--borde-suave);
+}
+
+.compacto {
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+.compacto .titulo {
+    font-size: clamp(1.9rem, 4vw, 2.45rem);
+}
+
+.compacto .subtitulo {
+    margin-top: 2px;
+    font-size: 0.92rem;
 }
 
 .columnaPrincipal {
@@ -19,11 +35,11 @@
     gap: 8px;
     min-height: 44px;
     padding: 6px 14px 6px 10px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     border-radius: 999px;
     border: 1px solid var(--borde-ambar);
-    background: rgba(250, 180, 31, 0.08);
-    color: var(--sol-tenue);
+    background: var(--aviso-fondo);
+    color: var(--texto-titular);
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
@@ -31,32 +47,33 @@
 }
 
 .volver:hover {
-    background: rgba(250, 180, 31, 0.16);
-    border-color: var(--ambar-cafeto);
-    color: var(--blanco-puro);
+    background: var(--superficie-hover);
+    border-color: var(--borde-acento);
+    color: var(--texto-acento);
 }
 
 .etiqueta {
     display: inline-block;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--ambar-cafeto);
-    margin-bottom: 4px;
+    color: var(--texto-acento);
+    margin-bottom: 3px;
 }
 
 .titulo {
     font-family: var(--fuente-titulo);
-    font-size: clamp(2.2rem, 5vw, 2.9rem);
+    font-size: clamp(2.15rem, 4.8vw, 2.8rem);
     line-height: 1.05;
-    color: var(--sol-tenue);
+    color: var(--texto-titular);
     margin: 0;
 }
 
 .subtitulo {
     margin: 6px 0 0;
     max-width: 640px;
+    color: var(--texto-secundario);
 }
 
 .acciones {

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;600;700&family=Lora:wght@600&display=swap');
 
-:root {
+:root,
+:root[data-tema='oscuro'] {
     --morado-noche: #121128;
     --purpura-medianoche: #1B1B3A;
     --ambar-cafeto: #FAB41F;
@@ -8,23 +9,120 @@
     --gris-claro: #E2E8F0;
     --blanco-puro: #FFFFFF;
     --negro-cartel: #161616;
+    --crema: #F4F1EA;
+
+    --fondo-pagina: #121128;
+    --superficie: #1B1B3A;
+    --superficie-sutil: rgba(27, 27, 58, 0.52);
+    --superficie-profunda: rgba(18, 17, 40, 0.72);
+    --superficie-translucida: rgba(18, 17, 40, 0.80);
+    --superficie-modal: rgba(24, 23, 52, 0.90);
+    --superficie-pildora: rgba(20, 19, 44, 0.92);
+    --superficie-paleta: rgba(18, 17, 40, 0.95);
+    --superficie-desplegable: rgba(22, 21, 48, 0.96);
+    --superficie-sidebar: #161533;
+    --superficie-hover: rgba(250, 180, 31, 0.09);
+
+    --texto-principal: #E2E8F0;
+    --texto-fuerte: #FFFFFF;
+    --texto-titular: #F2E2A4;
+    --texto-secundario: #CBD5E1;
+    --texto-acento: #FAB41F;
+    --texto-sobre-ambar: #161616;
+
+    --borde-suave: rgba(255, 255, 255, 0.12);
+    --borde-fuerte: rgba(255, 255, 255, 0.22);
+    --borde-ambar: rgba(250, 180, 31, 0.30);
+    --borde-acento: #FAB41F;
+
+    --input-fondo: rgba(18, 17, 40, 0.85);
+    --input-borde: rgba(250, 180, 31, 0.34);
+    --input-placeholder: rgba(226, 232, 240, 0.52);
 
     --exito: #4ADE80;
-    --peligro: #F87171;
+    --exito-fondo: rgba(74, 222, 128, 0.14);
+    --exito-borde: #4ADE80;
+    --peligro: #FCA5A5;
+    --peligro-solido: #DC2626;
+    --peligro-fondo: rgba(248, 113, 113, 0.14);
+    --peligro-borde: #F87171;
     --aviso-texto: #FDE68A;
-    --borde-error: #F87171;
-    --borde-exito: #4ADE80;
-    --borde-suave: rgba(255, 255, 255, 0.12);
-    --borde-ambar: rgba(250, 180, 31, 0.28);
-    --sombra: 0 6px 20px rgba(0, 0, 0, 0.35);
+    --aviso-fondo: rgba(250, 180, 31, 0.14);
+    --aviso-borde: #FAB41F;
+    --info-texto: #BFDBFE;
+    --info-fondo: rgba(96, 165, 250, 0.14);
+    --info-borde: #60A5FA;
+
+    --borde-error: var(--peligro-borde);
+    --borde-exito: var(--exito-borde);
+
+    --sombra: 0 8px 24px rgba(0, 0, 0, 0.32);
+    --sombra-modal: 0 22px 54px rgba(0, 0, 0, 0.58);
+    --backdrop-modal: rgba(10, 9, 24, 0.68);
+    --foco-color: #FAB41F;
 
     --radio: 10px;
+    --alto-navbar: 77px;
 
     --fuente-titulo: 'Caveat', cursive;
     --fuente-subtitulo: 'Lora', serif;
     --fuente-cuerpo: 'Inter', system-ui, sans-serif;
 
     color-scheme: dark;
+}
+
+:root[data-tema='claro'] {
+    --fondo-pagina: #F4F1EA;
+    --superficie: #FFFFFF;
+    --superficie-sutil: rgba(255, 255, 255, 0.72);
+    --superficie-profunda: #EAE4D7;
+    --superficie-translucida: rgba(244, 241, 234, 0.84);
+    --superficie-modal: rgba(255, 255, 255, 0.92);
+    --superficie-pildora: rgba(255, 255, 255, 0.92);
+    --superficie-paleta: rgba(255, 255, 255, 0.95);
+    --superficie-desplegable: rgba(255, 255, 255, 0.96);
+    --superficie-sidebar: #FAF8F3;
+    --superficie-hover: rgba(22, 22, 22, 0.05);
+
+    --texto-principal: #161616;
+    --texto-fuerte: #161616;
+    --texto-titular: #161616;
+    --texto-secundario: #3D3A35;
+    --texto-acento: #6B4600;
+    --texto-sobre-ambar: #161616;
+
+    --borde-suave: rgba(22, 22, 22, 0.12);
+    --borde-fuerte: rgba(22, 22, 22, 0.24);
+    --borde-ambar: rgba(107, 70, 0, 0.28);
+    --borde-acento: #7C5100;
+
+    --input-fondo: #FFFFFF;
+    --input-borde: rgba(22, 22, 22, 0.28);
+    --input-placeholder: #59554E;
+
+    --exito: #14532D;
+    --exito-fondo: rgba(22, 163, 74, 0.12);
+    --exito-borde: #15803D;
+    --peligro: #7F1D1D;
+    --peligro-solido: #B91C1C;
+    --peligro-fondo: rgba(220, 38, 38, 0.10);
+    --peligro-borde: #B91C1C;
+    --aviso-texto: #6B4600;
+    --aviso-fondo: rgba(250, 180, 31, 0.24);
+    --aviso-borde: #855800;
+    --info-texto: #1E3A8A;
+    --info-fondo: rgba(37, 99, 235, 0.10);
+    --info-borde: #1D4ED8;
+
+    --borde-error: var(--peligro-borde);
+    --borde-exito: var(--exito-borde);
+
+    --sombra: 0 6px 20px rgba(22, 22, 22, 0.08);
+    --sombra-modal: 0 22px 54px rgba(22, 22, 22, 0.22);
+    --backdrop-modal: rgba(22, 22, 22, 0.45);
+    --foco-color: #161616;
+
+    color-scheme: light;
 }
 
 *,
@@ -36,12 +134,13 @@
 html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    scroll-padding-top: 96px;
 }
 
 body {
     margin: 0;
-    background: var(--morado-noche);
-    color: var(--gris-claro);
+    background: var(--fondo-pagina);
+    color: var(--texto-principal);
     font-family: var(--fuente-cuerpo);
     line-height: 1.55;
     min-height: 100vh;
@@ -60,7 +159,8 @@ img {
 
 button,
 input,
-select {
+select,
+textarea {
     font: inherit;
 }
 
@@ -69,7 +169,7 @@ button:disabled {
 }
 
 :focus-visible {
-    outline: 3px solid var(--ambar-cafeto);
+    outline: 3px solid var(--foco-color);
     outline-offset: 3px;
 }
 

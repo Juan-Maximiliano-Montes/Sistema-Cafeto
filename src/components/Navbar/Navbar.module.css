@@ -5,13 +5,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    padding: 10px 28px;
-    background: rgba(18, 17, 40, 0.88);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(250, 180, 31, 0.24);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    gap: 14px;
+    padding: 10px 26px;
+    background: var(--superficie-translucida);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--borde-suave);
 }
 
 .enlaceLogo {
@@ -24,7 +23,7 @@
 }
 
 .logo {
-    height: 52px;
+    height: 48px;
     width: auto;
     transition: transform 0.2s ease;
 }
@@ -43,7 +42,7 @@
 .menuPublico {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
 }
 
@@ -52,41 +51,43 @@
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    color: var(--gris-claro);
+    color: var(--texto-principal);
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.94rem;
     font-weight: 600;
-    padding: 8px 12px;
+    padding: 8px 11px;
     border-radius: 8px;
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .enlace:hover {
-    color: var(--ambar-cafeto);
-    background-color: rgba(250, 180, 31, 0.08);
+    color: var(--texto-acento);
+    background-color: var(--superficie-hover);
 }
 
 .enlace:global(.active) {
-    color: var(--ambar-cafeto);
+    color: var(--texto-acento);
 }
 
 .enlace:global(.active)::after {
     content: '';
     position: absolute;
-    left: 12px;
-    right: 12px;
+    left: 11px;
+    right: 11px;
     bottom: 4px;
     height: 2px;
     border-radius: 2px;
-    background: var(--ambar-cafeto);
+    background: var(--borde-acento);
 }
 
-.controlTextoEscritorio {
+.controlesEscritorio {
     display: inline-flex;
     align-items: center;
+    gap: 6px;
+    margin-left: 4px;
 }
 
-.botonTexto {
+.botonControl {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -95,45 +96,47 @@
     min-width: 44px;
     padding: 6px 12px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid var(--borde-ambar);
-    color: var(--sol-tenue);
-    font-weight: 700;
-    font-size: 0.88rem;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-fuerte);
+    color: var(--texto-titular);
+    font-weight: 600;
+    font-size: 0.84rem;
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.botonTexto:hover {
-    background: rgba(250, 180, 31, 0.14);
-    border-color: var(--ambar-cafeto);
+.botonControl:hover {
+    background: var(--superficie-hover);
+    border-color: var(--borde-acento);
+    color: var(--texto-acento);
 }
 
-.botonTextoActivo {
-    background: var(--ambar-cafeto);
-    border-color: var(--ambar-cafeto);
-    color: var(--morado-noche);
+.botonControlActivo {
+    border-color: var(--borde-acento);
+    background: var(--aviso-fondo);
+    color: var(--texto-titular);
 }
 
-.botonTextoActivo:hover {
-    background: var(--sol-tenue);
-    border-color: var(--sol-tenue);
+.siglaTamano {
+    font-weight: 700;
+    font-size: 0.88rem;
 }
 
-.etiquetaTamano {
-    font-size: 0.78rem;
+.etiquetaControl {
+    font-size: 0.8rem;
     font-weight: 600;
 }
 
 .menuCuenta {
     display: inline-flex;
     align-items: center;
+    margin-left: 2px;
 }
 
 .disparadorCuenta {
     padding: 5px 12px 5px 8px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--superficie-sutil);
 }
 
 .avatar {
@@ -143,7 +146,7 @@
     height: 32px;
     border-radius: 50%;
     background: var(--ambar-cafeto);
-    color: var(--morado-noche);
+    color: var(--texto-sobre-ambar);
     font-size: 0.8rem;
     font-weight: 700;
     flex: none;
@@ -158,14 +161,14 @@
 }
 
 .nombreCuenta {
-    font-size: 0.88rem;
-    color: var(--sol-tenue);
+    font-size: 0.86rem;
+    color: var(--texto-titular);
     font-weight: 700;
 }
 
 .rolCuenta {
     font-size: 0.72rem;
-    color: rgba(226, 232, 240, 0.78);
+    color: var(--texto-secundario);
     font-weight: 500;
 }
 
@@ -176,38 +179,55 @@
 }
 
 .encabezadoCuenta strong {
-    color: var(--sol-tenue);
+    color: var(--texto-titular);
     font-size: 0.92rem;
 }
 
 .encabezadoCuenta span {
-    color: rgba(226, 232, 240, 0.78);
+    color: var(--texto-secundario);
     font-size: 0.78rem;
 }
 
-.enlaceLogin {
+.enlaceLogin,
+.enlaceLoginContorno {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 44px;
-    background: var(--ambar-cafeto);
-    color: var(--morado-noche);
     text-decoration: none;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     padding: 8px 18px;
     border-radius: 8px;
-    transition: filter 0.2s ease;
+    transition: filter 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.enlaceLogin {
+    background: var(--ambar-cafeto);
+    color: var(--texto-sobre-ambar);
+    border: 1.5px solid var(--ambar-cafeto);
 }
 
 .enlaceLogin:hover {
-    filter: brightness(1.08);
+    filter: brightness(1.06);
+}
+
+.enlaceLoginContorno {
+    background: transparent;
+    color: var(--texto-titular);
+    border: 1.5px solid var(--borde-ambar);
+}
+
+.enlaceLoginContorno:hover {
+    background: var(--superficie-hover);
+    border-color: var(--borde-acento);
+    color: var(--texto-acento);
 }
 
 .botonMenu {
     display: none;
-    background: transparent;
-    border: 1px solid var(--borde-ambar);
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-fuerte);
     border-radius: 8px;
     width: 44px;
     height: 44px;
@@ -223,7 +243,7 @@
     width: 20px;
     height: 2px;
     border-radius: 2px;
-    background: var(--ambar-cafeto);
+    background: var(--texto-acento);
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
@@ -266,7 +286,7 @@
     white-space: nowrap;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1120px) {
     .barra {
         padding: 8px 16px;
         flex-wrap: wrap;
@@ -276,7 +296,7 @@
         display: flex;
     }
 
-    .controlTextoEscritorio {
+    .controlesEscritorio {
         display: none;
     }
 
@@ -299,7 +319,7 @@
     }
 
     .enlace:global(.active) {
-        background-color: rgba(250, 180, 31, 0.1);
+        background-color: var(--aviso-fondo);
     }
 
     .enlace:global(.active)::after {
@@ -313,11 +333,12 @@
 
     .menuCuenta {
         margin-top: 4px;
+        margin-left: 0;
     }
 }
 
-@media (max-width: 560px) {
-    .etiquetaTamano {
+@media (max-width: 600px) {
+    .etiquetaControl {
         display: none;
     }
 
@@ -327,6 +348,6 @@
 
     .enlaceLogin {
         padding: 8px 14px;
-        font-size: 0.9rem;
+        font-size: 0.88rem;
     }
 }

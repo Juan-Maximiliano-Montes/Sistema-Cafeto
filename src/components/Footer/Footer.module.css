@@ -1,20 +1,123 @@
 .pie {
-    background-color: var(--purpura-medianoche);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--gris-claro);
-    text-align: center;
-    padding: 1.4rem 1.2rem 2.2rem;
+    background-color: var(--superficie-profunda);
+    border-top: 1px solid var(--borde-suave);
+    color: var(--texto-secundario);
+    padding: 24px 24px 28px;
     font-family: var(--fuente-cuerpo);
     font-size: 0.85rem;
     margin-top: auto;
 }
 
-.pie p {
-    margin: 0.25rem 0;
+.grilla {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1.25fr;
+    gap: 24px;
+    align-items: start;
 }
 
-@media (max-width: 760px) {
+.columna {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.marca {
+    font-family: var(--fuente-subtitulo);
+    font-size: 1rem;
+    color: var(--texto-titular);
+}
+
+.ubicacion {
+    margin: 0;
+    color: var(--texto-secundario);
+}
+
+.estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--exito);
+}
+
+.estadoSinConexion {
+    color: var(--peligro);
+}
+
+.puntoOk {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--exito-borde);
+    color: var(--texto-sobre-ambar);
+    flex: none;
+}
+
+.puntoError {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--peligro-solido);
+    color: var(--blanco-puro);
+    flex: none;
+}
+
+.tituloColumna {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--texto-acento);
+}
+
+.listaEnlaces {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+}
+
+.enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 44px;
+    padding: 4px 2px;
+    color: var(--texto-principal);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.16s ease;
+}
+
+.enlace:hover {
+    color: var(--texto-acento);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.equipo {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--texto-secundario);
+}
+
+@media (max-width: 820px) {
     .pie {
-        padding-bottom: 4.8rem;
+        padding: 20px 16px calc(86px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .grilla {
+        grid-template-columns: 1fr;
+        gap: 18px;
     }
 }

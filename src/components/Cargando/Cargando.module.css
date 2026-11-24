@@ -4,7 +4,7 @@
     justify-content: center;
     gap: 14px;
     padding: 48px 16px;
-    color: var(--sol-tenue);
+    color: var(--texto-titular);
     font-weight: 600;
 }
 
@@ -12,8 +12,8 @@
     width: 26px;
     height: 26px;
     border-radius: 50%;
-    border: 3px solid rgba(250, 180, 31, 0.2);
-    border-top-color: var(--ambar-cafeto);
+    border: 3px solid var(--borde-ambar);
+    border-top-color: var(--borde-acento);
     animation: girar 0.8s linear infinite;
 }
 

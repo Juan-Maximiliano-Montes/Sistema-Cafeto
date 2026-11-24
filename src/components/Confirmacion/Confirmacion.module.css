@@ -2,15 +2,17 @@
     padding: 0;
     border: 1px solid var(--borde-ambar);
     border-radius: var(--radio);
-    background: var(--purpura-medianoche);
-    color: var(--gris-claro);
-    width: min(420px, calc(100vw - 32px));
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+    background: var(--superficie-modal);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--texto-principal);
+    width: min(440px, calc(100vw - 32px));
+    box-shadow: var(--sombra-modal);
 }
 
 .dialogo::backdrop {
-    background: rgba(10, 9, 24, 0.7);
-    backdrop-filter: blur(3px);
+    background: var(--backdrop-modal);
+    backdrop-filter: blur(4px);
 }
 
 .dialogo[open] {
@@ -35,13 +37,14 @@
 .titulo {
     margin: 0 0 10px;
     font-family: var(--fuente-subtitulo);
-    color: var(--sol-tenue);
+    color: var(--texto-titular);
     font-size: 1.3rem;
 }
 
 .mensaje {
     margin: 0 0 24px;
     line-height: 1.55;
+    color: var(--texto-principal);
 }
 
 .acciones {
@@ -64,29 +67,31 @@
 
 .botonCancelar {
     background: transparent;
-    color: var(--gris-claro);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--texto-principal);
+    border: 1px solid var(--borde-fuerte);
 }
 
 .botonCancelar:hover:not(:disabled) {
-    border-color: var(--gris-claro);
+    border-color: var(--borde-acento);
+    background: var(--superficie-hover);
 }
 
 .botonConfirmar {
     background: var(--ambar-cafeto);
-    color: var(--morado-noche);
+    color: var(--texto-sobre-ambar);
     border: 1px solid var(--ambar-cafeto);
+    font-weight: 700;
 }
 
 .botonPeligro {
-    background: #DC2626;
+    background: var(--peligro-solido);
     color: var(--blanco-puro);
-    border: 1px solid #DC2626;
+    border: 1px solid var(--peligro-solido);
 }
 
 .botonConfirmar:hover:not(:disabled),
 .botonPeligro:hover:not(:disabled) {
-    filter: brightness(1.1);
+    filter: brightness(1.08);
 }
 
 .botonCancelar:disabled,

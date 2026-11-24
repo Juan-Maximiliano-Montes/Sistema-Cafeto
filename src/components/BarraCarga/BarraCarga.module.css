@@ -5,7 +5,7 @@
     right: 0;
     height: 4px;
     z-index: 2600;
-    background: rgba(250, 180, 31, 0.14);
+    background: var(--borde-suave);
     pointer-events: none;
     transition: opacity 0.25s ease;
 }
@@ -35,7 +35,7 @@
 
 .tarjetaEsqueleto,
 .tarjetaPanelEsqueleto {
-    background: var(--purpura-medianoche);
+    background: var(--superficie-sutil);
     border: 1px solid var(--borde-suave);
     border-radius: var(--radio);
     overflow: hidden;
@@ -59,7 +59,7 @@
 }
 
 .fotoEsqueleto {
-    aspect-ratio: 4 / 3;
+    height: 130px;
     border-radius: 0;
 }
 
@@ -74,9 +74,9 @@
     border-radius: 6px;
     background: linear-gradient(
         90deg,
-        rgba(255, 255, 255, 0.05) 25%,
-        rgba(250, 180, 31, 0.11) 50%,
-        rgba(255, 255, 255, 0.05) 75%
+        var(--borde-suave) 25%,
+        var(--aviso-fondo) 50%,
+        var(--borde-suave) 75%
     );
     background-size: 200% 100%;
     animation: pulso 1.4s ease-in-out infinite;

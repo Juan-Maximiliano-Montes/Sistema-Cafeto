@@ -1,46 +1,299 @@
 .contenido {
     display: flex;
     flex-direction: column;
-    gap: 36px;
+    gap: 18px;
 }
 
 .bienvenida {
-    padding: 32px 30px;
-    border-radius: 16px;
-    border: 1px solid var(--borde-ambar);
-    background:
-        radial-gradient(circle at 100% 0%, rgba(250, 180, 31, 0.16), transparent 55%),
-        var(--purpura-medianoche);
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 20px;
+    align-items: center;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--borde-suave);
+}
+
+.saludoColumna {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .etiqueta {
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--ambar-cafeto);
+    color: var(--texto-acento);
 }
 
 .titulo {
     font-family: var(--fuente-titulo);
-    font-size: clamp(2.4rem, 6vw, 3.4rem);
-    line-height: 1.05;
-    color: var(--sol-tenue);
-    margin: 6px 0 10px;
+    font-size: clamp(2rem, 4.2vw, 2.75rem);
+    line-height: 1.04;
+    color: var(--texto-titular);
+    margin: 4px 0 6px;
 }
 
 .texto {
     margin: 0;
-    max-width: 640px;
-    font-size: 1.02rem;
+    max-width: 480px;
+    font-size: 0.94rem;
+    color: var(--texto-secundario);
 }
 
 .perfil {
-    color: var(--sol-tenue);
+    color: var(--texto-titular);
 }
 
-.modulos {
+.resumenVivo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cabeceraResumen {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.tituloResumen {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--texto-acento);
+}
+
+.botonRefrescar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--borde-ambar);
+    background: transparent;
+    color: var(--texto-titular);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.botonRefrescar:hover:not(:disabled) {
+    background: var(--superficie-hover);
+    border-color: var(--borde-acento);
+}
+
+.botonRefrescar:disabled {
+    opacity: 0.6;
+}
+
+.grillaMetricas {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.metricaEnlace {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    min-height: 72px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--superficie-sutil);
+    border: 1px solid var(--borde-suave);
+    text-decoration: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+
+.metricaEnlace:hover,
+.metricaEnlace:focus-visible {
+    border-color: var(--borde-acento);
+    background: var(--superficie);
+    transform: translateY(-1px);
+}
+
+.metricaAlerta {
+    border-color: var(--aviso-borde);
+    background: var(--aviso-fondo);
+}
+
+.metricaNombre {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--texto-secundario);
+}
+
+.metricaNombre svg {
+    color: var(--texto-acento);
+    flex: none;
+}
+
+.metricaValor {
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--texto-titular);
+    white-space: nowrap;
+}
+
+.esqueletoResumen {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.lineaEsqueleto {
+    height: 72px;
+    border-radius: 10px;
+    background: var(--superficie-sutil);
+}
+
+.errorResumen {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px dashed var(--peligro-borde);
+    background: var(--peligro-fondo);
+    color: var(--peligro);
+    font-size: 0.88rem;
+}
+
+.tiraUrgentes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: var(--peligro-fondo);
+    border: 1px dashed var(--peligro-borde);
+    overflow-x: auto;
+}
+
+.etiquetaUrgentes {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--peligro);
+    flex: none;
+}
+
+.pildorasUrgentes {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pildoraUrgente {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--superficie);
+    border: 1px solid var(--peligro-borde);
+    color: var(--texto-titular);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.pildoraUrgente:hover {
+    background: var(--superficie-hover);
+    transform: translateY(-1px);
+}
+
+.piramide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.filaSuperior {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 16px;
+}
+
+.filaInferior {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 16px;
+}
+
+.celdaSuperior,
+.celdaInferior {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+}
+
+.celdaSuperior > :global(*),
+.celdaInferior > :global(*) {
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 960px) {
+    .bienvenida {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .filaSuperior {
+        max-width: 100%;
+    }
+
+    .filaInferior {
+        flex-wrap: wrap;
+    }
+
+    .celdaInferior {
+        flex: 0 1 calc(50% - 8px);
+    }
+}
+
+@media (max-width: 640px) {
+    .grillaMetricas,
+    .esqueletoResumen {
+        grid-template-columns: 1fr;
+    }
+
+    .filaSuperior,
+    .filaInferior {
+        flex-direction: column;
+    }
+
+    .celdaSuperior,
+    .celdaInferior {
+        flex: 1 1 auto;
+        width: 100%;
+    }
 }

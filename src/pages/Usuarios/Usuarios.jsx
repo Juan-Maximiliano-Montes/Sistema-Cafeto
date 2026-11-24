@@ -12,34 +12,51 @@ import {
 } from '../../components/Iconos/Iconos';
 import estilos from './Usuarios.module.css';
 
-const NOMBRES_PERMISOS = {
-    ver_productos: 'Ver productos',
-    ver_stock: 'Ver stock',
-    contar_stock: 'Contar stock',
-    registrar_merma: 'Registrar mermas',
-    registrar_traspaso: 'Registrar traspasos',
-    registrar_produccion: 'Registrar producción',
-    autorizar_ajustes: 'Autorizar ajustes',
-    imprimir_ofertas: 'Imprimir ofertas',
-    registrar_compra: 'Recibir compras',
-    ver_ventas: 'Ver ventas',
-    ver_caja: 'Ver caja',
-    gestionar_ordenes: 'Gestionar órdenes',
-    ver_egresos: 'Ver egresos',
-    ver_auditoria: 'Ver auditoría',
-    ver_reportes: 'Ver reportes',
-    ver_marcas: 'Ver marcas',
-    crear_marca: 'Crear marcas',
-    editar_marca: 'Editar marcas',
-    eliminar_marca: 'Eliminar marcas',
-    ver_rubros: 'Ver rubros',
-    crear_rubro: 'Crear rubros',
-    editar_rubro: 'Editar rubros',
-    eliminar_rubro: 'Eliminar rubros',
+const CATALOGO_PERMISOS = {
+    ver_productos: { etiqueta: 'Ver productos y código de barras', categoria: 'Stock', enApp: true },
+    ver_stock: { etiqueta: 'Ver alertas de stock y vencimientos', categoria: 'Stock', enApp: true },
+    autorizar_ajustes: { etiqueta: 'Autorizar ajustes de stock', categoria: 'Stock', enApp: true },
+    contar_stock: { etiqueta: 'Contar stock', categoria: 'Stock', enApp: false },
+    registrar_merma: { etiqueta: 'Registrar mermas', categoria: 'Stock', enApp: false },
+    registrar_traspaso: { etiqueta: 'Registrar traspasos', categoria: 'Stock', enApp: false },
+    registrar_produccion: { etiqueta: 'Registrar producción', categoria: 'Stock', enApp: false },
+
+    ver_marcas: { etiqueta: 'Ver marcas', categoria: 'Catálogo', enApp: true },
+    crear_marca: { etiqueta: 'Crear marcas', categoria: 'Catálogo', enApp: true },
+    editar_marca: { etiqueta: 'Editar marcas', categoria: 'Catálogo', enApp: true },
+    eliminar_marca: { etiqueta: 'Eliminar marcas', categoria: 'Catálogo', enApp: true },
+    ver_rubros: { etiqueta: 'Ver rubros', categoria: 'Catálogo', enApp: true },
+    crear_rubro: { etiqueta: 'Crear rubros', categoria: 'Catálogo', enApp: true },
+    editar_rubro: { etiqueta: 'Editar rubros', categoria: 'Catálogo', enApp: true },
+    eliminar_rubro: { etiqueta: 'Eliminar rubros', categoria: 'Catálogo', enApp: true },
+    imprimir_ofertas: { etiqueta: 'Imprimir ofertas', categoria: 'Catálogo', enApp: false },
+
+    ver_ventas: { etiqueta: 'Ver ventas del día', categoria: 'Ventas y Caja', enApp: true },
+    ver_caja: { etiqueta: 'Ver estado de caja', categoria: 'Ventas y Caja', enApp: true },
+
+    gestionar_ordenes: { etiqueta: 'Gestionar órdenes', categoria: 'Compras', enApp: false },
+    registrar_compra: { etiqueta: 'Recibir compras', categoria: 'Compras', enApp: false },
+
+    ver_reportes: { etiqueta: 'Ver reportes e indicadores', categoria: 'Administración', enApp: true },
+    ver_egresos: { etiqueta: 'Ver egresos', categoria: 'Administración', enApp: false },
+    ver_auditoria: { etiqueta: 'Ver auditoría', categoria: 'Administración', enApp: false },
 };
 
-const nombrePermiso = (codigo) =>
-    NOMBRES_PERMISOS[codigo] || codigo.replaceAll('_', ' ').replace(/^\w/, (letra) => letra.toUpperCase());
+const ORDEN_CATEGORIAS = ['Stock', 'Catálogo', 'Ventas y Caja', 'Compras', 'Administración', 'Otros'];
+
+const describirPermiso = (codigo) => {
+    const clave = typeof codigo === 'string' ? codigo : String(codigo ?? '');
+    if (CATALOGO_PERMISOS[clave]) {
+        return CATALOGO_PERMISOS[clave];
+    }
+    return {
+        etiqueta: clave
+            ? clave.replaceAll('_', ' ').replace(/^\w/, (letra) => letra.toUpperCase())
+            : 'Permiso operativo',
+        categoria: 'Otros',
+        enApp: false,
+    };
+};
 
 const tipoDeCuenta = (usuario) => {
     if (usuario.es_titular) return 'Titular del negocio';
@@ -51,28 +68,29 @@ function Usuarios() {
     const usuario = getUsuarioActual();
     const [verificando, setVerificando] = useState(true);
     const [error, setError] = useState(null);
-
     const [intento, setIntento] = useState(0);
 
     useEffect(() => {
-        let vigente = true;
+        const controlador = new AbortController();
 
         async function comprobarSesion() {
             try {
                 setVerificando(true);
                 setError(null);
-                await verificarSesion();
+                await verificarSesion({ signal: controlador.signal });
             } catch (err) {
-                if (vigente) setError(mensajeDeError(err, 'No se pudo verificar tu sesión con Django.'));
+                if (!controlador.signal.aborted) {
+                    setError(mensajeDeError(err, 'No se pudo verificar tu sesión actual.'));
+                }
             } finally {
-                if (vigente) setVerificando(false);
+                if (!controlador.signal.aborted) {
+                    setVerificando(false);
+                }
             }
         }
 
         comprobarSesion();
-        return () => {
-            vigente = false;
-        };
+        return () => controlador.abort();
     }, [intento]);
 
     if (!usuario) {
@@ -85,19 +103,42 @@ function Usuarios() {
     }
 
     const permisos = Array.isArray(usuario.permisos) ? usuario.permisos : [];
+    const grupos = ORDEN_CATEGORIAS
+        .map((categoria) => ({
+            categoria,
+            items: permisos
+                .map((codigo) => ({ codigo, ...describirPermiso(codigo) }))
+                .filter((item) => item.categoria === categoria),
+        }))
+        .filter((grupo) => grupo.items.length > 0);
+
+    const columnaIzquierda = [];
+    const columnaDerecha = [];
+    let pesoIzquierda = 0;
+    let pesoDerecha = 0;
+    for (const grupo of grupos) {
+        const pesoGrupo = grupo.items.length + 2;
+        if (pesoIzquierda <= pesoDerecha) {
+            columnaIzquierda.push(grupo);
+            pesoIzquierda += pesoGrupo;
+        } else {
+            columnaDerecha.push(grupo);
+            pesoDerecha += pesoGrupo;
+        }
+    }
 
     let estadoSesion = {
-        texto: 'Verificada con Django',
+        texto: 'Sesión activa',
         clase: estilos.activo,
         icono: <IconoEstadoOk size={13} />,
-        ayuda: 'Tu sesión actual está confirmada por el servidor Django.',
+        ayuda: 'Tu cuenta está habilitada y la sesión actual fue confirmada por el sistema central.',
     };
     if (verificando) {
         estadoSesion = {
             texto: 'Verificando...',
             clase: estilos.neutro,
             icono: <IconoEstadoInfo size={13} />,
-            ayuda: 'Consultando con Django el estado de tu sesión.',
+            ayuda: 'Verificando el estado de tu sesión.',
         };
     } else if (error) {
         estadoSesion = {
@@ -109,100 +150,140 @@ function Usuarios() {
     }
 
     return (
-        <section>
-            <BarraCarga activa={verificando} etiqueta="Verificando sesión con Django" />
+        <section className={estilos.pagina}>
+            <BarraCarga activa={verificando} etiqueta="Verificando sesión..." />
 
             <EncabezadoPagina
-                volverA="/inicio"
-                textoVolver="Volver al inicio"
-                etiqueta="Personal de salón"
-                titulo="Usuarios"
-                subtitulo="Tu perfil dentro del Sistema Cafeto y lo que tenés habilitado desde esta app."
+                compacto
+                etiqueta="Tu cuenta en Cafeto"
+                titulo="Mi perfil"
+                subtitulo="Tu rol asignado y el detalle de lo que podés operar desde esta aplicación y en el panel completo."
             />
 
             {error && (
-                <div className={estilos.separado}>
-                    <AvisoError
-                        titulo="No pudimos confirmar tu sesión"
-                        mensaje={error}
-                        onReintentar={() => setIntento((n) => n + 1)}
-                        reintentando={verificando}
-                    />
-                </div>
+                <AvisoError
+                    titulo="No pudimos confirmar tu sesión"
+                    mensaje={error}
+                    onReintentar={() => setIntento((n) => n + 1)}
+                    reintentando={verificando}
+                />
             )}
 
-            <div className={estilos.tablaContenedor}>
-                <table className={estilos.tabla}>
-                    <thead>
-                        <tr>
-                            <th scope="col">Nombre y apellido</th>
-                            <th scope="col">Perfil asignado</th>
-                            <th scope="col">Tipo de cuenta</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Sesión</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td className={estilos.nombreUsuario}>
-                                <span className={estilos.avatar} aria-hidden="true">
-                                    {`${usuario.nombre?.[0] || ''}${usuario.apellido?.[0] || ''}`.toUpperCase()}
-                                </span>
-                                {usuario.nombre} {usuario.apellido}
-                            </td>
-                            <td>
-                                <span className={estilos.badgePerfil}>{usuario.perfil || 'Personal operativo'}</span>
-                            </td>
-                            <td>{tipoDeCuenta(usuario)}</td>
-                            <td>
-                                <Tooltip esEtiqueta texto="Tu usuario está habilitado para ingresar y operar.">
-                                    <span className={`${estilos.badge} ${estilos.activo}`}>
-                                        <IconoEstadoOk size={13} />
-                                        <span>Activo</span>
-                                    </span>
-                                </Tooltip>
-                            </td>
-                            <td>
-                                <Tooltip esEtiqueta texto={estadoSesion.ayuda}>
-                                    <span className={`${estilos.badge} ${estadoSesion.clase}`}>
-                                        {estadoSesion.icono}
-                                        <span>{estadoSesion.texto}</span>
-                                    </span>
-                                </Tooltip>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div className={estilos.fichaCuenta}>
+                <div className={estilos.datosPersona}>
+                    <span className={estilos.avatar} aria-hidden="true">
+                        {`${usuario.nombre?.[0] || ''}${usuario.apellido?.[0] || ''}`.toUpperCase() || 'CF'}
+                    </span>
+                    <div>
+                        <h2 className={estilos.nombreCompleto}>
+                            {usuario.nombre} {usuario.apellido}
+                        </h2>
+                        <div className={estilos.metaCuenta}>
+                            <span className={estilos.badgePerfil}>{usuario.perfil || 'Personal operativo'}</span>
+                            <span className={estilos.tipoCuenta}>{tipoDeCuenta(usuario)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <Tooltip esEtiqueta texto={estadoSesion.ayuda}>
+                    <span className={`${estilos.badge} ${estadoSesion.clase}`}>
+                        {estadoSesion.icono}
+                        <span>{estadoSesion.texto}</span>
+                    </span>
+                </Tooltip>
             </div>
 
-            <div className={estilos.paneles}>
-                <article className={estilos.panel}>
-                    <h2 className={estilos.tituloPanel}>Lo que podés hacer desde la app</h2>
-                    {permisos.length > 0 ? (
-                        <ul className={estilos.listaPermisos}>
-                            {permisos.map((codigo) => (
-                                <li key={codigo} className={estilos.permiso}>{nombrePermiso(codigo)}</li>
+            <section className={estilos.bloquePermisos} aria-labelledby="titulo-permisos">
+                <div className={estilos.cabeceraPermisos}>
+                    <div>
+                        <h2 id="titulo-permisos" className={estilos.tituloPanel}>
+                            Permisos habilitados
+                        </h2>
+                        <p className={estilos.bajadaPermisos}>
+                            Distinguimos qué tareas resolvés directamente en esta app y cuáles requieren el panel completo.
+                        </p>
+                    </div>
+                    <div className={estilos.leyenda}>
+                        <span className={`${estilos.etiquetaAlcance} ${estilos.alcanceApp}`}>
+                            <IconoEstadoOk size={12} />
+                            <span>En esta app</span>
+                        </span>
+                        <span className={`${estilos.etiquetaAlcance} ${estilos.alcanceWeb}`}>
+                            <IconoEstadoInfo size={12} />
+                            <span>Panel completo</span>
+                        </span>
+                    </div>
+                </div>
+
+                {grupos.length > 0 ? (
+                    <div className={estilos.grillaGrupos}>
+                        <div className={estilos.columnaGrupos}>
+                            {columnaIzquierda.map((grupo) => (
+                                <article key={grupo.categoria} className={estilos.grupo}>
+                                    <h3 className={estilos.tituloGrupo}>{grupo.categoria}</h3>
+                                    <ul className={estilos.listaPermisos}>
+                                        {grupo.items.map((permiso) => (
+                                            <li key={permiso.codigo} className={estilos.itemPermiso}>
+                                                <span className={estilos.nombrePermiso}>{permiso.etiqueta}</span>
+                                                <span
+                                                    className={`${estilos.etiquetaAlcance} ${
+                                                        permiso.enApp ? estilos.alcanceApp : estilos.alcanceWeb
+                                                    }`}
+                                                >
+                                                    {permiso.enApp ? <IconoEstadoOk size={12} /> : <IconoEstadoInfo size={12} />}
+                                                    <span>{permiso.enApp ? 'En esta app' : 'Panel completo'}</span>
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </article>
                             ))}
-                        </ul>
-                    ) : (
-                        <p className={estilos.texto}>Tu perfil todavía no tiene tareas habilitadas para la app.</p>
-                    )}
-                </article>
+                        </div>
+                        <div className={estilos.columnaGrupos}>
+                            {columnaDerecha.map((grupo) => (
+                                <article key={grupo.categoria} className={estilos.grupo}>
+                                    <h3 className={estilos.tituloGrupo}>{grupo.categoria}</h3>
+                                    <ul className={estilos.listaPermisos}>
+                                        {grupo.items.map((permiso) => (
+                                            <li key={permiso.codigo} className={estilos.itemPermiso}>
+                                                <span className={estilos.nombrePermiso}>{permiso.etiqueta}</span>
+                                                <span
+                                                    className={`${estilos.etiquetaAlcance} ${
+                                                        permiso.enApp ? estilos.alcanceApp : estilos.alcanceWeb
+                                                    }`}
+                                                >
+                                                    {permiso.enApp ? <IconoEstadoOk size={12} /> : <IconoEstadoInfo size={12} />}
+                                                    <span>{permiso.enApp ? 'En esta app' : 'Panel completo'}</span>
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </article>
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    <p className={estilos.texto}>Tu perfil todavía no tiene tareas habilitadas.</p>
+                )}
+            </section>
 
-                <article className={estilos.panel}>
-                    <h2 className={estilos.tituloPanel}>Altas, bajas y contraseñas</h2>
+            <section className={estilos.bloqueAdministracion} aria-labelledby="titulo-admin">
+                <div>
+                    <h2 id="titulo-admin" className={estilos.tituloPanel}>
+                        Altas, bajas y contraseñas
+                    </h2>
                     <p className={estilos.texto}>
-                        Crear usuarios, darlos de baja o restablecer una contraseña se hace desde la web del sistema,
-                        en Seguridad › Usuarios, porque queda asentado en el registro de actividad.
+                        Crear usuarios, darlos de baja o restablecer una contraseña se realiza desde el panel completo del sistema,
+                        en Equipo y permisos, dentro de Usuarios, para que quede asentado en el registro de actividad.
                     </p>
-                    {usuario.es_administrador && (
-                        <a href={`${URL_WEB_DJANGO}/usuarios/`} target="_blank" rel="noreferrer" className={estilos.enlace}>
-                            <span>Ir a la gestión de usuarios</span>
-                            <IconoExterno size={16} />
-                        </a>
-                    )}
-                </article>
-            </div>
+                </div>
+                {usuario.es_administrador && (
+                    <a href={`${URL_WEB_DJANGO}/usuarios/`} target="_blank" rel="noreferrer" className={estilos.enlace}>
+                        <span>Ir a la gestión de usuarios</span>
+                        <IconoExterno size={16} />
+                    </a>
+                )}
+            </section>
         </section>
     );
 }
