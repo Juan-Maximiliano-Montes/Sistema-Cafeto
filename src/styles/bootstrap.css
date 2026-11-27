@@ -1,0 +1,11 @@
+/* ==========================================================================
+   Bootstrap 5 (bootstrap/dist/css/bootstrap.min.css) dentro de una capa CSS.
+   --------------------------------------------------------------------------
+   Al vivir en @layer bootstrap, cualquier regla SIN capa (index.css y los
+   CSS Modules de Cafeto × iRiS) gana siempre frente a Bootstrap, sin importar
+   la especificidad. Así Bootstrap aporta la grilla, el layout responsivo y la
+   semántica de componentes (table, form-control, btn, badge, navbar...), y la
+   identidad visual (colores, bordes, radios, foco) la siguen dictando los
+   tokens --cf-* en ambos temas.
+   ========================================================================== */
+@import 'bootstrap/dist/css/bootstrap.min.css' layer(bootstrap);

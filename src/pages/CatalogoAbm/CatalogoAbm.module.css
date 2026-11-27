@@ -618,6 +618,7 @@
     width: 22px;
     height: 22px;
     margin-top: 2px;
+    border-radius: 6px;
     accent-color: var(--ambar-cafeto);
     cursor: pointer;
     flex: none;

@@ -484,7 +484,7 @@ function CatalogoAbm() {
                     <button
                         type="button"
                         data-iris-tour="actualizar"
-                        className={estilos.botonSecundario}
+                        className={`btn ${estilos.botonSecundario}`}
                         onClick={() => setIntento((n) => n + 1)}
                         disabled={cargando || !permisosActuales.ver}
                     >
@@ -494,7 +494,7 @@ function CatalogoAbm() {
                 </Tooltip>
                 {permisosActuales.crear && (
                     <Tooltip texto={esMarcas ? 'Cargar nueva marca' : 'Cargar nuevo rubro'} atajo="N" posicion="abajo">
-                        <button type="button" className={estilos.botonPrincipal} onClick={() => abrirCrear('')}>
+                        <button type="button" className={`btn ${estilos.botonPrincipal}`} onClick={() => abrirCrear('')}>
                             <IconoMas size={18} />
                             <span>{esMarcas ? 'Nueva marca' : 'Nuevo rubro'}</span>
                         </button>
@@ -535,7 +535,7 @@ function CatalogoAbm() {
                                 <input
                                     ref={busquedaRef}
                                     type="search"
-                                    className={estilos.inputBusqueda}
+                                    className={`form-control ${estilos.inputBusqueda}`}
                                     placeholder={`Buscar ${esMarcas ? 'marcas' : 'rubros'} (tecla /)...`}
                                     aria-label={`Buscar ${esMarcas ? 'marcas' : 'rubros'}`}
                                     value={busqueda}
@@ -624,7 +624,7 @@ function CatalogoAbm() {
                         {consulta && (
                             <button
                                 type="button"
-                                className={estilos.botonSecundario}
+                                className={`btn ${estilos.botonSecundario}`}
                                 onClick={limpiarBusqueda}
                             >
                                 Limpiar búsqueda
@@ -633,7 +633,7 @@ function CatalogoAbm() {
                         {!consulta && pagina > 1 && (
                             <button
                                 type="button"
-                                className={estilos.botonSecundario}
+                                className={`btn ${estilos.botonSecundario}`}
                                 onClick={() => cambiarPagina(1)}
                             >
                                 Volver a la página 1
@@ -642,7 +642,7 @@ function CatalogoAbm() {
                         {permisosActuales.crear && (
                             <button
                                 type="button"
-                                className={estilos.botonPrincipal}
+                                className={`btn ${estilos.botonPrincipal}`}
                                 onClick={() => abrirCrear(consulta)}
                             >
                                 <IconoMas size={17} />
@@ -659,8 +659,8 @@ function CatalogoAbm() {
                 </div>
             ) : (
                 <div className={estilos.bloqueListado}>
-                    <div className={`${estilos.tablaContenedor} ${cargando ? estilos.actualizando : ''}`}>
-                        <table className={estilos.tabla}>
+                    <div className={`table-responsive ${estilos.tablaContenedor} ${cargando ? estilos.actualizando : ''}`}>
+                        <table className={`table align-middle mb-0 ${estilos.tabla}`}>
                             <thead>
                                 <tr>
                                     <th scope="col">Nombre</th>
@@ -714,7 +714,7 @@ function CatalogoAbm() {
                                                     </Tooltip>
                                                 ) : (
                                                     <span
-                                                        className={`${estilos.badge} ${item.activo ? estilos.badgeOk : estilos.badgeInactivo}`}
+                                                        className={`badge rounded-pill ${estilos.badge} ${item.activo ? estilos.badgeOk : estilos.badgeInactivo}`}
                                                     >
                                                         {item.activo ? <IconoEstadoOk size={13} /> : <IconoEstadoAlerta size={13} />}
                                                         <span>{item.activo ? 'Activo' : 'Pausado'}</span>
@@ -727,7 +727,7 @@ function CatalogoAbm() {
                                                 {permisosActuales.editar && (
                                                     <button
                                                         type="button"
-                                                        className={estilos.botonFila}
+                                                        className={`btn ${estilos.botonFila}`}
                                                         onClick={() => abrirEditar(item)}
                                                         aria-label={`Editar ${item.nombre}`}
                                                     >
@@ -738,7 +738,7 @@ function CatalogoAbm() {
                                                 {permisosActuales.eliminar && (
                                                     <button
                                                         type="button"
-                                                        className={`${estilos.botonFila} ${estilos.botonFilaPeligro}`}
+                                                        className={`btn ${estilos.botonFila} ${estilos.botonFilaPeligro}`}
                                                         onClick={() => setObjetivoEliminar(item)}
                                                         aria-label={`Eliminar ${item.nombre}`}
                                                     >
@@ -832,7 +832,7 @@ function CatalogoAbm() {
                             <input
                                 id="abm-nombre"
                                 type="text"
-                                className={`${estilos.input} ${errors.nombre ? estilos.inputError : ''}`}
+                                className={`form-control ${estilos.input} ${errors.nombre ? estilos.inputError : ''}`}
                                 placeholder={esMarcas ? 'Ej. La Virginia' : 'Ej. Panificados artesanales'}
                                 aria-invalid={errors.nombre ? 'true' : 'false'}
                                 aria-describedby={errors.nombre ? 'abm-nombre-error' : undefined}
@@ -854,7 +854,7 @@ function CatalogoAbm() {
                             <textarea
                                 id="abm-descripcion"
                                 rows={3}
-                                className={`${estilos.textarea} ${errors.descripcion ? estilos.inputError : ''}`}
+                                className={`form-control ${estilos.textarea} ${errors.descripcion ? estilos.inputError : ''}`}
                                 placeholder="Referencia breve para el equipo..."
                                 aria-invalid={errors.descripcion ? 'true' : 'false'}
                                 aria-describedby={errors.descripcion ? 'abm-descripcion-error' : undefined}
@@ -871,7 +871,7 @@ function CatalogoAbm() {
                                     <input
                                         id="abm-activo"
                                         type="checkbox"
-                                        className={estilos.checkbox}
+                                        className={`form-check-input ${estilos.checkbox}`}
                                         disabled={guardando}
                                         {...register('activo')}
                                     />
@@ -890,13 +890,13 @@ function CatalogoAbm() {
                         <div className={estilos.accionesForm}>
                             <button
                                 type="button"
-                                className={estilos.botonSecundario}
+                                className={`btn ${estilos.botonSecundario}`}
                                 onClick={cerrarPanel}
                                 disabled={guardando}
                             >
                                 Cancelar
                             </button>
-                            <button type="submit" className={estilos.botonPrincipal} disabled={guardando}>
+                            <button type="submit" className={`btn ${estilos.botonPrincipal}`} disabled={guardando}>
                                 {guardando ? 'Guardando...' : editando ? 'Guardar cambios' : `Crear ${nombreEntidad}`}
                             </button>
                         </div>

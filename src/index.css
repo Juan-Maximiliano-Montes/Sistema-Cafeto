@@ -143,6 +143,78 @@
     --fuente-cuerpo: 'Inter', system-ui, -apple-system, sans-serif;
     --fuente-mono: ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, Consolas, monospace;
 
+    /* Puente Bootstrap 5 → tokens Cafeto × iRiS (Oscuro).
+       Bootstrap vive en @layer bootstrap: estas variables sin capa siempre ganan. */
+    --bs-body-bg: var(--cf-canvas);
+    --bs-body-bg-rgb: 20, 19, 41;
+    --bs-body-color: var(--cf-text);
+    --bs-body-color-rgb: 242, 245, 252;
+    --bs-body-font-family: var(--fuente-cuerpo);
+    --bs-body-font-size: 0.9375rem;
+    --bs-body-font-weight: 400;
+    --bs-body-line-height: 1.45;
+    --bs-font-sans-serif: var(--fuente-cuerpo);
+    --bs-font-monospace: var(--fuente-mono);
+    --bs-emphasis-color: var(--cf-text);
+    --bs-emphasis-color-rgb: 242, 245, 252;
+    --bs-heading-color: inherit;
+    --bs-secondary-color: var(--cf-muted);
+    --bs-secondary-color-rgb: 186, 194, 220;
+    --bs-secondary-bg: var(--cf-surface-2);
+    --bs-secondary-bg-rgb: 39, 38, 75;
+    --bs-tertiary-color: var(--cf-subtle);
+    --bs-tertiary-color-rgb: 155, 164, 196;
+    --bs-tertiary-bg: var(--cf-surface);
+    --bs-tertiary-bg-rgb: 30, 29, 59;
+    --bs-link-color: var(--cf-accent);
+    --bs-link-color-rgb: 250, 180, 31;
+    --bs-link-hover-color: var(--cf-title);
+    --bs-link-hover-color-rgb: 242, 226, 164;
+    --bs-code-color: var(--cf-title);
+    --bs-highlight-color: var(--cf-on-accent);
+    --bs-highlight-bg: var(--cf-accent);
+    --bs-border-width: 1px;
+    --bs-border-color: var(--cf-line);
+    --bs-border-color-translucent: var(--cf-chassis-line);
+    --bs-border-radius: var(--cf-radio-control);
+    --bs-border-radius-sm: 8px;
+    --bs-border-radius-lg: var(--cf-radio-tarjeta);
+    --bs-border-radius-xl: var(--cf-radio-modal);
+    --bs-border-radius-xxl: var(--cf-radio-lienzo);
+    --bs-border-radius-pill: var(--cf-radio-pildora);
+    --bs-box-shadow: var(--cf-shadow);
+    --bs-focus-ring-color: rgba(250, 180, 31, 0.55);
+    --bs-primary: var(--cf-accent);
+    --bs-primary-rgb: 250, 180, 31;
+    --bs-primary-text-emphasis: var(--cf-title);
+    --bs-primary-bg-subtle: var(--cf-accent-soft);
+    --bs-primary-border-subtle: var(--cf-warn-border);
+    --bs-success: var(--cf-ok);
+    --bs-success-rgb: 75, 227, 141;
+    --bs-success-text-emphasis: var(--cf-ok);
+    --bs-success-bg-subtle: var(--cf-ok-bg);
+    --bs-success-border-subtle: var(--cf-ok-border);
+    --bs-danger: var(--cf-danger);
+    --bs-danger-rgb: 255, 123, 112;
+    --bs-danger-text-emphasis: var(--cf-danger);
+    --bs-danger-bg-subtle: var(--cf-danger-bg);
+    --bs-danger-border-subtle: var(--cf-danger-border);
+    --bs-warning: var(--cf-warn);
+    --bs-warning-rgb: 247, 212, 122;
+    --bs-warning-text-emphasis: var(--cf-warn);
+    --bs-warning-bg-subtle: var(--cf-warn-bg);
+    --bs-warning-border-subtle: var(--cf-warn-border);
+    --bs-info: var(--cf-info);
+    --bs-info-rgb: 138, 180, 255;
+    --bs-info-text-emphasis: var(--cf-info);
+    --bs-info-bg-subtle: var(--cf-info-bg);
+    --bs-info-border-subtle: var(--cf-info-border);
+    --bs-form-valid-color: var(--cf-ok);
+    --bs-form-valid-border-color: var(--cf-ok-border);
+    --bs-form-invalid-color: var(--cf-danger);
+    --bs-form-invalid-border-color: var(--cf-danger-border);
+    --cf-bs-select-chevron: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23BAC2DC' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
     color-scheme: dark;
 }
 
@@ -252,6 +324,64 @@
     --backdrop-modal: rgba(22, 22, 22, 0.45);
     --foco-color: #161616;
 
+    /* Puente Bootstrap 5 → tokens Cafeto × iRiS (Claro).
+       Regla dura: ningún color de texto/enlace de Bootstrap queda en ámbar #FAB41F. */
+    --bs-body-bg: var(--cf-canvas);
+    --bs-body-bg-rgb: 244, 241, 234;
+    --bs-body-color: var(--cf-text);
+    --bs-body-color-rgb: 22, 22, 22;
+    --bs-emphasis-color: var(--cf-text);
+    --bs-emphasis-color-rgb: 22, 22, 22;
+    --bs-secondary-color: var(--cf-muted);
+    --bs-secondary-color-rgb: 71, 77, 99;
+    --bs-secondary-bg: var(--cf-surface-2);
+    --bs-secondary-bg-rgb: 246, 243, 235;
+    --bs-tertiary-color: var(--cf-subtle);
+    --bs-tertiary-color-rgb: 87, 94, 117;
+    --bs-tertiary-bg: var(--cf-surface);
+    --bs-tertiary-bg-rgb: 255, 255, 255;
+    --bs-link-color: #7D5600;
+    --bs-link-color-rgb: 125, 86, 0;
+    --bs-link-hover-color: #161616;
+    --bs-link-hover-color-rgb: 22, 22, 22;
+    --bs-code-color: #7D5600;
+    --bs-highlight-color: #161616;
+    --bs-highlight-bg: var(--cf-accent-soft);
+    --bs-border-color: var(--cf-line);
+    --bs-border-color-translucent: var(--cf-chassis-line);
+    --bs-box-shadow: var(--cf-shadow);
+    --bs-focus-ring-color: rgba(22, 22, 22, 0.55);
+    --bs-primary: #7D5600;
+    --bs-primary-rgb: 125, 86, 0;
+    --bs-primary-text-emphasis: #7D5600;
+    --bs-primary-bg-subtle: var(--cf-accent-soft);
+    --bs-primary-border-subtle: var(--cf-warn-border);
+    --bs-success: var(--cf-ok);
+    --bs-success-rgb: 15, 107, 55;
+    --bs-success-text-emphasis: var(--cf-ok);
+    --bs-success-bg-subtle: var(--cf-ok-bg);
+    --bs-success-border-subtle: var(--cf-ok-border);
+    --bs-danger: var(--cf-danger);
+    --bs-danger-rgb: 179, 38, 30;
+    --bs-danger-text-emphasis: var(--cf-danger);
+    --bs-danger-bg-subtle: var(--cf-danger-bg);
+    --bs-danger-border-subtle: var(--cf-danger-border);
+    --bs-warning: var(--cf-warn);
+    --bs-warning-rgb: 138, 97, 0;
+    --bs-warning-text-emphasis: var(--cf-warn);
+    --bs-warning-bg-subtle: var(--cf-warn-bg);
+    --bs-warning-border-subtle: var(--cf-warn-border);
+    --bs-info: var(--cf-info);
+    --bs-info-rgb: 34, 78, 158;
+    --bs-info-text-emphasis: var(--cf-info);
+    --bs-info-bg-subtle: var(--cf-info-bg);
+    --bs-info-border-subtle: var(--cf-info-border);
+    --bs-form-valid-color: var(--cf-ok);
+    --bs-form-valid-border-color: var(--cf-ok-border);
+    --bs-form-invalid-color: var(--cf-danger);
+    --bs-form-invalid-border-color: var(--cf-danger-border);
+    --cf-bs-select-chevron: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23474D63' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
     color-scheme: light;
 }
 
@@ -339,6 +469,164 @@ button:disabled {
 :root[data-tema='claro'] :where(a:any-link, button, input, select, textarea, summary, [tabindex]):focus-visible {
     outline: 3px solid #161616;
     box-shadow: 0 0 0 5px var(--cf-accent);
+}
+
+/* ==========================================================================
+   Blindaje Bootstrap 5 × Cafeto × iRiS
+   --------------------------------------------------------------------------
+   · Bootstrap está en @layer bootstrap → todo lo de este archivo y de los CSS
+     Modules (sin capa) le gana siempre, sin pelear especificidad.
+   · Los ajustes de componentes usan :where() (especificidad 0) para que
+     cualquier CSS Module siga teniendo la última palabra sobre ellos.
+   ========================================================================== */
+
+/* 1. Reboot neutralizado: dentro de la MISMA capa y con la misma especificidad
+      que Reboot, así sólo anula el reset de elementos sueltos (vuelven al
+      valor del navegador: mismos márgenes, tamaños y pesos que antes) y deja
+      intactas las clases de componentes de Bootstrap (.navbar-nav, .btn...). */
+@layer bootstrap {
+    h1, h2, h3, h4, h5, h6 {
+        margin-top: revert;
+        margin-bottom: revert;
+        font-size: revert;
+        font-weight: revert;
+        line-height: revert;
+        color: revert;
+    }
+
+    p, ul, ol, dl, blockquote, figure {
+        margin-top: revert;
+        margin-bottom: revert;
+    }
+
+    ul, ol {
+        padding-left: revert;
+    }
+
+    dt {
+        font-weight: revert;
+    }
+
+    dd {
+        margin-bottom: revert;
+        margin-left: revert;
+    }
+
+    hr {
+        margin: revert;
+        color: revert;
+        border: revert;
+        opacity: revert;
+    }
+
+    small {
+        font-size: revert;
+    }
+
+    code, kbd, samp, pre {
+        padding: revert;
+        font-family: revert;
+        font-size: revert;
+        color: revert;
+        background-color: revert;
+        border-radius: revert;
+    }
+
+    label {
+        display: revert;
+    }
+
+    img, svg {
+        vertical-align: revert;
+    }
+
+    th {
+        text-align: revert;
+    }
+
+    button {
+        border-radius: revert;
+    }
+}
+
+/* 2. Tablas: sin fondo blanco ni color propio; heredan la paleta Cafeto. */
+:where(.table) {
+    --bs-table-color: currentColor;
+    --bs-table-bg: transparent;
+    --bs-table-border-color: var(--cf-line);
+    --bs-table-striped-color: var(--cf-text);
+    --bs-table-striped-bg: var(--cf-surface-2);
+    --bs-table-active-color: var(--cf-text);
+    --bs-table-active-bg: var(--cf-surface-2);
+    --bs-table-hover-color: var(--cf-text);
+    --bs-table-hover-bg: var(--cf-surface-2);
+}
+
+:where(.table) > thead {
+    vertical-align: inherit;
+}
+
+/* 3. Formularios: superficies, bordes y placeholders de Cafeto. */
+:where(.form-control, .form-select) {
+    color: var(--cf-text);
+    background-color: var(--input-fondo);
+    border-color: var(--input-borde);
+}
+
+:where(.form-control)::placeholder {
+    color: var(--input-placeholder);
+    opacity: 1;
+}
+
+:where(.form-select) {
+    --bs-form-select-bg-img: var(--cf-bs-select-chevron);
+}
+
+:where(.form-check-input) {
+    background-color: var(--input-fondo);
+    border: 1.5px solid var(--cf-subtle);
+}
+
+:where(.form-check-input:checked) {
+    background-color: var(--cf-accent);
+    border-color: var(--cf-accent);
+}
+
+:where(.form-check-input[type='checkbox']:checked) {
+    --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23121128' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+}
+
+:root[data-tema='claro'] :where(.form-check-input:checked) {
+    border-color: #7D5600;
+}
+
+/* 4. Un único anillo de foco: el de Cafeto (sin halo azul de Bootstrap). */
+:where(
+    .form-control:focus,
+    .form-select:focus,
+    .form-check-input:focus,
+    .btn:focus-visible,
+    .nav-link:focus-visible
+) {
+    box-shadow: none;
+}
+
+/* 5. Botones, badges y alertas: Bootstrap da la estructura, Cafeto la identidad. */
+:where(.btn) {
+    line-height: inherit;
+}
+
+:where(.btn:disabled) {
+    pointer-events: auto;
+}
+
+:where(.badge) {
+    color: inherit;
+    line-height: inherit;
+}
+
+:where(.alert) {
+    --bs-alert-margin-bottom: 0;
 }
 
 /* ---------- Utilidades globales iRiS ---------- */

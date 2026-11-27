@@ -5,6 +5,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 14px;
     padding: 8px 18px;
     background: var(--cf-chassis);

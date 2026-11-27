@@ -8,19 +8,25 @@
     margin-top: auto;
 }
 
+/* Contenedor Bootstrap (.container > .row > .col-12.col-md-4) con el ancho
+   máximo de Cafeto; el padding lateral ya lo da .pie, así el borde del texto
+   queda exactamente donde estaba. */
 .grilla {
     max-width: 1120px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1.15fr 1.25fr;
-    gap: 24px;
-    align-items: start;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.grilla > :global(.row) {
+    align-items: flex-start;
 }
 
 .columna {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    min-width: 0;
 }
 
 .marca {
@@ -190,10 +196,6 @@
         padding: 8px 16px calc(76px + env(safe-area-inset-bottom, 0px));
     }
 
-    .grilla {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
 }
 
 @media (max-width: 720px) {

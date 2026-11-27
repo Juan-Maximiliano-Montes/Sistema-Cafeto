@@ -21,7 +21,7 @@ function Navbar() {
     const logoActual = esClaro ? logoPositivo : logoNegativo;
 
     return (
-        <header className={estilos.barra}>
+        <header className={`navbar ${estilos.barra}`}>
             <Link
                 to={sesionActiva ? '/inicio' : '/'}
                 className={estilos.enlaceLogo}
@@ -31,7 +31,7 @@ function Navbar() {
             </Link>
 
             <nav className={estilos.menuPublico} aria-label="Navegación pública">
-                <NavLink to="/" end className={estilos.enlace}>
+                <NavLink to="/" end className={`nav-link ${estilos.enlace}`}>
                     Portada
                 </NavLink>
 

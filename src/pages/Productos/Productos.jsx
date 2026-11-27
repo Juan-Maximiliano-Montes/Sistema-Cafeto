@@ -440,7 +440,7 @@ function Productos() {
                             </label>
                             <select
                                 id="filtro-rubro"
-                                className={estilos.selectRubro}
+                                className={`form-select ${estilos.selectRubro}`}
                                 value={rubroSeleccionado}
                                 onChange={(e) => cambiarRubro(e.target.value)}
                                 aria-label="Filtrar por rubro"
@@ -462,7 +462,7 @@ function Productos() {
                         <input
                             ref={busquedaRef}
                             type="search"
-                            className={estilos.inputBusqueda}
+                            className={`form-control ${estilos.inputBusqueda}`}
                             placeholder={
                                 puedeVerStockInterno
                                     ? 'Buscar por nombre, rubro, marca o código (tecla /)...'
@@ -513,7 +513,7 @@ function Productos() {
                             <Tooltip texto="Vista en lista" posicion="abajo">
                                 <button
                                     type="button"
-                                    className={`${estilos.botonVista} ${vista === 'lista' ? estilos.botonVistaActiva : ''}`}
+                                    className={`btn ${estilos.botonVista} ${vista === 'lista' ? estilos.botonVistaActiva : ''}`}
                                     aria-pressed={vista === 'lista'}
                                     aria-label="Vista en lista"
                                     onClick={() => cambiarVista('lista')}
@@ -524,7 +524,7 @@ function Productos() {
                             <Tooltip texto="Vista en tarjetas" posicion="abajo">
                                 <button
                                     type="button"
-                                    className={`${estilos.botonVista} ${vista === 'tarjetas' ? estilos.botonVistaActiva : ''}`}
+                                    className={`btn ${estilos.botonVista} ${vista === 'tarjetas' ? estilos.botonVistaActiva : ''}`}
                                     aria-pressed={vista === 'tarjetas'}
                                     aria-label="Vista en tarjetas"
                                     onClick={() => cambiarVista('tarjetas')}
@@ -581,7 +581,7 @@ function Productos() {
                                             <FotoProducto src={item.imagen} nombre={item.nombre} isotipo={isotipo} />
 
                                             {item.precio_oferta != null && (
-                                                <span className={estilos.badgeOferta}>
+                                                <span className={`badge rounded-pill ${estilos.badgeOferta}`}>
                                                     {item.porcentaje_oferta ? `-${item.porcentaje_oferta}%` : 'Oferta'}
                                                 </span>
                                             )}
@@ -610,7 +610,7 @@ function Productos() {
                                                     )}
                                                 </div>
 
-                                                <span className={`${estilos.badge} ${item.disponible ? estilos.disponible : estilos.agotado}`}>
+                                                <span className={`badge rounded-pill ${estilos.badge} ${item.disponible ? estilos.disponible : estilos.agotado}`}>
                                                     {item.disponible ? <IconoEstadoOk size={13} /> : <IconoEstadoError size={13} />}
                                                     <span>{item.disponible ? 'Disponible' : 'Sin stock'}</span>
                                                 </span>
@@ -640,7 +640,7 @@ function Productos() {
                                                 <div className={estilos.filaTitular}>
                                                     <h2 className={estilos.nombreLista}>{item.nombre}</h2>
                                                     {item.precio_oferta != null && (
-                                                        <span className={estilos.badgeOfertaInline}>
+                                                        <span className={`badge rounded-pill ${estilos.badgeOfertaInline}`}>
                                                             {item.porcentaje_oferta ? `-${item.porcentaje_oferta}%` : 'Oferta'}
                                                         </span>
                                                     )}
@@ -667,7 +667,7 @@ function Productos() {
                                                 )}
                                             </div>
 
-                                            <span className={`${estilos.badge} ${item.disponible ? estilos.disponible : estilos.agotado}`}>
+                                            <span className={`badge rounded-pill ${estilos.badge} ${item.disponible ? estilos.disponible : estilos.agotado}`}>
                                                 {item.disponible ? <IconoEstadoOk size={13} /> : <IconoEstadoError size={13} />}
                                                 <span>{item.disponible ? 'Disponible' : 'Sin stock'}</span>
                                             </span>
@@ -692,7 +692,7 @@ function Productos() {
                                     </p>
                                     <button
                                         type="button"
-                                        className={estilos.botonLimpiarVacio}
+                                        className={`btn ${estilos.botonLimpiarVacio}`}
                                         onClick={limpiarFiltros}
                                     >
                                         Limpiar búsqueda
@@ -703,7 +703,7 @@ function Productos() {
                                     <p>No encontramos productos en la página {formatearNumero(pagina)}.</p>
                                     <button
                                         type="button"
-                                        className={estilos.botonLimpiarVacio}
+                                        className={`btn ${estilos.botonLimpiarVacio}`}
                                         onClick={() => cambiarPagina(1)}
                                     >
                                         Volver a la página 1

@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Auditorías temporales (repomix)
+repomix_audit/
+
+# Variables de entorno locales (usar .env.example como plantilla)
+.env

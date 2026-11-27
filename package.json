@@ -7,10 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tunel": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/iniciar-tunel.ps1"
   },
   "dependencies": {
     "axios": "^1.21.1",
+    "bootstrap": "^5.3.9",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-hook-form": "^7.92.0",

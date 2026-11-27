@@ -240,7 +240,7 @@ function Login() {
 
                     {aviso && !errorAuth && (
                         <div
-                            className={`${estilos.avisoEstado} ${esAvisoOk ? estilos.avisoOk : estilos.avisoInfo}`}
+                            className={`alert ${estilos.avisoEstado} ${esAvisoOk ? estilos.avisoOk : estilos.avisoInfo}`}
                             role="status"
                         >
                             <span className={estilos.iconoAviso} aria-hidden="true">
@@ -251,7 +251,7 @@ function Login() {
                     )}
 
                     {errorAuth && (
-                        <div className={estilos.errorGeneral} role="alert">
+                        <div className={`alert ${estilos.errorGeneral}`} role="alert">
                             <span className={estilos.iconoError} aria-hidden="true">
                                 <IconoEstadoError size={15} />
                             </span>
@@ -271,7 +271,7 @@ function Login() {
                             <input
                                 id="usuario"
                                 type="text"
-                                className={`${estilos.input} ${errors.usuario ? estilos.inputConError : ''}`}
+                                className={`form-control ${estilos.input} ${errors.usuario ? estilos.inputConError : ''}`}
                                 placeholder="lopezm o 17235560"
                                 autoFocus
                                 autoComplete="username"
@@ -297,7 +297,7 @@ function Login() {
                                 <input
                                     id="clave"
                                     type={verClave ? 'text' : 'password'}
-                                    className={`${estilos.input} ${errors.clave ? estilos.inputConError : ''}`}
+                                    className={`form-control ${estilos.input} ${errors.clave ? estilos.inputConError : ''}`}
                                     placeholder="••••••••"
                                     autoComplete="current-password"
                                     aria-invalid={errors.clave ? 'true' : 'false'}
@@ -315,7 +315,7 @@ function Login() {
                                 >
                                     <button
                                         type="button"
-                                        className={estilos.botonVer}
+                                        className={`btn ${estilos.botonVer}`}
                                         onClick={() => setVerClave((visible) => !visible)}
                                         aria-pressed={verClave}
                                     >
@@ -332,7 +332,7 @@ function Login() {
                             </div>
                         )}
 
-                        <button type="submit" className={estilos.botonIngresar} disabled={botonDeshabilitado}>
+                        <button type="submit" className={`btn ${estilos.botonIngresar}`} disabled={botonDeshabilitado}>
                             {cargando ? 'Verificando tus datos...' : 'Ingresar al turno'}
                         </button>
                     </form>
@@ -340,7 +340,7 @@ function Login() {
                     <div className={estilos.bloqueAyuda}>
                         <button
                             type="button"
-                            className={estilos.botonOlvido}
+                            className={`btn ${estilos.botonOlvido}`}
                             onClick={() => setModalClaveAbierto(true)}
                         >
                             ¿Te olvidaste la clave?

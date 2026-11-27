@@ -8,11 +8,35 @@ const CLAVE_RUTA_POST_LOGIN = 'cafeto_ruta_post_login';
 let sesionVencidaNotificada = false;
 
 export const EVENTO_SESION_VENCIDA = 'cafeto:sesion-vencida';
-export const URL_WEB_DJANGO = (import.meta.env.VITE_DJANGO_WEB || 'http://localhost:8000').replace(/\/+$/, '');
+
+const URL_DJANGO_LOCAL = 'http://localhost:8000';
+const SUFIJO_API_MOVIL = /\/api\/movil\/?$/i;
+const sinBarraFinal = (url) => String(url || '').trim().replace(/\/+$/, '');
+
+const API_URL_ENV = sinBarraFinal(import.meta.env.VITE_API_URL);
+const DJANGO_WEB_ENV = sinBarraFinal(import.meta.env.VITE_DJANGO_WEB);
+
+/**
+ * Origen web de Django (imágenes /media/... y enlaces al panel completo).
+ * Prioridad: VITE_DJANGO_WEB → derivado de VITE_API_URL (quitando /api/movil,
+ * útil para el túnel HTTPS de Cloudflare en Vercel) → http://localhost:8000.
+ */
+const derivarOrigenDjango = (urlApi) => {
+    if (!urlApi) return '';
+    if (SUFIJO_API_MOVIL.test(urlApi)) return urlApi.replace(SUFIJO_API_MOVIL, '');
+    try {
+        return new URL(urlApi).origin;
+    } catch {
+        return ''; // URL relativa (p. ej. '/api/movil'): se usa el valor local por defecto.
+    }
+};
+
+export const URL_WEB_DJANGO = DJANGO_WEB_ENV || derivarOrigenDjango(API_URL_ENV) || URL_DJANGO_LOCAL;
+
 const USAR_PROXY = import.meta.env.VITE_USAR_PROXY === 'true';
 export const URL_API_BASE = USAR_PROXY
     ? '/api/movil'
-    : (import.meta.env.VITE_API_URL || `${URL_WEB_DJANGO}/api/movil`).replace(/\/+$/, '');
+    : API_URL_ENV || `${URL_WEB_DJANGO}/api/movil`;
 
 const apiClient = axios.create({
     baseURL: URL_API_BASE,
@@ -22,11 +46,42 @@ const apiClient = axios.create({
     },
 });
 
+const HOSTS_LOCALES = new Set(['localhost', '127.0.0.1', '0.0.0.0', '[::1]']);
+
+const origenWebDjango = (() => {
+    try {
+        return new URL(URL_WEB_DJANGO);
+    } catch {
+        return null;
+    }
+})();
+
+/**
+ * Completa rutas de /media/ con el origen de Django. Si Django devuelve una URL
+ * absoluta apuntando a localhost (o en http detrás del túnel HTTPS), se reescribe
+ * al origen público configurado para que las fotos carguen desde Vercel.
+ */
 const resolverUrlMedia = (ruta) => {
     if (!ruta || typeof ruta !== 'string') return ruta;
-    if (USAR_PROXY || /^https?:\/\//i.test(ruta) || ruta.startsWith('data:')) {
+    if (ruta.startsWith('data:') || ruta.startsWith('blob:')) return ruta;
+
+    if (/^https?:\/\//i.test(ruta)) {
+        if (USAR_PROXY || !origenWebDjango) return ruta;
+        try {
+            const url = new URL(ruta);
+            const esLocal = HOSTS_LOCALES.has(url.hostname);
+            const esMismoHost = url.host === origenWebDjango.host;
+            const destinoEsLocal = HOSTS_LOCALES.has(origenWebDjango.hostname);
+            if ((esLocal && !destinoEsLocal) || (esMismoHost && url.protocol !== origenWebDjango.protocol)) {
+                return `${origenWebDjango.origin}${url.pathname}${url.search}${url.hash}`;
+            }
+        } catch {
+            // URL mal formada: se devuelve tal cual.
+        }
         return ruta;
     }
+
+    if (USAR_PROXY) return ruta;
     return `${URL_WEB_DJANGO}${ruta.startsWith('/') ? '' : '/'}${ruta}`;
 };
 

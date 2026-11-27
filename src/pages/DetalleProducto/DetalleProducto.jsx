@@ -238,7 +238,7 @@ function DetalleProducto() {
                         mensaje={error}
                         onReintentar={() => setIntento((n) => n + 1)}
                     />
-                    <button type="button" className={estilos.botonVolver} onClick={volverAProductos}>
+                    <button type="button" className={`btn ${estilos.botonVolver}`} onClick={volverAProductos}>
                         <IconoVolver size={17} />
                         <span>Volver a productos</span>
                     </button>
@@ -251,7 +251,7 @@ function DetalleProducto() {
                         titulo={`No encontramos el producto #${id}`}
                         mensaje="Puede que ya no esté publicado en Cafetería ni en Minisúper o que el enlace sea incorrecto."
                     />
-                    <button type="button" className={estilos.botonVolver} onClick={volverAProductos}>
+                    <button type="button" className={`btn ${estilos.botonVolver}`} onClick={volverAProductos}>
                         <IconoVolver size={17} />
                         <span>Volver a productos</span>
                     </button>
@@ -277,7 +277,7 @@ function DetalleProducto() {
                                     </div>
                                 )}
                                 {tieneOferta && (
-                                    <span className={estilos.badgeOferta}>
+                                    <span className={`badge rounded-pill ${estilos.badgeOferta}`}>
                                         {producto.porcentaje_oferta ? `-${producto.porcentaje_oferta}%` : 'Oferta'}
                                     </span>
                                 )}
@@ -300,7 +300,7 @@ function DetalleProducto() {
                                     }
                                 >
                                     <span
-                                        className={`${estilos.badge} ${producto.disponible ? estilos.disponible : estilos.agotado}`}
+                                        className={`badge rounded-pill ${estilos.badge} ${producto.disponible ? estilos.disponible : estilos.agotado}`}
                                     >
                                         {producto.disponible ? <IconoEstadoOk size={14} /> : <IconoEstadoError size={14} />}
                                         <span>{producto.disponible ? 'Disponible' : 'Sin stock'}</span>
@@ -386,7 +386,7 @@ function DetalleProducto() {
                             </dl>
 
                             <div className={estilos.acciones}>
-                                <button type="button" className={estilos.botonVolver} onClick={volverAProductos}>
+                                <button type="button" className={`btn ${estilos.botonVolver}`} onClick={volverAProductos}>
                                     <IconoVolver size={17} />
                                     <span>Volver a productos</span>
                                 </button>
@@ -399,7 +399,7 @@ function DetalleProducto() {
                                         href={URL_PRODUCTOS_WEB}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className={estilos.botonPanelWeb}
+                                        className={`btn ${estilos.botonPanelWeb}`}
                                     >
                                         <span>Abrir panel completo de Cafeto</span>
                                         <IconoExterno size={17} />
@@ -443,8 +443,8 @@ function DetalleProducto() {
                         )}
 
                         {!cargandoLotes && !errorLotes && lotesSeguros.length > 0 && (
-                            <div className={estilos.tablaContenedor}>
-                                <table className={estilos.tablaLotes}>
+                            <div className={`table-responsive ${estilos.tablaContenedor}`}>
+                                <table className={`table align-middle mb-0 ${estilos.tablaLotes}`}>
                                     <thead>
                                         <tr>
                                             <th scope="col">Número de lote</th>
@@ -464,7 +464,7 @@ function DetalleProducto() {
                                                     </td>
                                                     <td>{formatearFecha(lote?.vence)}</td>
                                                     <td>
-                                                        <span className={`${estilos.badgeLote} ${estado.clase}`}>
+                                                        <span className={`badge rounded-pill ${estilos.badgeLote} ${estado.clase}`}>
                                                             <Icono size={13} />
                                                             <span>{estado.texto}</span>
                                                         </span>
