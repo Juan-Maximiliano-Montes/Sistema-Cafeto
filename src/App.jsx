@@ -1,14 +1,17 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
 import Navbar from './components/Navbar/Navbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import BarraEstado from './components/BarraEstado/BarraEstado';
 import BuscadorRapido from './components/BuscadorRapido/BuscadorRapido';
+import CentroAyuda from './components/CentroAyuda/CentroAyuda';
+import GuiaInteractiva from './components/GuiaInteractiva/GuiaInteractiva';
 import Main from './components/Main/Main';
 import Footer from './components/Footer/Footer';
 import RutaProtegida from './components/RutaProtegida/RutaProtegida';
 import Cargando from './components/Cargando/Cargando';
+import LimiteError from './components/LimiteError/LimiteError';
 
 import Login from './pages/Login/Login';
 
@@ -29,7 +32,8 @@ import {
     limpiarSesion,
     normalizarRutaPostLogin,
 } from './api/api';
-import LimiteError from './components/LimiteError/LimiteError';
+import { NotificacionProvider } from './context/NotificacionContext';
+import { useAtajos } from './hooks/useAtajos';
 import { useTema } from './hooks/useTema';
 import { useTamanoTexto } from './hooks/useTamanoTexto';
 import estilos from './App.module.css';
@@ -107,6 +111,9 @@ function EstructuraApp() {
 
     const [sidebarColapsado, setSidebarColapsado] = useState(leerSidebarGuardado);
     const [buscadorAbierto, setBuscadorAbierto] = useState(false);
+    const [ayudaAbierta, setAyudaAbierta] = useState(false);
+    const [guiaActiva, setGuiaActiva] = useState(false);
+    const lienzoRef = useRef(null);
 
     const alternarSidebar = () => {
         setSidebarColapsado((prev) => {
@@ -120,27 +127,35 @@ function EstructuraApp() {
         });
     };
 
+    const abrirAyuda = () => {
+        setBuscadorAbierto(false);
+        setAyudaAbierta(true);
+    };
+
+    useAtajos(
+        {
+            'ctrl+k': () => {
+                setAyudaAbierta(false);
+                setBuscadorAbierto((abierto) => !abierto);
+            },
+            f1: () => {
+                setBuscadorAbierto(false);
+                setAyudaAbierta((abierta) => !abierta);
+            },
+        },
+        { activo: usaLayoutPrivado }
+    );
+
     useEffect(() => {
+        if (lienzoRef.current) {
+            lienzoRef.current.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        }
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }, [pathname]);
 
     useEffect(() => {
         document.title = obtenerTituloRuta(pathname);
     }, [pathname]);
-
-    useEffect(() => {
-        if (!usaLayoutPrivado) return undefined;
-
-        const alPresionarTecla = (evento) => {
-            if ((evento.ctrlKey || evento.metaKey) && evento.key.toLowerCase() === 'k') {
-                evento.preventDefault();
-                setBuscadorAbierto((abierto) => !abierto);
-            }
-        };
-
-        window.addEventListener('keydown', alPresionarTecla);
-        return () => window.removeEventListener('keydown', alPresionarTecla);
-    }, [usaLayoutPrivado]);
 
     const contenidoRutas = (
         <LimiteError key={pathname}>
@@ -175,18 +190,31 @@ function EstructuraApp() {
             </a>
 
             {usaLayoutPrivado ? (
-                <div className={estilos.shellApp}>
-                    <Sidebar colapsado={sidebarColapsado} onAlternarColapso={alternarSidebar} />
-                    <div className={estilos.columnaPrincipal}>
+                <div className={estilos.shellApp} data-iris-shell="true">
+                    <Sidebar
+                        colapsado={sidebarColapsado}
+                        onAlternarColapso={alternarSidebar}
+                        onAbrirAyuda={abrirAyuda}
+                    />
+                    <div ref={lienzoRef} className={estilos.columnaPrincipal} data-iris-lienzo="true" data-iris-tour="lienzo">
                         <BarraEstado onAbrirBuscador={() => setBuscadorAbierto(true)} />
                         <main id="contenido-principal" tabIndex={-1} className={estilos.contenidoApp}>
                             {contenidoRutas}
                         </main>
-                        <Footer modoAutenticado />
                     </div>
                     <BuscadorRapido
                         abierto={buscadorAbierto}
                         onCerrar={() => setBuscadorAbierto(false)}
+                        onAbrirAyuda={abrirAyuda}
+                    />
+                    <CentroAyuda
+                        abierto={ayudaAbierta}
+                        onCerrar={() => setAyudaAbierta(false)}
+                        onIniciarGuia={() => setGuiaActiva(true)}
+                    />
+                    <GuiaInteractiva
+                        activo={guiaActiva}
+                        onCerrar={() => setGuiaActiva(false)}
                     />
                 </div>
             ) : esPantallaCompleta ? (
@@ -220,7 +248,9 @@ function EstructuraApp() {
 function App() {
     return (
         <BrowserRouter>
-            <EstructuraApp />
+            <NotificacionProvider>
+                <EstructuraApp />
+            </NotificacionProvider>
         </BrowserRouter>
     );
 }

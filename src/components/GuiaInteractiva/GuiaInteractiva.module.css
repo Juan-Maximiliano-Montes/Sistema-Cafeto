@@ -1,0 +1,145 @@
+.foco {
+    position: fixed;
+    z-index: 2150;
+    border-radius: 18px;
+    border: 3px solid var(--cf-accent);
+    box-shadow: 0 0 0 9999px rgba(7, 6, 18, 0.56);
+    pointer-events: none;
+    transition: top 220ms var(--iris-ease), left 220ms var(--iris-ease), width 220ms var(--iris-ease), height 220ms var(--iris-ease);
+}
+
+.tarjeta {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 2200;
+    width: min(390px, calc(100vw - 28px));
+    padding: 18px 18px 16px;
+    border-radius: var(--cf-radio-modal);
+    background: var(--cf-surface);
+    border: 1px solid var(--cf-line-strong);
+    color: var(--cf-text);
+    box-shadow: var(--cf-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pasoBadge {
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--cf-accent);
+    color: var(--cf-on-accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.seguro {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--cf-muted);
+}
+
+.cerrar {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    border: 1px solid var(--cf-line);
+    background: var(--cf-surface-2);
+    color: var(--cf-text);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+.cerrar:hover {
+    border-color: var(--cf-accent);
+}
+
+.titulo {
+    margin: 2px 0 0;
+    font-family: var(--fuente-subtitulo);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cf-title);
+}
+
+.texto {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--cf-muted);
+}
+
+.pie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--cf-line);
+}
+
+.puntos {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.punto {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--cf-line-strong);
+}
+
+.puntoActivo {
+    width: 18px;
+    background: var(--cf-accent);
+}
+
+.botonSecundario,
+.botonPrincipal {
+    min-height: 36px;
+    padding: 6px 13px;
+    border-radius: 10px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.botonSecundario {
+    border: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface-2);
+    color: var(--cf-text);
+}
+
+.botonSecundario:disabled {
+    opacity: 0.45;
+}
+
+.botonPrincipal {
+    border: 0;
+    background: var(--cf-accent);
+    color: var(--cf-on-accent);
+}
+
+.botonPrincipal:hover {
+    background: var(--cf-accent-hover);
+}

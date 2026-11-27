@@ -6,14 +6,22 @@ import {
     getUsuarioActual,
     tienePermiso,
 } from '../../api/api';
+import { useNotificacion } from '../../hooks/useNotificacion';
+import { useTamanoTexto } from '../../hooks/useTamanoTexto';
+import { useTema } from '../../hooks/useTema';
 import { formatearPesos, normalizar } from '../../utils/formato';
+import { puedeVerModulo } from '../../utils/permisos';
 import {
     IconoBuscar,
     IconoCaja,
-    IconoCerrar,
+    IconoCampana,
+    IconoEstadoInfo,
     IconoEtiqueta,
     IconoInicio,
+    IconoLuna,
+    IconoMas,
     IconoReportes,
+    IconoSol,
     IconoStock,
     IconoTaza,
     IconoUsuarios,
@@ -32,10 +40,16 @@ const PANTALLAS = [
 
 const esCodigoBarras = (texto) => /^\d{8,}$/.test(texto.trim());
 
-function BuscadorRapido({ abierto, onCerrar }) {
+function BuscadorRapido({ abierto, onCerrar, onAbrirAyuda }) {
     const navigate = useNavigate();
+    const { esClaro, alternarTema } = useTema();
+    const { esGrande, alternarTamano } = useTamanoTexto();
+    const { sonidoActivo, alternarSonido, notificar } = useNotificacion();
+
     const usuario = getUsuarioActual();
     const puedeVerStock = tienePermiso(usuario, 'ver_productos');
+    const puedeCrearCatalogo =
+        tienePermiso(usuario, 'crear_marca') || tienePermiso(usuario, 'crear_rubro');
 
     const dialogoRef = useRef(null);
     const inputRef = useRef(null);
@@ -60,7 +74,7 @@ function BuscadorRapido({ abierto, onCerrar }) {
 
     useEffect(() => {
         if (!abierto) return undefined;
-        const espera = setTimeout(() => setConsulta(texto.trim()), 300);
+        const espera = setTimeout(() => setConsulta(texto.trim()), 280);
         return () => clearTimeout(espera);
     }, [texto, abierto]);
 
@@ -123,18 +137,88 @@ function BuscadorRapido({ abierto, onCerrar }) {
         return () => controlador.abort();
     }, [abierto, consulta, puedeVerStock]);
 
+    const accionesRapidas = [
+        ...(puedeCrearCatalogo
+            ? [
+                  {
+                      id: 'catalogo-abm',
+                      titulo: 'Gestionar marcas y rubros',
+                      detalle: 'Crear o editar marcas y rubros del catálogo',
+                      icono: IconoMas,
+                      ejecutar: () => navigate('/catalogo'),
+                  },
+              ]
+            : []),
+        {
+            id: 'tema',
+            titulo: esClaro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro',
+            detalle: 'Alternar apariencia visual de Cafeto × iRiS',
+            icono: esClaro ? IconoLuna : IconoSol,
+            ejecutar: () => {
+                alternarTema();
+                notificar({
+                    texto: esClaro ? 'Tema oscuro activado.' : 'Tema claro activado.',
+                    tono: 'info',
+                });
+            },
+        },
+        {
+            id: 'tamano',
+            titulo: esGrande ? 'Volver al tamaño de texto normal' : 'Agrandar tamaño de texto (A+)',
+            detalle: 'Ajustar lectura cómoda para el turno',
+            icono: IconoEstadoInfo,
+            ejecutar: () => {
+                alternarTamano();
+                notificar({
+                    texto: esGrande ? 'Tamaño de texto normal.' : 'Texto ampliado activado.',
+                    tono: 'info',
+                });
+            },
+        },
+        {
+            id: 'sonido',
+            titulo: sonidoActivo ? 'Silenciar sonido de avisos' : 'Activar sonido de avisos',
+            detalle: 'Tono suave offline en el Notch central',
+            icono: IconoCampana,
+            ejecutar: () => {
+                alternarSonido();
+                notificar({
+                    texto: sonidoActivo ? 'Avisos silenciados.' : 'Sonido de avisos activado.',
+                    tono: 'info',
+                    silencioso: sonidoActivo,
+                });
+            },
+        },
+        {
+            id: 'ayuda',
+            titulo: 'Abrir centro de ayuda y atajos',
+            detalle: 'Guía de esta pantalla, primeros pasos y teclas (F1)',
+            icono: IconoEstadoInfo,
+            ejecutar: () => onAbrirAyuda?.(),
+        },
+    ];
+
     const productosVisibles = abierto && consulta.length >= 2 ? productos : [];
     const buscandoVisible = abierto && consulta.length >= 2 && buscando;
 
     const palabras = normalizar(texto).split(/\s+/).filter(Boolean);
+
     const pantallasFiltradas = PANTALLAS.filter((p) => {
+        if (!puedeVerModulo(usuario, p.to)) return false;
         if (palabras.length === 0) return true;
         const fuente = normalizar(`${p.titulo} ${p.detalle}`);
         return palabras.every((palabra) => fuente.includes(palabra));
     });
 
+    const accionesFiltradas = accionesRapidas.filter((a) => {
+        if (palabras.length === 0) return true;
+        const fuente = normalizar(`${a.titulo} ${a.detalle}`);
+        return palabras.every((palabra) => fuente.includes(palabra));
+    });
+
     const opcionesTotales = [
         ...pantallasFiltradas.map((p) => ({ tipo: 'pantalla', item: p })),
+        ...accionesFiltradas.map((a) => ({ tipo: 'accion', item: a })),
         ...productosVisibles.map((prod) => ({ tipo: 'producto', item: prod })),
     ];
 
@@ -150,6 +234,10 @@ function BuscadorRapido({ abierto, onCerrar }) {
         cerrarYLimpio();
         if (opcion.tipo === 'pantalla') {
             navigate(opcion.item.to);
+            return;
+        }
+        if (opcion.tipo === 'accion') {
+            opcion.item.ejecutar();
             return;
         }
         navigate(`/productos/${opcion.item.id}`, {
@@ -175,6 +263,9 @@ function BuscadorRapido({ abierto, onCerrar }) {
         }
     };
 
+    const offsetAcciones = pantallasFiltradas.length;
+    const offsetProductos = pantallasFiltradas.length + accionesFiltradas.length;
+
     return (
         <dialog
             ref={dialogoRef}
@@ -190,7 +281,7 @@ function BuscadorRapido({ abierto, onCerrar }) {
         >
             <div className={estilos.caja} onKeyDown={alPresionarTecla}>
                 <h2 id={idTitulo} className={estilos.oculto}>
-                    Buscador rápido del sistema
+                    Paleta de comandos y búsqueda rápida
                 </h2>
 
                 <div className={estilos.barraInput}>
@@ -201,8 +292,8 @@ function BuscadorRapido({ abierto, onCerrar }) {
                         ref={inputRef}
                         type="search"
                         className={estilos.input}
-                        placeholder="Ir a una pantalla o buscar un producto..."
-                        aria-label="Ir a una pantalla o buscar un producto"
+                        placeholder="Buscar pantalla, producto, código o acción..."
+                        aria-label="Buscar pantalla, producto, código o acción"
                         value={texto}
                         onChange={(e) => {
                             const valor = e.target.value;
@@ -220,7 +311,7 @@ function BuscadorRapido({ abierto, onCerrar }) {
                         onClick={cerrarYLimpio}
                         aria-label="Cerrar buscador rápido"
                     >
-                        <IconoCerrar size={18} />
+                        <kbd className="iris-keycap">Esc</kbd>
                     </button>
                 </div>
 
@@ -241,13 +332,45 @@ function BuscadorRapido({ abierto, onCerrar }) {
                                                 onClick={() => elegirOpcion({ tipo: 'pantalla', item: pantalla })}
                                             >
                                                 <span className={estilos.iconoOpcion}>
-                                                    <Icono size={18} />
+                                                    <Icono size={17} />
                                                 </span>
                                                 <span className={estilos.textoOpcion}>
                                                     <strong>{pantalla.titulo}</strong>
                                                     <small>{pantalla.detalle}</small>
                                                 </span>
                                                 <span className={estilos.irA}>Ir →</span>
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    )}
+
+                    {accionesFiltradas.length > 0 && (
+                        <div className={estilos.grupo}>
+                            <span className={estilos.etiquetaGrupo}>Acciones rápidas</span>
+                            <ul className={estilos.lista}>
+                                {accionesFiltradas.map((accion, idxAccion) => {
+                                    const indiceGlobal = offsetAcciones + idxAccion;
+                                    const Icono = accion.icono;
+                                    const activo = indiceGlobal === indiceActivo;
+                                    return (
+                                        <li key={accion.id}>
+                                            <button
+                                                type="button"
+                                                className={`${estilos.opcion} ${activo ? estilos.opcionActiva : ''}`}
+                                                onMouseEnter={() => setIndiceActivo(indiceGlobal)}
+                                                onClick={() => elegirOpcion({ tipo: 'accion', item: accion })}
+                                            >
+                                                <span className={estilos.iconoOpcion}>
+                                                    <Icono size={17} />
+                                                </span>
+                                                <span className={estilos.textoOpcion}>
+                                                    <strong>{accion.titulo}</strong>
+                                                    <small>{accion.detalle}</small>
+                                                </span>
+                                                <span className={estilos.irA}>Ejecutar</span>
                                             </button>
                                         </li>
                                     );
@@ -271,7 +394,7 @@ function BuscadorRapido({ abierto, onCerrar }) {
                             {productosVisibles.length > 0 && (
                                 <ul className={estilos.lista}>
                                     {productosVisibles.map((prod, idxProd) => {
-                                        const indiceGlobal = pantallasFiltradas.length + idxProd;
+                                        const indiceGlobal = offsetProductos + idxProd;
                                         const activo = indiceGlobal === indiceActivo;
                                         const precio = prod.precio_oferta ?? prod.precio;
                                         return (
@@ -283,7 +406,7 @@ function BuscadorRapido({ abierto, onCerrar }) {
                                                     onClick={() => elegirOpcion({ tipo: 'producto', item: prod })}
                                                 >
                                                     <span className={estilos.iconoOpcion}>
-                                                        <IconoTaza size={18} />
+                                                        <IconoTaza size={17} />
                                                     </span>
                                                     <span className={estilos.textoOpcion}>
                                                         <strong>{prod.nombre}</strong>
@@ -293,7 +416,7 @@ function BuscadorRapido({ abierto, onCerrar }) {
                                                                 .join(' · ') || 'Producto'}
                                                         </small>
                                                     </span>
-                                                    <span className={estilos.precio}>
+                                                    <span className={`${estilos.precio} iris-num`}>
                                                         {precio != null ? formatearPesos(precio) : 'Ver'}
                                                     </span>
                                                 </button>
@@ -305,16 +428,25 @@ function BuscadorRapido({ abierto, onCerrar }) {
                         </div>
                     )}
 
-                    {pantallasFiltradas.length === 0 && consulta.length < 2 && (
+                    {opcionesTotales.length === 0 && consulta.length < 2 && (
                         <p className={estilos.vacio}>
-                            Escribí al menos 2 letras para buscar productos por nombre o código.
+                            Escribí al menos 2 letras para buscar productos por nombre o código de barras.
                         </p>
                     )}
                 </div>
 
                 <footer className={estilos.pie}>
-                    <span>↑ ↓ moverte · Enter abrir</span>
-                    <span>Esc cerrar</span>
+                    <span className={estilos.pieGrupo}>
+                        <kbd className="iris-keycap">↑</kbd>
+                        <kbd className="iris-keycap">↓</kbd>
+                        <span>moverte</span>
+                        <kbd className="iris-keycap">Enter</kbd>
+                        <span>abrir</span>
+                    </span>
+                    <span className={estilos.pieGrupo}>
+                        <kbd className="iris-keycap">Esc</kbd>
+                        <span>cerrar</span>
+                    </span>
                 </footer>
             </div>
         </dialog>

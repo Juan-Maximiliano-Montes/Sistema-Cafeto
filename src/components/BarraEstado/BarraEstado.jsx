@@ -6,35 +6,53 @@ import {
     getUsuarioActual,
     tienePermiso,
 } from '../../api/api';
+import { useNotificacion } from '../../hooks/useNotificacion';
 import { formatearNumero } from '../../utils/formato';
+import { puedeVerModulo } from '../../utils/permisos';
 import {
     IconoBuscar,
     IconoCaja,
+    IconoCerrar,
     IconoEscudo,
+    IconoEstadoAlerta,
+    IconoEstadoInfo,
     IconoEstadoOk,
 } from '../Iconos/Iconos';
 import Tooltip from '../Tooltip/Tooltip';
 import estilos from './BarraEstado.module.css';
 
-const inicialesDe = (usuario) => {
-    const primero = usuario?.nombre?.[0] || '';
-    const segundo = usuario?.apellido?.[0] || '';
-    return `${primero}${segundo}`.toUpperCase() || 'CF';
-};
-
 function BarraEstado({ onAbrirBuscador }) {
     const { pathname } = useLocation();
     const usuario = getUsuarioActual();
     const puedeAutorizar = tienePermiso(usuario, 'autorizar_ajustes');
+    const puedeVerCajas = puedeVerModulo(usuario, '/cajas');
+
+    const {
+        avisoActual,
+        pendientesEnCola,
+        cerrarAviso,
+        pausarAviso,
+        reanudarAviso,
+    } = useNotificacion();
 
     const [cajasAbiertas, setCajasAbiertas] = useState(null);
     const [pendientesAutorizar, setPendientesAutorizar] = useState(0);
     const [recarga, setRecarga] = useState(0);
+    const [enLinea, setEnLinea] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true));
 
     useEffect(() => {
         const alActualizarEstado = () => setRecarga((n) => n + 1);
+        const marcarEnLinea = () => setEnLinea(true);
+        const marcarSinConexion = () => setEnLinea(false);
+
         window.addEventListener('cafeto:estado-actualizar', alActualizarEstado);
-        return () => window.removeEventListener('cafeto:estado-actualizar', alActualizarEstado);
+        window.addEventListener('online', marcarEnLinea);
+        window.addEventListener('offline', marcarSinConexion);
+        return () => {
+            window.removeEventListener('cafeto:estado-actualizar', alActualizarEstado);
+            window.removeEventListener('online', marcarEnLinea);
+            window.removeEventListener('offline', marcarSinConexion);
+        };
     }, []);
 
     useEffect(() => {
@@ -65,8 +83,6 @@ function BarraEstado({ onAbrirBuscador }) {
                 }
             } catch {
                 // La barra de estado nunca bloquea la pantalla si falla una actualización silenciosa.
-            } finally {
-                // Sin spinner bloqueante para mantener la barra fluida.
             }
         }
 
@@ -83,63 +99,175 @@ function BarraEstado({ onAbrirBuscador }) {
                     ? '1 caja abierta'
                     : `${formatearNumero(cajasAbiertas)} cajas abiertas`;
 
-    return (
-        <div className={estilos.contenedor}>
-            <header className={estilos.pildora} aria-label="Estado en vivo y acceso rápido">
-                <div className={estilos.grupoEstado}>
-                    <Tooltip texto="Ver estado de cajas" posicion="abajo" alineacion="inicio">
-                        <Link
-                            to="/cajas"
-                            className={`${estilos.chipEstado} ${cajasAbiertas > 0 ? estilos.chipOk : estilos.chipNeutro}`}
-                        >
-                            {cajasAbiertas > 0 ? <IconoEstadoOk size={14} /> : <IconoCaja size={15} />}
-                            <span>{etiquetaCajas}</span>
-                        </Link>
-                    </Tooltip>
+    const iconoAviso =
+        avisoActual?.tono === 'aviso' ? (
+            <IconoEstadoAlerta size={16} />
+        ) : avisoActual?.tono === 'info' ? (
+            <IconoEstadoInfo size={16} />
+        ) : (
+            <IconoEstadoOk size={16} />
+        );
 
-                    {puedeAutorizar && pendientesAutorizar > 0 && (
-                        <Tooltip texto="Revisar autorizaciones pendientes" posicion="abajo" alineacion="inicio">
-                            <Link
-                                to="/stock"
-                                state={{ pestana: 'AUTORIZACIONES' }}
-                                className={`${estilos.chipEstado} ${estilos.chipAlerta}`}
-                            >
-                                <IconoEscudo size={14} />
-                                <span>{formatearNumero(pendientesAutorizar)} por autorizar</span>
-                            </Link>
-                        </Tooltip>
+    const claseTonoAviso =
+        avisoActual?.tono === 'aviso'
+            ? estilos.avisoTonoAviso
+            : avisoActual?.tono === 'info'
+                ? estilos.avisoTonoInfo
+                : estilos.avisoTonoExito;
+
+    return (
+        <header className={estilos.barra} aria-label="Estado en vivo y notificaciones">
+            <div className={estilos.zonaCentro}>
+                <div
+                    data-iris-tour="notch"
+                    className={`${estilos.notch} ${avisoActual ? estilos.notchConAviso : ''} ${
+                        avisoActual?.esLargo ? estilos.notchConAvisoLargo : ''
+                    }`}
+                >
+                    {avisoActual ? (
+                        <div
+                            key={avisoActual.id}
+                            className={`${estilos.cajaAviso} ${claseTonoAviso} ${
+                                avisoActual.esLargo ? estilos.cajaAvisoLargo : ''
+                            } ${avisoActual.pausado ? estilos.cajaAvisoPausado : ''}`}
+                            role="status"
+                            aria-live="polite"
+                            onMouseEnter={pausarAviso}
+                            onMouseLeave={reanudarAviso}
+                            onFocus={pausarAviso}
+                            onBlur={reanudarAviso}
+                        >
+                            {!avisoActual.fijo && avisoActual.duracionMs > 0 && (
+                                <span
+                                    className={estilos.barraTimer}
+                                    style={{ '--iris-notice-ms': `${avisoActual.duracionMs}ms` }}
+                                    aria-hidden="true"
+                                />
+                            )}
+
+                            <div className={estilos.cuerpoAviso}>
+                                <span className={estilos.iconoAviso} aria-hidden="true">
+                                    {iconoAviso}
+                                </span>
+                                <span className={estilos.textoAviso}>{avisoActual.texto}</span>
+                                {pendientesEnCola > 0 && (
+                                    <span
+                                        className={estilos.badgeCola}
+                                        title={`${pendientesEnCola} aviso(s) más en espera`}
+                                    >
+                                        +{pendientesEnCola}
+                                    </span>
+                                )}
+                                {!avisoActual.esLargo && (
+                                    <button
+                                        type="button"
+                                        className={estilos.cerrarAviso}
+                                        onClick={cerrarAviso}
+                                        aria-label="Cerrar aviso"
+                                    >
+                                        <IconoCerrar size={14} />
+                                    </button>
+                                )}
+                            </div>
+
+                            {avisoActual.esLargo && (
+                                <div className={estilos.pieAviso}>
+                                    <span className={estilos.pistaAviso}>
+                                        {avisoActual.fijo
+                                            ? 'Queda fijo hasta que confirmes'
+                                            : 'Pasá el mouse para pausar'}
+                                    </span>
+                                    <div className={estilos.accionesAviso}>
+                                        {avisoActual.accion?.onClick && (
+                                            <button
+                                                type="button"
+                                                className={estilos.botonEntendido}
+                                                onClick={() => {
+                                                    avisoActual.accion.onClick();
+                                                    cerrarAviso();
+                                                }}
+                                            >
+                                                {avisoActual.accion.etiqueta || 'Abrir'}
+                                            </button>
+                                        )}
+                                        <button
+                                            type="button"
+                                            className={
+                                                avisoActual.accion?.onClick
+                                                    ? estilos.botonSecundarioAviso
+                                                    : estilos.botonEntendido
+                                            }
+                                            onClick={cerrarAviso}
+                                        >
+                                            Entendido
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className={estilos.reposo}>
+                            {!enLinea && (
+                                <span className={estilos.chipOffline} role="status">
+                                    <span className={estilos.puntoOffline} aria-hidden="true" />
+                                    <span>Sin conexión</span>
+                                </span>
+                            )}
+
+                            {puedeVerCajas ? (
+                                <Tooltip texto="Ver estado de cajas del local" posicion="abajo">
+                                    <Link
+                                        to="/cajas"
+                                        className={`${estilos.chipCaja} ${
+                                            cajasAbiertas > 0 ? estilos.chipCajaAbierta : ''
+                                        }`}
+                                    >
+                                        <span className={estilos.puntoCaja} aria-hidden="true" />
+                                        <IconoCaja size={14} />
+                                        <span>{etiquetaCajas}</span>
+                                    </Link>
+                                </Tooltip>
+                            ) : (
+                                <span className={estilos.chipCaja}>
+                                    <span className={`${estilos.puntoCaja} ${estilos.chipCajaAbierta}`} aria-hidden="true" />
+                                    <span>Cafeto · Las Lomitas</span>
+                                </span>
+                            )}
+
+                            {puedeAutorizar && pendientesAutorizar > 0 && (
+                                <Tooltip texto="Revisar autorizaciones pendientes" posicion="abajo">
+                                    <Link
+                                        to="/stock"
+                                        state={{ pestana: 'AUTORIZACIONES' }}
+                                        className={estilos.pillAuth}
+                                    >
+                                        <IconoEscudo size={14} />
+                                        <span className="iris-num">
+                                            {formatearNumero(pendientesAutorizar)} por autorizar
+                                        </span>
+                                    </Link>
+                                </Tooltip>
+                            )}
+
+                            <Tooltip texto="Buscar pantallas, productos o acciones (Ctrl+K)" posicion="abajo">
+                                <button
+                                    type="button"
+                                    data-iris-tour="buscador"
+                                    className={estilos.botonLupa}
+                                    onClick={onAbrirBuscador}
+                                    aria-label="Buscar pantallas, productos o acciones (Ctrl + K)"
+                                >
+                                    <IconoBuscar size={15} />
+                                    <kbd className={`iris-keycap iris-keycap-chassis ${estilos.atajo}`}>
+                                        Ctrl+K
+                                    </kbd>
+                                </button>
+                            </Tooltip>
+                        </div>
                     )}
                 </div>
-
-                <div className={estilos.grupoAcciones}>
-                    <Tooltip texto="Buscar pantallas o productos (Ctrl + K)" posicion="abajo" alineacion="fin">
-                        <button
-                            type="button"
-                            className={estilos.botonBuscar}
-                            onClick={onAbrirBuscador}
-                            aria-label="Buscar pantallas o productos (Ctrl + K)"
-                        >
-                            <IconoBuscar size={16} />
-                            <span>Buscar</span>
-                            <kbd className={estilos.atajo}>Ctrl+K</kbd>
-                        </button>
-                    </Tooltip>
-
-                    <Tooltip texto="Mi perfil y permisos" posicion="abajo" alineacion="fin">
-                        <Link
-                            to="/perfil"
-                            className={estilos.enlacePerfil}
-                            aria-label={`Mi perfil: ${usuario?.nombre || 'Cuenta'}`}
-                        >
-                            <span className={estilos.avatar} aria-hidden="true">
-                                {inicialesDe(usuario)}
-                            </span>
-                            <span className={estilos.nombrePerfil}>{usuario?.nombre || 'Mi perfil'}</span>
-                        </Link>
-                    </Tooltip>
-                </div>
-            </header>
-        </div>
+            </div>
+        </header>
     );
 }
 

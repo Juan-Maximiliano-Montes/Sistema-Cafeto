@@ -1,0 +1,321 @@
+.dialogo {
+    padding: 0;
+    margin: auto;
+    width: min(680px, calc(100vw - 28px));
+    max-height: min(84dvh, 640px);
+    border-radius: var(--cf-radio-modal);
+    border: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface);
+    color: var(--cf-text);
+    box-shadow: var(--cf-shadow);
+    overflow: hidden;
+}
+
+.dialogo[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.dialogo::backdrop {
+    background: var(--backdrop-modal);
+}
+
+.cabecera {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--cf-line);
+}
+
+.eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cf-muted);
+    margin-bottom: 4px;
+}
+
+.titulo {
+    margin: 0;
+    font-family: var(--fuente-subtitulo);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--cf-title);
+    line-height: 1.25;
+}
+
+.botonCerrar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface-2);
+    color: var(--cf-text);
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.botonCerrar:hover {
+    border-color: var(--cf-accent);
+}
+
+.pestanas {
+    display: flex;
+    gap: 4px;
+    padding: 10px 20px 0;
+    background: var(--cf-canvas);
+    border-bottom: 1px solid var(--cf-line);
+}
+
+.pestana {
+    padding: 9px 14px;
+    border: 1px solid transparent;
+    border-bottom: 0;
+    border-radius: 12px 12px 0 0;
+    background: transparent;
+    color: var(--cf-muted);
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 140ms ease, color 140ms ease;
+}
+
+.pestana:hover {
+    color: var(--cf-text);
+}
+
+.pestanaActiva {
+    background: var(--cf-surface);
+    border-color: var(--cf-line);
+    color: var(--cf-text);
+    font-weight: 700;
+    margin-bottom: -1px;
+    padding-bottom: 10px;
+}
+
+.cuerpo {
+    padding: 18px 20px 22px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.resumen {
+    margin: 0;
+    color: var(--cf-muted);
+    font-size: 0.94rem;
+    line-height: 1.5;
+}
+
+.listaPasos {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--cf-text);
+}
+
+.consejo {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--cf-accent-soft);
+    border: 1px solid var(--cf-warn-border);
+    color: var(--cf-text);
+    font-size: 0.88rem;
+}
+
+.roadmap {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.roadmapItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--cf-surface-2);
+    border: 1px solid var(--cf-line);
+}
+
+.roadmapItem strong {
+    display: block;
+    font-size: 0.92rem;
+    color: var(--cf-text);
+    margin-bottom: 2px;
+}
+
+.roadmapItem p {
+    margin: 0;
+    font-size: 0.84rem;
+    color: var(--cf-muted);
+}
+
+.enlacePaso {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: var(--cf-accent);
+    color: var(--cf-on-accent);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.enlacePaso:hover {
+    background: var(--cf-accent-hover);
+}
+
+.grillaAtajos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.grupoAtajos {
+    padding: 14px;
+    border-radius: 14px;
+    background: var(--cf-surface-2);
+    border: 1px solid var(--cf-line);
+}
+
+.grupoAtajos h3 {
+    margin: 0 0 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--cf-muted);
+}
+
+.listaAtajos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.listaAtajos li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 0.86rem;
+    color: var(--cf-text);
+}
+
+.teclas {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+    .grillaAtajos {
+        grid-template-columns: 1fr;
+    }
+
+    .roadmapItem {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.accionesGuia {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 4px;
+}
+
+.botonGuia {
+    min-height: 40px;
+    padding: 8px 16px;
+    border-radius: var(--cf-radio-control);
+    border: 0;
+    background: var(--cf-accent);
+    color: var(--cf-on-accent);
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.botonGuia:hover {
+    background: var(--cf-accent-hover);
+}
+
+.notaGuia {
+    font-size: 0.8rem;
+    color: var(--cf-muted);
+}
+
+.grillaDemos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.botonDemo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 12px 14px;
+    border-radius: var(--cf-radio-control);
+    border: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface-2);
+    color: var(--cf-text);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.botonDemo:hover {
+    border-color: var(--cf-accent);
+    background: var(--cf-canvas);
+}
+
+.botonDemo strong {
+    font-size: 0.9rem;
+    color: var(--cf-title);
+}
+
+.botonDemo span {
+    font-size: 0.8rem;
+    color: var(--cf-muted);
+    line-height: 1.35;
+}
+
+@media (max-width: 640px) {
+    .grillaDemos {
+        grid-template-columns: 1fr;
+    }
+}

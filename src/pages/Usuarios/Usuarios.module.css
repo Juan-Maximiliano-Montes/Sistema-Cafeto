@@ -245,3 +245,28 @@
     border-color: var(--ambar-cafeto);
     color: var(--texto-sobre-ambar);
 }
+
+.buscadorPermisos {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 4px 10px;
+    border-radius: var(--cf-radio-control);
+    border: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface-2);
+    color: var(--cf-muted);
+}
+
+.inputPermisos {
+    border: 0;
+    background: transparent;
+    color: var(--cf-text);
+    font-size: 0.84rem;
+    min-width: 170px;
+    outline: none;
+}
+
+.inputPermisos::placeholder {
+    color: var(--cf-subtle);
+}

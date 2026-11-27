@@ -6,14 +6,15 @@
     flex-wrap: wrap;
     margin-top: 16px;
     padding: 12px 2px 0;
-    border-top: 1px solid var(--borde-sutil);
+    border-top: 1px solid var(--cf-line);
 }
 
 .resumen {
     margin: 0;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     font-weight: 500;
-    color: var(--texto-secundario);
+    color: var(--cf-muted);
+    font-variant-numeric: tabular-nums;
 }
 
 .controles {
@@ -27,14 +28,15 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
-    padding: 6px 14px;
-    border-radius: 8px;
-    background: var(--superficie-sutil);
-    border: 1px solid var(--borde-suave);
-    color: var(--texto-titular);
+    min-height: 40px;
+    padding: 6px 13px;
+    border-radius: var(--cf-radio-control);
+    background: var(--cf-surface-2);
+    border: 1px solid var(--cf-line);
+    color: var(--cf-text);
     font-size: 0.86rem;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
 
@@ -43,31 +45,31 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: 1.5px solid var(--borde-ambar);
-    background: var(--aviso-fondo);
-    color: var(--texto-titular);
+    min-height: 40px;
+    min-width: 40px;
+    padding: 7px 14px;
+    border-radius: var(--cf-radio-control);
+    border: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface);
+    color: var(--cf-text);
     font-size: 0.86rem;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
 .boton:hover:not(:disabled) {
-    background: var(--ambar-cafeto);
-    border-color: var(--ambar-cafeto);
-    color: var(--texto-sobre-ambar);
+    background: var(--cf-accent);
+    border-color: var(--cf-accent);
+    color: var(--cf-on-accent);
 }
 
 .boton:disabled {
     opacity: 0.45;
     background: transparent;
-    border-color: var(--borde-suave);
-    color: var(--texto-secundario);
+    border-color: var(--cf-line);
+    color: var(--cf-muted);
     cursor: not-allowed;
 }
 
@@ -83,7 +85,7 @@
     }
 
     .boton {
-        padding: 8px 12px;
+        padding: 7px 12px;
         font-size: 0.84rem;
     }
 

@@ -26,32 +26,36 @@
     pointer-events: none;
 }
 
+/* Globo plano Cafeto × iRiS (glass: off · hairline 1px · alto contraste) */
 .globo {
     position: absolute;
     z-index: 2500;
     width: max-content;
-    max-width: min(240px, calc(100vw - 24px));
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: var(--superficie-modal);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1.5px solid var(--borde-acento);
-    color: var(--texto-titular);
+    max-width: min(260px, calc(100vw - 24px));
+    padding: 7px 11px;
+    border-radius: 10px;
+    background: var(--cf-surface);
+    border: 1px solid var(--cf-line-strong);
+    color: var(--cf-text);
     font-family: var(--fuente-cuerpo);
     font-size: 0.8rem;
-    font-weight: 500;
-    line-height: 1.4;
-    text-align: center;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: left;
     white-space: normal;
-    box-shadow: var(--sombra-modal);
+    box-shadow: var(--cf-shadow);
     pointer-events: none;
-    transition: opacity 0.14s ease;
+}
+
+.contenidoGlobo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .globoDerecha {
     position: fixed;
-    max-width: 220px;
+    max-width: 240px;
 }
 
 .arriba {

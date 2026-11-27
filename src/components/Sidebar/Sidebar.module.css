@@ -1,91 +1,95 @@
+/* ==========================================================================
+   Rail izquierdo Cafeto × iRiS (fundido al chasis Surround --cf-chassis)
+   ========================================================================== */
+
 .sidebar {
-    position: sticky;
-    top: 0;
-    height: 100dvh;
-    width: 248px;
-    flex: none;
+    width: 268px;
+    flex-shrink: 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    padding: 16px 12px;
-    background: var(--superficie-sidebar);
-    border-right: 1px solid var(--borde-suave);
-    transition: width 0.2s ease, padding 0.2s ease;
-    z-index: 950;
+    background: var(--cf-chassis);
+    color: var(--cf-chassis-fg);
+    border-right: 0;
+    padding: 6px 0 8px 12px;
+    z-index: 1035;
+    overflow: visible;
+    transition: width 180ms var(--iris-ease), padding 180ms var(--iris-ease);
 }
 
 .colapsado {
     width: 78px;
-    padding: 10px 10px;
-    gap: 6px;
+    padding: 8px 0 8px 10px;
 }
 
+/* ---------- Cabecera del Rail ---------- */
 .cabecera {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    min-height: 48px;
+    padding: 6px 10px 10px 4px;
 }
 
 .colapsado .cabecera {
     flex-direction: column;
-    gap: 4px;
-    min-height: 0;
+    padding: 4px 10px 8px 0;
+    gap: 8px;
 }
 
 .enlaceLogo {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 4px;
-    border-radius: 8px;
-    overflow: hidden;
+    min-width: 0;
+    padding: 4px 2px;
+    border-radius: 10px;
 }
 
 .logo {
-    height: 38px;
+    height: 46px;
     width: auto;
+    min-width: 152px;
 }
 
 .isotipo {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
 }
 
 .botonColapsar {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
+    width: 34px;
+    height: 34px;
     border-radius: 10px;
-    border: 1px solid var(--borde-suave);
-    background: var(--superficie-sutil);
-    color: var(--texto-titular);
+    border: 1px solid var(--cf-chassis-line);
+    background: var(--cf-chassis-surface);
+    color: var(--cf-chassis-fg-strong);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     cursor: pointer;
-    flex: none;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    transition: background-color 150ms ease, border-color 150ms ease;
 }
 
 .botonColapsar:hover {
-    background: var(--superficie-hover);
-    border-color: var(--borde-acento);
-    color: var(--texto-acento);
+    background: var(--cf-chassis-surface-hover);
+    border-color: var(--cf-accent);
 }
 
+/* ---------- Navegación principal ---------- */
 .navegacion {
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
     overflow-y: auto;
-    overflow-x: hidden;
-    padding: 4px 0;
+    overflow-x: clip;
+    overscroll-behavior: contain;
+    padding: 14px 0;
     scrollbar-width: thin;
-    scrollbar-color: var(--borde-fuerte) transparent;
+    scrollbar-color: var(--cf-chassis-line) transparent;
 }
 
 .navegacion::-webkit-scrollbar {
@@ -97,61 +101,55 @@
 }
 
 .navegacion::-webkit-scrollbar-thumb {
-    background-color: var(--borde-fuerte);
+    background: var(--cf-chassis-line);
     border-radius: 999px;
-}
-
-.navegacion::-webkit-scrollbar-thumb:hover {
-    background-color: var(--borde-ambar);
-}
-
-.colapsado .navegacion {
-    gap: 2px;
-    padding: 2px 0;
 }
 
 .navegacion > :global(*) {
     width: 100%;
+    display: block;
 }
 
 .enlace {
-    width: 100%;
-    min-height: 44px;
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 9px 12px;
-    border-radius: 10px;
-    border: 1px solid transparent;
-    color: var(--texto-principal);
+    gap: 11px;
+    min-height: 42px;
+    padding: 9px 12px 9px 10px;
+    margin: 1px 10px 1px 0;
+    border-radius: 12px;
+    color: var(--cf-chassis-fg);
     text-decoration: none;
-    font-size: 0.93rem;
-    font-weight: 600;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.25;
+    transition: background-color 150ms ease, color 150ms ease;
 }
 
 .colapsado .enlace {
     justify-content: center;
-    padding: 9px;
+    padding: 9px 0;
+    margin-right: 10px;
 }
 
 .enlace:hover {
-    background: var(--superficie-hover);
-    color: var(--texto-acento);
-}
-
-.enlaceActivo,
-.enlaceActivo:hover {
-    background: var(--aviso-fondo);
-    border-color: var(--borde-acento);
-    color: var(--texto-titular);
-    font-weight: 700;
+    background: var(--cf-chassis-surface-hover);
+    color: var(--cf-chassis-fg-strong);
 }
 
 .iconoEnlace {
     display: inline-flex;
-    flex: none;
-    color: var(--texto-acento);
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    flex: 0 0 24px;
+    color: var(--cf-chassis-muted);
+    transition: color 150ms ease;
+}
+
+.enlace:hover .iconoEnlace {
+    color: var(--cf-chassis-fg-strong);
 }
 
 .textoEnlace {
@@ -160,140 +158,324 @@
     text-overflow: ellipsis;
 }
 
+/* Enlace activo soldado al lienzo redondeado con curvas cóncavas ("goteo" iRiS) */
+.enlaceActivo,
+.enlaceActivo:hover {
+    background: var(--cf-canvas);
+    color: var(--cf-rail-active-fg);
+    font-weight: 700;
+    margin-right: 0;
+    padding-right: 16px;
+    border-radius: 16px 0 0 16px;
+}
+
+.colapsado .enlaceActivo,
+.colapsado .enlaceActivo:hover {
+    margin-right: 0;
+    padding-right: 10px;
+    border-radius: 16px 0 0 16px;
+}
+
+.enlaceActivo .iconoEnlace,
+.enlaceActivo:hover .iconoEnlace {
+    color: var(--cf-accent);
+}
+
+:global([data-tema='claro']) .enlaceActivo .iconoEnlace,
+:global([data-tema='claro']) .enlaceActivo:hover .iconoEnlace {
+    color: #8A6100;
+}
+
+.enlaceActivo::before,
+.enlaceActivo::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+}
+
+.enlaceActivo::before {
+    top: -14px;
+    background: radial-gradient(circle at 0 0, transparent 14px, var(--cf-canvas) 14.5px);
+}
+
+.enlaceActivo::after {
+    bottom: -14px;
+    background: radial-gradient(circle at 0 14px, transparent 14px, var(--cf-canvas) 14.5px);
+}
+
+/* ---------- Pie del Rail (controles + perfil dropup) ---------- */
 .pie {
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding-top: 12px;
-    border-top: 1px solid var(--borde-suave);
-}
-
-.colapsado .pie {
     gap: 4px;
-    padding-top: 6px;
-}
-
-.controles {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
-}
-
-.colapsado .controles {
-    grid-template-columns: 1fr;
-    gap: 4px;
-}
-
-.controles > :global(*) {
-    width: 100%;
-}
-
-.botonControl {
-    width: 100%;
-    min-height: 44px;
-    min-width: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 6px 8px;
-    border-radius: 10px;
-    background: var(--superficie-sutil);
-    border: 1px solid var(--borde-fuerte);
-    color: var(--texto-titular);
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
-}
-
-.botonControl:hover {
-    background: var(--superficie-hover);
-    border-color: var(--borde-acento);
-    color: var(--texto-acento);
-}
-
-.botonControlActivo {
-    background: var(--aviso-fondo);
-    border-color: var(--borde-acento);
-}
-
-.siglaTamano {
-    font-weight: 700;
-    font-size: 0.86rem;
-}
-
-.estadoConexion {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 8px;
-    min-height: 24px;
-    padding: 2px 6px;
-    background: transparent;
-    border: none;
-    font-size: 0.78rem;
-    font-weight: 600;
-    width: 100%;
-}
-
-.colapsado .estadoConexion {
-    justify-content: center;
-    min-height: 18px;
-    padding: 2px 0;
-}
-
-.enLinea {
-    color: var(--texto-secundario);
-}
-
-.sinConexion {
-    color: var(--peligro);
-}
-
-.puntoEstado {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    flex: none;
-}
-
-.enLinea .puntoEstado {
-    background: var(--exito-borde);
-    box-shadow: 0 0 0 3px var(--exito-fondo);
-}
-
-.sinConexion .puntoEstado {
-    background: var(--peligro-borde);
-    box-shadow: 0 0 0 3px var(--peligro-fondo);
+    padding: 8px 10px 2px 0;
+    border-top: 1px solid var(--cf-chassis-line);
 }
 
 .pie > :global(*) {
     width: 100%;
+    display: block;
 }
 
-.botonSalir {
+.filaPie {
     width: 100%;
-    min-height: 44px;
-    display: inline-flex;
+    min-height: 38px;
+    display: flex;
     align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 11px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--cf-chassis-fg);
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.colapsado .filaPie {
     justify-content: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: 1.5px solid var(--peligro-borde);
-    background: var(--peligro-fondo);
-    color: var(--peligro);
+    padding: 6px 0;
+}
+
+.filaPie:hover {
+    background: var(--cf-chassis-surface-hover);
+    color: var(--cf-chassis-fg-strong);
+}
+
+.filaPieActiva {
+    background: var(--cf-chassis-surface);
+    border-color: var(--cf-chassis-line);
+    color: var(--cf-chassis-fg-strong);
+}
+
+.textoFila {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.siglaTamano {
+    width: 18px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.kbdDerecha {
+    margin-left: auto;
+}
+
+/* ---------- Perfil dropup iRiS ---------- */
+.perfilWrap {
+    position: relative;
+    margin-top: 4px;
+}
+
+.perfilWrap > :global(*) {
+    width: 100%;
+    display: block;
+}
+
+.botonPerfil {
+    width: 100%;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px 6px 7px;
+    border-radius: 12px;
+    border: 1px solid var(--cf-chassis-line);
+    background: var(--cf-chassis-surface);
+    color: var(--cf-chassis-fg-strong);
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.colapsado .botonPerfil {
+    justify-content: center;
+    padding: 6px;
+}
+
+.botonPerfil:hover,
+.botonPerfilAbierto {
+    background: var(--cf-chassis-surface-hover);
+    border-color: var(--cf-accent);
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--cf-accent);
+    color: var(--cf-on-accent);
+    display: grid;
+    place-items: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.datosPerfil {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+}
+
+.nombrePerfil {
     font-size: 0.86rem;
     font-weight: 700;
+    line-height: 1.2;
+    color: var(--cf-chassis-fg-strong);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rolPerfil {
+    font-size: 0.75rem;
+    color: var(--cf-chassis-muted);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.flechaPerfil {
+    display: inline-flex;
+    color: var(--cf-chassis-muted);
+    transform: rotate(180deg);
+    transition: transform 160ms var(--iris-ease);
+}
+
+.flechaPerfilAbierta {
+    transform: rotate(0deg);
+}
+
+.menuPerfil {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 8px);
+    min-width: 236px;
+    width: 100%;
+    padding: 6px;
+    border-radius: 14px;
+    background: var(--cf-surface);
+    border: 1px solid var(--cf-line-strong);
+    box-shadow: var(--cf-shadow);
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cabeceraMenuPerfil {
+    padding: 8px 10px 10px;
+    border-bottom: 1px solid var(--cf-line);
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.menuNombre {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--cf-text);
+}
+
+.menuRol {
+    font-size: 0.78rem;
+    color: var(--cf-muted);
+}
+
+.estadoConexion {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 4px;
+    font-size: 0.76rem;
+    font-weight: 600;
+}
+
+.enLinea {
+    color: var(--cf-muted);
+}
+
+.sinConexion {
+    color: var(--cf-danger);
+}
+
+.puntoEstado {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.enLinea .puntoEstado {
+    background: var(--cf-ok);
+}
+
+.sinConexion .puntoEstado {
+    background: var(--cf-danger);
+}
+
+.itemMenuPerfil {
+    width: 100%;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 10px;
+    border: 0;
+    background: transparent;
+    color: var(--cf-text);
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: filter 0.18s ease, background-color 0.18s ease;
+    text-align: left;
+    transition: background-color 140ms ease;
 }
 
-.botonSalir:hover {
-    filter: brightness(1.06);
+.itemMenuPerfil:hover {
+    background: var(--cf-surface-2);
 }
 
+.estadoSonido {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--cf-muted);
+    font-weight: 600;
+}
+
+.divisorMenu {
+    border: 0;
+    border-top: 1px solid var(--cf-line);
+    margin: 4px 2px;
+}
+
+.itemMenuPeligro {
+    color: var(--cf-danger);
+    font-weight: 700;
+}
+
+.itemMenuPeligro:hover {
+    background: var(--cf-danger-bg);
+}
+
+/* ---------- Navegación móvil (<= 820px · plana iRiS sin blur) ---------- */
 .barraMovil,
 .telonMovil,
 .cajonMovil {
@@ -315,11 +497,8 @@
         grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 4px;
         padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
-        background: var(--superficie-pildora);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-top: 1px solid var(--borde-ambar);
-        box-shadow: var(--sombra-modal);
+        background: var(--cf-chassis);
+        border-top: 1px solid var(--cf-chassis-line);
     }
 
     .itemMovil {
@@ -330,20 +509,20 @@
         justify-content: center;
         gap: 3px;
         padding: 4px 2px;
-        border-radius: 10px;
+        border-radius: 12px;
         border: 1px solid transparent;
         background: transparent;
-        color: var(--texto-principal);
+        color: var(--cf-chassis-fg);
         text-decoration: none;
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         font-weight: 600;
         cursor: pointer;
     }
 
     .itemMovilActivo {
-        background: var(--aviso-fondo);
-        border-color: var(--borde-acento);
-        color: var(--texto-titular);
+        background: var(--cf-canvas);
+        border-color: var(--cf-line);
+        color: var(--cf-rail-active-fg);
         font-weight: 700;
     }
 
@@ -359,18 +538,16 @@
         position: fixed;
         left: 12px;
         right: 12px;
-        bottom: 72px;
+        bottom: calc(68px + env(safe-area-inset-bottom, 0px));
         z-index: 1300;
         display: flex;
         flex-direction: column;
         gap: 12px;
         padding: 16px;
-        border-radius: 14px;
-        background: var(--superficie-desplegable);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1.5px solid var(--borde-ambar);
-        box-shadow: var(--sombra-modal);
+        border-radius: var(--cf-radio-modal);
+        background: var(--cf-surface);
+        border: 1px solid var(--cf-line-strong);
+        box-shadow: var(--cf-shadow);
         max-height: calc(100dvh - 100px);
         overflow-y: auto;
     }
@@ -380,26 +557,26 @@
         align-items: center;
         justify-content: space-between;
         padding-bottom: 8px;
-        border-bottom: 1px solid var(--borde-suave);
+        border-bottom: 1px solid var(--cf-line);
     }
 
     .tituloCajon {
         font-size: 0.78rem;
         font-weight: 700;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--texto-acento);
+        color: var(--cf-muted);
     }
 
     .cerrarCajon {
         display: grid;
         place-items: center;
-        width: 44px;
-        height: 44px;
-        border-radius: 8px;
-        border: 1px solid var(--borde-suave);
-        background: transparent;
-        color: var(--texto-principal);
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid var(--cf-line);
+        background: var(--cf-surface-2);
+        color: var(--cf-text);
         cursor: pointer;
     }
 
@@ -409,17 +586,70 @@
         gap: 4px;
     }
 
+    .enlaceMovil {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 12px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        color: var(--cf-text);
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 600;
+    }
+
+    .enlaceMovilActivo {
+        background: var(--cf-surface-2);
+        border-color: var(--cf-line-strong);
+        font-weight: 700;
+    }
+
     .controlesCajon {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
     }
 
+    .botonControlMovil {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid var(--cf-line-strong);
+        background: var(--cf-surface-2);
+        color: var(--cf-text);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
     .pieCajon {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
         padding-top: 8px;
-        border-top: 1px solid var(--borde-suave);
+        border-top: 1px solid var(--cf-line);
+    }
+
+    .botonSalirMovil {
+        width: 100%;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--cf-danger-border);
+        background: var(--cf-danger-bg);
+        color: var(--cf-danger);
+        font-size: 0.88rem;
+        font-weight: 700;
+        cursor: pointer;
     }
 }

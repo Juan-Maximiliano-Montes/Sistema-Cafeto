@@ -1,14 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { logOutUsuario } from '../../api/api';
+import { getUsuarioActual, logOutUsuario } from '../../api/api';
+import { useNotificacion } from '../../hooks/useNotificacion';
 import { useTamanoTexto } from '../../hooks/useTamanoTexto';
 import { useTema } from '../../hooks/useTema';
+import { puedeVerModulo } from '../../utils/permisos';
 import Confirmacion from '../Confirmacion/Confirmacion';
 import Tooltip from '../Tooltip/Tooltip';
 import {
     IconoCaja,
+    IconoCampana,
     IconoCerrar,
+    IconoChevron,
     IconoColapsar,
+    IconoEstadoInfo,
     IconoEtiqueta,
     IconoExpandir,
     IconoInicio,
@@ -23,8 +28,7 @@ import {
 } from '../Iconos/Iconos';
 import logoNegativo from '../../assets/cafeto-horizontal-negativo.svg';
 import logoPositivo from '../../assets/cafeto-horizontal-positivo.svg';
-import isotipoBlanco from '../../assets/cafeto-isotipo-blanco.svg';
-import isotipoNegro from '../../assets/cafeto-isotipo-negro.svg';
+import iconoAmbar from '../../assets/cafeto-icono-ambar.svg';
 import estilos from './Sidebar.module.css';
 
 const ENLACES_PRINCIPALES = [
@@ -39,16 +43,27 @@ const ENLACES_PRINCIPALES = [
 
 const ENLACES_BARRA_MOVIL = ['/inicio', '/productos', '/stock', '/cajas'];
 
-function Sidebar({ colapsado, onAlternarColapso }) {
+const inicialesDe = (usuario) => {
+    const primero = usuario?.nombre?.[0] || '';
+    const segundo = usuario?.apellido?.[0] || '';
+    return `${primero}${segundo}`.toUpperCase() || 'CF';
+};
+
+function Sidebar({ colapsado, onAlternarColapso, onAbrirAyuda }) {
     const navigate = useNavigate();
     const { pathname } = useLocation();
     const { esClaro, alternarTema } = useTema();
     const { esGrande, alternarTamano } = useTamanoTexto();
+    const { sonidoActivo, alternarSonido } = useNotificacion();
+    const usuario = getUsuarioActual();
 
     const [enLinea, setEnLinea] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true));
     const [masMovilAbierto, setMasMovilAbierto] = useState(false);
+    const [perfilAbierto, setPerfilAbierto] = useState(false);
     const [confirmandoSalida, setConfirmandoSalida] = useState(false);
     const [saliendo, setSaliendo] = useState(false);
+
+    const perfilRef = useRef(null);
 
     useEffect(() => {
         const marcarEnLinea = () => setEnLinea(true);
@@ -62,18 +77,30 @@ function Sidebar({ colapsado, onAlternarColapso }) {
     }, []);
 
     useEffect(() => {
-        if (!masMovilAbierto) return undefined;
+        if (!masMovilAbierto && !perfilAbierto) return undefined;
+
         const alPresionarTecla = (evento) => {
             if (evento.key === 'Escape') {
                 setMasMovilAbierto(false);
+                setPerfilAbierto(false);
             }
         };
+
+        const alClickAfuera = (evento) => {
+            if (perfilAbierto && perfilRef.current && !perfilRef.current.contains(evento.target)) {
+                setPerfilAbierto(false);
+            }
+        };
+
         window.addEventListener('keydown', alPresionarTecla);
-        return () => window.removeEventListener('keydown', alPresionarTecla);
-    }, [masMovilAbierto]);
+        document.addEventListener('mousedown', alClickAfuera);
+        return () => {
+            window.removeEventListener('keydown', alPresionarTecla);
+            document.removeEventListener('mousedown', alClickAfuera);
+        };
+    }, [masMovilAbierto, perfilAbierto]);
 
     const logoExpandido = esClaro ? logoPositivo : logoNegativo;
-    const isotipoColapsado = esClaro ? isotipoNegro : isotipoBlanco;
 
     const esRutaActiva = (to, isActive) => {
         if (to === '/perfil' && pathname === '/usuarios') return true;
@@ -86,6 +113,7 @@ function Sidebar({ colapsado, onAlternarColapso }) {
         setSaliendo(false);
         setConfirmandoSalida(false);
         setMasMovilAbierto(false);
+        setPerfilAbierto(false);
         navigate('/login', {
             replace: true,
             state: {
@@ -95,8 +123,13 @@ function Sidebar({ colapsado, onAlternarColapso }) {
         });
     };
 
-    const enlacesMovilPrincipales = ENLACES_PRINCIPALES.filter((e) => ENLACES_BARRA_MOVIL.includes(e.to));
-    const enlacesMovilExtra = ENLACES_PRINCIPALES.filter((e) => !ENLACES_BARRA_MOVIL.includes(e.to));
+    const nombreCorto = usuario?.nombre || 'Mi cuenta';
+    const nombreCompleto = [usuario?.nombre, usuario?.apellido].filter(Boolean).join(' ') || 'Usuario Cafeto';
+    const rolUsuario = usuario?.perfil || usuario?.rol || 'Equipo Cafeto';
+
+    const enlacesVisibles = ENLACES_PRINCIPALES.filter((e) => puedeVerModulo(usuario, e.to));
+    const enlacesMovilPrincipales = enlacesVisibles.filter((e) => ENLACES_BARRA_MOVIL.includes(e.to));
+    const enlacesMovilExtra = enlacesVisibles.filter((e) => !ENLACES_BARRA_MOVIL.includes(e.to));
     const hayExtraActivo = enlacesMovilExtra.some(
         (e) => pathname === e.to || (e.to === '/perfil' && pathname === '/usuarios')
     );
@@ -105,6 +138,7 @@ function Sidebar({ colapsado, onAlternarColapso }) {
         <>
             <aside
                 className={`${estilos.sidebar} ${colapsado ? estilos.colapsado : ''}`}
+                data-iris-tour="rail"
                 aria-label="Menú lateral de navegación"
             >
                 <div className={estilos.cabecera}>
@@ -114,7 +148,7 @@ function Sidebar({ colapsado, onAlternarColapso }) {
                         aria-label="Cafeto Las Lomitas, ir al inicio"
                     >
                         <img
-                            src={colapsado ? isotipoColapsado : logoExpandido}
+                            src={colapsado ? iconoAmbar : logoExpandido}
                             alt="Cafeto Las Lomitas"
                             className={colapsado ? estilos.isotipo : estilos.logo}
                         />
@@ -125,16 +159,16 @@ function Sidebar({ colapsado, onAlternarColapso }) {
                             type="button"
                             className={estilos.botonColapsar}
                             onClick={onAlternarColapso}
-                            aria-expanded={!colapsado}
-                            aria-label={colapsado ? 'Expandir menú' : 'Contraer menú'}
+                            aria-pressed={colapsado}
+                            aria-label={colapsado ? 'Expandir menú lateral' : 'Contraer menú lateral'}
                         >
-                            {colapsado ? <IconoExpandir size={18} /> : <IconoColapsar size={18} />}
+                            {colapsado ? <IconoExpandir size={17} /> : <IconoColapsar size={17} />}
                         </button>
                     </Tooltip>
                 </div>
 
-                <nav className={estilos.navegacion} aria-label="Módulos del sistema">
-                    {ENLACES_PRINCIPALES.map((enlace) => {
+                <nav className={estilos.navegacion} aria-label="Áreas del sistema">
+                    {enlacesVisibles.map((enlace) => {
                         const Icono = enlace.icono;
                         return (
                             <Tooltip
@@ -150,7 +184,7 @@ function Sidebar({ colapsado, onAlternarColapso }) {
                                     aria-label={colapsado ? enlace.texto : undefined}
                                 >
                                     <span className={estilos.iconoEnlace}>
-                                        <Icono size={20} />
+                                        <Icono size={19} />
                                     </span>
                                     {!colapsado && <span className={estilos.textoEnlace}>{enlace.texto}</span>}
                                 </NavLink>
@@ -159,68 +193,162 @@ function Sidebar({ colapsado, onAlternarColapso }) {
                     })}
                 </nav>
 
-                <div className={estilos.pie}>
-                    <div className={estilos.controles}>
-                        <Tooltip
-                            texto={esGrande ? 'Volver al texto normal (A-)' : 'Agrandar texto (A+)'}
-                            posicion="derecha"
-                        >
-                            <button
-                                type="button"
-                                className={`${estilos.botonControl} ${esGrande ? estilos.botonControlActivo : ''}`}
-                                onClick={alternarTamano}
-                                aria-pressed={esGrande}
-                                aria-label={esGrande ? 'Volver al tamaño de texto normal' : 'Agrandar tamaño de texto'}
-                            >
-                                <span className={estilos.siglaTamano} aria-hidden="true">
-                                    {esGrande ? 'A-' : 'A+'}
-                                </span>
-                                {!colapsado && <span>{esGrande ? 'Normal' : 'Agrandar'}</span>}
-                            </button>
-                        </Tooltip>
-
-                        <Tooltip
-                            texto={esClaro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'}
-                            posicion="derecha"
-                        >
-                            <button
-                                type="button"
-                                className={estilos.botonControl}
-                                onClick={alternarTema}
-                                aria-pressed={esClaro}
-                                aria-label={esClaro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'}
-                            >
-                                {esClaro ? <IconoLuna size={18} /> : <IconoSol size={18} />}
-                                {!colapsado && <span>{esClaro ? 'Oscuro' : 'Claro'}</span>}
-                            </button>
-                        </Tooltip>
-                    </div>
-
+                <div className={estilos.pie} data-iris-tour="pie-rail">
                     <Tooltip
-                        texto={colapsado ? (enLinea ? 'Conectado' : 'Sin conexión') : ''}
+                        texto={colapsado ? (esGrande ? 'Texto normal (A-)' : 'Agrandar texto (A+)') : ''}
                         posicion="derecha"
                     >
-                        <div
-                            className={`${estilos.estadoConexion} ${enLinea ? estilos.enLinea : estilos.sinConexion}`}
-                            role="status"
-                            aria-label={colapsado ? (enLinea ? 'Conectado' : 'Sin conexión') : undefined}
-                        >
-                            <span className={estilos.puntoEstado} aria-hidden="true" />
-                            {!colapsado && <span>{enLinea ? 'Conectado' : 'Sin conexión'}</span>}
-                        </div>
-                    </Tooltip>
-
-                    <Tooltip texto={colapsado ? 'Cerrar sesión' : ''} posicion="derecha">
                         <button
                             type="button"
-                            className={estilos.botonSalir}
-                            onClick={() => setConfirmandoSalida(true)}
-                            aria-label="Cerrar sesión"
+                            className={`${estilos.filaPie} ${esGrande ? estilos.filaPieActiva : ''}`}
+                            onClick={alternarTamano}
+                            aria-pressed={esGrande}
+                            aria-label={esGrande ? 'Volver al tamaño de texto normal' : 'Agrandar tamaño de texto'}
                         >
-                            <IconoSalir size={18} />
-                            {!colapsado && <span>Cerrar sesión</span>}
+                            <span className={estilos.siglaTamano} aria-hidden="true">
+                                {esGrande ? 'A-' : 'A+'}
+                            </span>
+                            {!colapsado && (
+                                <span className={estilos.textoFila}>
+                                    {esGrande ? 'Texto normal' : 'Agrandar texto'}
+                                </span>
+                            )}
                         </button>
                     </Tooltip>
+
+                    <Tooltip
+                        texto={colapsado ? (esClaro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro') : ''}
+                        posicion="derecha"
+                    >
+                        <button
+                            type="button"
+                            className={estilos.filaPie}
+                            onClick={alternarTema}
+                            aria-pressed={esClaro}
+                            aria-label={esClaro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'}
+                        >
+                            {esClaro ? <IconoLuna size={17} /> : <IconoSol size={17} />}
+                            {!colapsado && (
+                                <span className={estilos.textoFila}>{esClaro ? 'Oscuro' : 'Claro'}</span>
+                            )}
+                        </button>
+                    </Tooltip>
+
+                    <Tooltip texto={colapsado ? 'Ayuda y atajos (F1)' : ''} posicion="derecha">
+                        <button
+                            type="button"
+                            className={estilos.filaPie}
+                            onClick={onAbrirAyuda}
+                            aria-label="Abrir centro de ayuda y atajos (F1)"
+                        >
+                            <IconoEstadoInfo size={17} />
+                            {!colapsado && (
+                                <>
+                                    <span className={estilos.textoFila}>Ayuda</span>
+                                    <kbd className={`iris-keycap iris-keycap-chassis ${estilos.kbdDerecha}`}>
+                                        F1
+                                    </kbd>
+                                </>
+                            )}
+                        </button>
+                    </Tooltip>
+
+                    <div ref={perfilRef} className={estilos.perfilWrap}>
+                        <Tooltip
+                            texto={colapsado ? `${nombreCompleto} · ${rolUsuario}` : ''}
+                            posicion="derecha"
+                        >
+                            <button
+                                type="button"
+                                className={`${estilos.botonPerfil} ${perfilAbierto ? estilos.botonPerfilAbierto : ''}`}
+                                onClick={() => setPerfilAbierto((abierto) => !abierto)}
+                                aria-expanded={perfilAbierto}
+                                aria-haspopup="menu"
+                                aria-label={`Cuenta de ${nombreCompleto}`}
+                            >
+                                <span className={estilos.avatar} aria-hidden="true">
+                                    {inicialesDe(usuario)}
+                                </span>
+                                {!colapsado && (
+                                    <>
+                                        <span className={estilos.datosPerfil}>
+                                            <span className={estilos.nombrePerfil}>{nombreCorto}</span>
+                                            <span className={estilos.rolPerfil}>{rolUsuario}</span>
+                                        </span>
+                                        <span
+                                            className={`${estilos.flechaPerfil} ${
+                                                perfilAbierto ? estilos.flechaPerfilAbierta : ''
+                                            }`}
+                                            aria-hidden="true"
+                                        >
+                                            <IconoChevron size={15} />
+                                        </span>
+                                    </>
+                                )}
+                            </button>
+                        </Tooltip>
+
+                        {perfilAbierto && (
+                            <div
+                                className={estilos.menuPerfil}
+                                role="menu"
+                                aria-label="Opciones de cuenta"
+                            >
+                                <div className={estilos.cabeceraMenuPerfil}>
+                                    <span className={estilos.menuNombre}>{nombreCompleto}</span>
+                                    <span className={estilos.menuRol}>{rolUsuario}</span>
+                                    <span
+                                        className={`${estilos.estadoConexion} ${
+                                            enLinea ? estilos.enLinea : estilos.sinConexion
+                                        }`}
+                                        role="status"
+                                    >
+                                        <span className={estilos.puntoEstado} aria-hidden="true" />
+                                        <span>{enLinea ? 'Cafeto · En línea' : 'Sin conexión'}</span>
+                                    </span>
+                                </div>
+
+                                <Link
+                                    to="/perfil"
+                                    role="menuitem"
+                                    className={estilos.itemMenuPerfil}
+                                    onClick={() => setPerfilAbierto(false)}
+                                >
+                                    <IconoUsuarios size={16} />
+                                    <span>Mi perfil</span>
+                                </Link>
+
+                                <button
+                                    type="button"
+                                    role="menuitemcheckbox"
+                                    aria-checked={sonidoActivo}
+                                    className={estilos.itemMenuPerfil}
+                                    onClick={alternarSonido}
+                                >
+                                    <IconoCampana size={16} />
+                                    <span>Sonido avisos</span>
+                                    <span className={estilos.estadoSonido}>
+                                        {sonidoActivo ? 'Activado' : 'Silenciado'}
+                                    </span>
+                                </button>
+
+                                <hr className={estilos.divisorMenu} />
+
+                                <button
+                                    type="button"
+                                    role="menuitem"
+                                    className={`${estilos.itemMenuPerfil} ${estilos.itemMenuPeligro}`}
+                                    onClick={() => {
+                                        setPerfilAbierto(false);
+                                        setConfirmandoSalida(true);
+                                    }}
+                                >
+                                    <IconoSalir size={16} />
+                                    <span>Cerrar sesión</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </aside>
 
@@ -288,11 +416,13 @@ function Sidebar({ colapsado, onAlternarColapso }) {
                                         to={enlace.to}
                                         onClick={() => setMasMovilAbierto(false)}
                                         className={({ isActive }) =>
-                                            `${estilos.enlace} ${esRutaActiva(enlace.to, isActive) ? estilos.enlaceActivo : ''}`
+                                            `${estilos.enlaceMovil} ${
+                                                esRutaActiva(enlace.to, isActive) ? estilos.enlaceMovilActivo : ''
+                                            }`
                                         }
                                     >
                                         <span className={estilos.iconoEnlace}>
-                                            <Icono size={20} />
+                                            <Icono size={19} />
                                         </span>
                                         <span>{enlace.texto}</span>
                                     </NavLink>
@@ -303,7 +433,7 @@ function Sidebar({ colapsado, onAlternarColapso }) {
                         <div className={estilos.controlesCajon}>
                             <button
                                 type="button"
-                                className={`${estilos.botonControl} ${esGrande ? estilos.botonControlActivo : ''}`}
+                                className={`${estilos.botonControlMovil} ${esGrande ? estilos.filaPieActiva : ''}`}
                                 onClick={alternarTamano}
                                 aria-pressed={esGrande}
                             >
@@ -314,18 +444,20 @@ function Sidebar({ colapsado, onAlternarColapso }) {
                             </button>
                             <button
                                 type="button"
-                                className={estilos.botonControl}
+                                className={estilos.botonControlMovil}
                                 onClick={alternarTema}
                                 aria-pressed={esClaro}
                             >
-                                {esClaro ? <IconoLuna size={18} /> : <IconoSol size={18} />}
+                                {esClaro ? <IconoLuna size={17} /> : <IconoSol size={17} />}
                                 <span>{esClaro ? 'Oscuro' : 'Claro'}</span>
                             </button>
                         </div>
 
                         <div className={estilos.pieCajon}>
                             <div
-                                className={`${estilos.estadoConexion} ${enLinea ? estilos.enLinea : estilos.sinConexion}`}
+                                className={`${estilos.estadoConexion} ${
+                                    enLinea ? estilos.enLinea : estilos.sinConexion
+                                }`}
                                 role="status"
                             >
                                 <span className={estilos.puntoEstado} aria-hidden="true" />
@@ -334,13 +466,13 @@ function Sidebar({ colapsado, onAlternarColapso }) {
 
                             <button
                                 type="button"
-                                className={estilos.botonSalir}
+                                className={estilos.botonSalirMovil}
                                 onClick={() => {
                                     setMasMovilAbierto(false);
                                     setConfirmandoSalida(true);
                                 }}
                             >
-                                <IconoSalir size={18} />
+                                <IconoSalir size={17} />
                                 <span>Cerrar sesión</span>
                             </button>
                         </div>

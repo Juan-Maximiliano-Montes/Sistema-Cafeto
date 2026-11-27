@@ -1,0 +1,94 @@
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filaCabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.etiqueta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--cf-text);
+}
+
+.requerido {
+    color: var(--cf-danger);
+    font-weight: 700;
+}
+
+.metaDerecha {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badgeValido {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--cf-ok-bg);
+    border: 1px solid var(--cf-ok-border);
+    color: var(--cf-ok);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.contador {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--cf-muted);
+}
+
+.contadorAlerta {
+    color: var(--cf-warn);
+}
+
+.contadorExcedido {
+    color: var(--cf-danger);
+    font-weight: 700;
+}
+
+.iconoAyuda {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cf-muted);
+}
+
+.iconoAyuda:hover {
+    color: var(--cf-text);
+}
+
+.control {
+    display: flex;
+    flex-direction: column;
+}
+
+.pista {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--cf-muted);
+    line-height: 1.4;
+}
+
+.mensajeError {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--cf-danger);
+    line-height: 1.35;
+}

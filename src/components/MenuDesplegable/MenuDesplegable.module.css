@@ -49,8 +49,6 @@
     padding: 8px;
     border-radius: 12px;
     background: var(--superficie-desplegable);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     border: 1.5px solid var(--borde-ambar);
     box-shadow: var(--sombra-modal);
     transition: opacity 0.15s ease;

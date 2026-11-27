@@ -12,13 +12,18 @@ import {
     obtenerRutaPostLogin,
     URL_WEB_DJANGO,
 } from '../../api/api';
+import CampoFormulario from '../../components/CampoFormulario/CampoFormulario';
+import Tooltip from '../../components/Tooltip/Tooltip';
+import { useNotificacion } from '../../hooks/useNotificacion';
 import {
+    IconoEstadoAlerta,
     IconoEstadoError,
     IconoEstadoInfo,
     IconoEstadoOk,
     IconoExterno,
 } from '../../components/Iconos/Iconos';
-import fotoFachada from '../../assets/foto de fachada nocturna del local.jpg';
+import fotoFachada from '../../assets/cafeto-fachada.jpg';
+import iconoAmbar from '../../assets/cafeto-icono-ambar.svg';
 import estilos from './Login.module.css';
 
 const validarUsuarioODni = (valor) => {
@@ -35,6 +40,7 @@ function Login() {
     const [errorAuth, setErrorAuth] = useState('');
     const [cargando, setCargando] = useState(false);
     const [verClave, setVerClave] = useState(false);
+    const [bloqMayus, setBloqMayus] = useState(false);
     const [modalClaveAbierto, setModalClaveAbierto] = useState(false);
 
     const dialogoClaveRef = useRef(null);
@@ -43,6 +49,7 @@ function Login() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const { notificar } = useNotificacion();
     const aviso = location.state?.aviso;
     const esAvisoOk = location.state?.tipoAviso === 'ok' || (typeof aviso === 'string' && aviso.startsWith('Cerraste'));
     const esSesionExpirada = Boolean(location.state?.sesionExpirada) || esSesionVencida();
@@ -54,7 +61,7 @@ function Login() {
         handleSubmit,
         setError,
         control,
-        formState: { errors },
+        formState: { errors, touchedFields },
     } = useForm({
         defaultValues: { usuario: '', clave: '' },
         mode: 'onBlur',
@@ -66,11 +73,10 @@ function Login() {
         name: ['usuario', 'clave'],
     });
 
+    const usuarioValido = validarUsuarioODni(usuarioValor) === true;
+    const claveValida = String(claveValor).length > 0;
     const formularioCompletoYValido =
-        validarUsuarioODni(usuarioValor) === true &&
-        String(claveValor).length > 0 &&
-        !errors.usuario &&
-        !errors.clave;
+        usuarioValido && claveValida && !errors.usuario && !errors.clave;
     const botonDeshabilitado = cargando || !formularioCompletoYValido;
 
     useEffect(() => {
@@ -96,11 +102,24 @@ function Login() {
         return <Navigate to={rutaDesdeEstado || '/inicio'} replace />;
     }
 
+    const detectarBloqMayus = (evento) => {
+        if (typeof evento.getModifierState === 'function') {
+            setBloqMayus(evento.getModifierState('CapsLock'));
+        }
+    };
+
     const onSubmit = async (data) => {
         try {
             setErrorAuth('');
             setCargando(true);
-            await loginUsuario(data.usuario.trim(), data.clave);
+            const sesion = await loginUsuario(data.usuario.trim(), data.clave);
+            const nombreUsuario = sesion?.usuario?.nombre;
+            notificar({
+                texto: nombreUsuario
+                    ? `¡Bienvenido/a, ${nombreUsuario}! Turno iniciado en Cafeto.`
+                    : 'Turno iniciado correctamente en Cafeto.',
+                tono: 'exito',
+            });
             const destino =
                 normalizarRutaPostLogin(location.state?.desde) ||
                 obtenerRutaPostLogin() ||
@@ -133,7 +152,7 @@ function Login() {
     };
 
     return (
-        <section className={estilos.pantalla} aria-labelledby="titulo-login">
+        <section className={estilos.pantalla} data-iris-login="true" aria-labelledby="titulo-login">
             <div className={estilos.panelVisual}>
                 <img
                     src={fotoFachada}
@@ -141,10 +160,19 @@ function Login() {
                     className={estilos.imagenFondo}
                 />
                 <div className={estilos.degradadoVisual} aria-hidden="true" />
-                <div className={estilos.marca}>
-                    <span className={estilos.etiquetaVisual}>Cafeto · Las Lomitas</span>
+
+                <div className={estilos.notchWrap}>
+                    <div className={estilos.notch}>
+                        <img src={iconoAmbar} alt="" className={estilos.notchLogo} aria-hidden="true" />
+                        <span className={estilos.notchDot} aria-hidden="true" />
+                        <span className={estilos.notchTexto}>Cafeto · Las Lomitas</span>
+                    </div>
+                </div>
+
+                <div className={estilos.pieFoto}>
+                    <span className={estilos.etiquetaVisual}>Cafetería &amp; Minisúper</span>
                     <p className={estilos.lema}>
-                        Gestión de salón, minisúper y cajas en tiempo real.
+                        Gestión de salón, stock y cajas en tiempo real.
                     </p>
                 </div>
             </div>
@@ -177,8 +205,14 @@ function Login() {
                     )}
 
                     <form onSubmit={handleSubmit(onSubmit)} className={estilos.formulario} noValidate>
-                        <div className={estilos.grupoCampo}>
-                            <label htmlFor="usuario" className={estilos.label}>Usuario o DNI</label>
+                        <CampoFormulario
+                            id="usuario"
+                            etiqueta="Usuario o DNI"
+                            requerido
+                            ayudaTooltip="Podés usar tu nombre de usuario (ej. lopezm) o tu DNI sin puntos."
+                            error={errors.usuario?.message || ''}
+                            valido={Boolean(touchedFields.usuario && usuarioValido && !errors.usuario)}
+                        >
                             <input
                                 id="usuario"
                                 type="text"
@@ -189,22 +223,21 @@ function Login() {
                                 autoCapitalize="none"
                                 spellCheck="false"
                                 aria-invalid={errors.usuario ? 'true' : 'false'}
-                                aria-describedby={errors.usuario ? 'error-usuario' : undefined}
+                                aria-describedby={errors.usuario ? 'usuario-error' : undefined}
                                 disabled={cargando}
                                 {...register('usuario', {
                                     validate: validarUsuarioODni,
                                 })}
                             />
-                            {errors.usuario && (
-                                <p id="error-usuario" className={estilos.mensajeError} role="alert">
-                                    <IconoEstadoError size={14} />
-                                    <span>{errors.usuario.message}</span>
-                                </p>
-                            )}
-                        </div>
+                        </CampoFormulario>
 
-                        <div className={estilos.grupoCampo}>
-                            <label htmlFor="clave" className={estilos.label}>Contraseña</label>
+                        <CampoFormulario
+                            id="clave"
+                            etiqueta="Contraseña"
+                            requerido
+                            error={errors.clave?.message || ''}
+                            valido={Boolean(touchedFields.clave && claveValida && !errors.clave)}
+                        >
                             <div className={estilos.campoClave}>
                                 <input
                                     id="clave"
@@ -213,28 +246,36 @@ function Login() {
                                     placeholder="••••••••"
                                     autoComplete="current-password"
                                     aria-invalid={errors.clave ? 'true' : 'false'}
-                                    aria-describedby={errors.clave ? 'error-clave' : undefined}
+                                    aria-describedby={errors.clave ? 'clave-error' : undefined}
                                     disabled={cargando}
+                                    onKeyUp={detectarBloqMayus}
+                                    onKeyDown={detectarBloqMayus}
                                     {...register('clave', {
                                         required: 'Ingresá tu contraseña.',
                                     })}
                                 />
-                                <button
-                                    type="button"
-                                    className={estilos.botonVer}
-                                    onClick={() => setVerClave((visible) => !visible)}
-                                    aria-pressed={verClave}
+                                <Tooltip
+                                    texto={verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                                    posicion="arriba"
                                 >
-                                    {verClave ? 'Ocultar' : 'Ver'}
-                                </button>
+                                    <button
+                                        type="button"
+                                        className={estilos.botonVer}
+                                        onClick={() => setVerClave((visible) => !visible)}
+                                        aria-pressed={verClave}
+                                    >
+                                        {verClave ? 'Ocultar' : 'Ver'}
+                                    </button>
+                                </Tooltip>
                             </div>
-                            {errors.clave && (
-                                <p id="error-clave" className={estilos.mensajeError} role="alert">
-                                    <IconoEstadoError size={14} />
-                                    <span>{errors.clave.message}</span>
-                                </p>
-                            )}
-                        </div>
+                        </CampoFormulario>
+
+                        {bloqMayus && (
+                            <div className={estilos.avisoMayus} role="status">
+                                <IconoEstadoAlerta size={15} />
+                                <span>Tenés activado Bloq Mayús.</span>
+                            </div>
+                        )}
 
                         <button type="submit" className={estilos.botonIngresar} disabled={botonDeshabilitado}>
                             {cargando ? 'Verificando tus datos...' : 'Ingresar al turno'}

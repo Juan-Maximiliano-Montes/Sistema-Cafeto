@@ -533,18 +533,15 @@
 .dialogo {
     padding: 0;
     width: min(470px, calc(100vw - 32px));
-    border-radius: 14px;
-    border: 1px solid var(--borde-ambar);
-    background: var(--superficie-modal);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: var(--texto-principal);
-    box-shadow: var(--sombra-modal);
+    border-radius: var(--cf-radio-modal);
+    border: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface);
+    color: var(--cf-text);
+    box-shadow: var(--cf-shadow);
 }
 
 .dialogo::backdrop {
     background: var(--backdrop-modal);
-    backdrop-filter: blur(4px);
 }
 
 .cajaDialogo {

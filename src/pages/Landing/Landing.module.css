@@ -101,29 +101,15 @@
     justify-self: end;
 }
 
-.heroFoto::before {
-    content: '';
-    position: absolute;
-    inset: -26px;
-    z-index: 0;
-    border-radius: 32px;
-    background: radial-gradient(circle at 55% 45%, rgba(250, 180, 31, 0.16), rgba(96, 165, 250, 0.06) 45%, transparent 72%);
-    pointer-events: none;
-}
-
-:root[data-tema='claro'] .heroFoto::before {
-    display: none;
-}
-
 .marcoFachada {
     position: relative;
     z-index: 1;
     width: 100%;
     aspect-ratio: 4 / 3;
-    border-radius: 14px;
+    border-radius: var(--cf-radio-lienzo);
     overflow: hidden;
-    border: 1px solid var(--borde-ambar);
-    background: var(--superficie-profunda);
+    border: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface);
 }
 
 .pildoraFoto {
@@ -136,11 +122,9 @@
     gap: 7px;
     padding: 6px 12px;
     border-radius: 999px;
-    background: rgba(18, 17, 40, 0.84);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(250, 180, 31, 0.35);
-    color: #F2E2A4;
+    background: var(--cf-chassis);
+    border: 1px solid var(--cf-chassis-line);
+    color: var(--cf-chassis-fg-strong);
     font-size: 0.76rem;
     font-weight: 700;
 }
@@ -195,10 +179,11 @@
 }
 
 .tituloSeccion {
-    font-family: var(--fuente-titulo);
-    font-size: clamp(2.05rem, 4.4vw, 2.75rem);
-    line-height: 1.05;
-    color: var(--texto-titular);
+    font-family: var(--fuente-subtitulo);
+    font-size: clamp(1.65rem, 3.4vw, 2.15rem);
+    font-weight: 700;
+    line-height: 1.18;
+    color: var(--cf-title);
     margin: 6px 0 8px;
 }
 

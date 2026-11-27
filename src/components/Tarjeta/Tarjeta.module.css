@@ -2,25 +2,32 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    background-color: var(--superficie-sutil);
-    border: 1px solid var(--borde-suave);
-    border-radius: var(--radio);
+    gap: 10px;
+    background: var(--cf-surface);
+    border: 1px solid var(--cf-line);
+    border-radius: var(--cf-radio-tarjeta);
     padding: 18px 20px;
-    color: var(--texto-principal);
+    color: var(--cf-text);
     text-decoration: none;
-    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    transition: border-color 150ms ease, background-color 150ms ease, transform 150ms var(--iris-ease);
 }
 
 .tarjeta:hover,
 .tarjeta:focus-visible {
-    transform: translateY(-2px);
-    border-color: var(--borde-acento);
-    background-color: var(--superficie);
+    transform: translateY(-1px);
+    border-color: var(--cf-line-strong);
+    background: var(--cf-surface-2);
 }
 
 .destacada {
-    border-color: var(--borde-ambar);
+    background: var(--cf-accent-soft);
+    border-color: var(--cf-warn-border);
+}
+
+.destacada:hover,
+.destacada:focus-visible {
+    background: var(--cf-accent-soft);
+    border-color: var(--cf-accent);
 }
 
 .cabecera {
@@ -32,39 +39,46 @@
 .icono {
     display: grid;
     place-items: center;
-    width: 46px;
-    height: 46px;
-    border-radius: 10px;
-    background: var(--aviso-fondo);
-    border: 1px solid var(--borde-ambar);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--cf-surface-2);
+    border: 1px solid var(--cf-line);
     color: var(--texto-acento);
     flex: none;
 }
 
+.destacada .icono {
+    background: var(--cf-accent);
+    border-color: var(--cf-accent);
+    color: var(--cf-on-accent);
+}
+
 .titulo {
     font-family: var(--fuente-subtitulo);
-    color: var(--texto-titular);
-    font-size: 1.2rem;
+    color: var(--cf-title);
+    font-size: 1.15rem;
+    font-weight: 600;
     margin: 0;
 }
 
 .descripcion {
     margin: 0;
-    font-size: 0.91rem;
-    line-height: 1.5;
-    color: var(--texto-secundario);
+    font-size: 0.9rem;
+    line-height: 1.48;
+    color: var(--cf-muted);
     flex: 1;
 }
 
 .accion {
-    margin-top: 4px;
+    margin-top: 2px;
     font-weight: 700;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     color: var(--texto-acento);
 }
 
 .tarjeta:hover .accion span {
     display: inline-block;
     transform: translateX(3px);
-    transition: transform 0.2s ease;
+    transition: transform 150ms var(--iris-ease);
 }

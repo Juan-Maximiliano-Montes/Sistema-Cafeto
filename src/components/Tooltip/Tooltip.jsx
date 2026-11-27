@@ -8,15 +8,33 @@ const CLASES_ALINEACION = {
     fin: estilos.alineacionFin,
 };
 
-function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', esEtiqueta = false }) {
+function Tooltip({
+    texto,
+    atajo = '',
+    children,
+    posicion = 'arriba',
+    alineacion = 'centro',
+    esEtiqueta = false,
+    retrasoMs = 160,
+}) {
     const [abierto, setAbierto] = useState(false);
     const [ubicacionLocal, setUbicacionLocal] = useState(posicion);
     const [ajusteX, setAjusteX] = useState(0);
     const [coordsDerecha, setCoordsDerecha] = useState({ top: 0, left: 0 });
     const disparadorRef = useRef(null);
     const globoRef = useRef(null);
+    const timerRef = useRef(null);
     const bloqueadoPorClickRef = useRef(false);
     const idTooltip = useId();
+
+    const limpiarTimer = useCallback(() => {
+        if (timerRef.current !== null) {
+            window.clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+    }, []);
+
+    useEffect(() => () => limpiarTimer(), [limpiarTimer]);
 
     const recalcularPosicion = useCallback(() => {
         const disparador = disparadorRef.current;
@@ -42,9 +60,10 @@ function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', 
             }
 
             const ubicacionFallback = rect.top - altoGlobo - separacion < margen ? 'abajo' : 'arriba';
-            const topFallback = ubicacionFallback === 'abajo'
-                ? Math.min(window.innerHeight - altoGlobo - margen, rect.bottom + separacion)
-                : Math.max(margen, rect.top - altoGlobo - separacion);
+            const topFallback =
+                ubicacionFallback === 'abajo'
+                    ? Math.min(window.innerHeight - altoGlobo - margen, rect.bottom + separacion)
+                    : Math.max(margen, rect.top - altoGlobo - separacion);
             const centroX = rect.left + rect.width / 2 - anchoGlobo / 2;
             const leftFallback = Math.min(
                 Math.max(margen, centroX),
@@ -80,7 +99,7 @@ function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', 
     useLayoutEffect(() => {
         if (!abierto) return;
         recalcularPosicion();
-    }, [abierto, texto, recalcularPosicion]);
+    }, [abierto, texto, atajo, recalcularPosicion]);
 
     useEffect(() => {
         if (!abierto) return;
@@ -118,20 +137,29 @@ function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', 
         return children;
     }
 
-    const contenidoHijo = !esEtiqueta && isValidElement(children)
-        ? cloneElement(children, {
-            'aria-describedby': children.props['aria-describedby']
-                ? `${children.props['aria-describedby']} ${idTooltip}`
-                : idTooltip,
-        })
-        : children;
+    const contenidoHijo =
+        !esEtiqueta && isValidElement(children)
+            ? cloneElement(children, {
+                  'aria-describedby': children.props['aria-describedby']
+                      ? `${children.props['aria-describedby']} ${idTooltip}`
+                      : idTooltip,
+              })
+            : children;
 
     const alEntrarMouse = () => {
         if (bloqueadoPorClickRef.current) return;
-        setAbierto(true);
+        limpiarTimer();
+        if (retrasoMs <= 0) {
+            setAbierto(true);
+            return;
+        }
+        timerRef.current = window.setTimeout(() => {
+            setAbierto(true);
+        }, retrasoMs);
     };
 
     const alSalirMouse = () => {
+        limpiarTimer();
         bloqueadoPorClickRef.current = false;
         setAbierto(false);
     };
@@ -145,15 +173,18 @@ function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', 
             esFocoTeclado = false;
         }
         if (esFocoTeclado) {
+            limpiarTimer();
             setAbierto(true);
         }
     };
 
     const alPerderFoco = () => {
+        limpiarTimer();
         setAbierto(false);
     };
 
     const alPresionarPuntero = () => {
+        limpiarTimer();
         if (!esEtiqueta) {
             bloqueadoPorClickRef.current = true;
             setAbierto(false);
@@ -161,6 +192,7 @@ function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', 
     };
 
     const alHacerClick = () => {
+        limpiarTimer();
         if (esEtiqueta) {
             setAbierto((previo) => !previo);
             return;
@@ -178,6 +210,12 @@ function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', 
     };
 
     const claseAlineacion = CLASES_ALINEACION[alineacion] || estilos.alineacionCentro;
+    const contenidoGlobo = (
+        <span className={estilos.contenidoGlobo}>
+            <span>{texto}</span>
+            {atajo && <kbd className="iris-keycap">{atajo}</kbd>}
+        </span>
+    );
 
     return (
         <span
@@ -196,7 +234,7 @@ function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', 
             {contenidoHijo}
             {!abierto ? (
                 <span id={idTooltip} role="tooltip" className={estilos.ocultoAccesible}>
-                    {texto}
+                    {atajo ? `${texto} (${atajo})` : texto}
                 </span>
             ) : posicion === 'derecha' && typeof document !== 'undefined' ? (
                 createPortal(
@@ -210,7 +248,7 @@ function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', 
                             left: `${coordsDerecha.left}px`,
                         }}
                     >
-                        {texto}
+                        {contenidoGlobo}
                     </span>,
                     document.body
                 )
@@ -219,10 +257,12 @@ function Tooltip({ texto, children, posicion = 'arriba', alineacion = 'centro', 
                     ref={globoRef}
                     id={idTooltip}
                     role="tooltip"
-                    className={`${estilos.globo} ${ubicacionLocal === 'abajo' ? estilos.abajo : estilos.arriba} ${claseAlineacion}`}
+                    className={`${estilos.globo} ${
+                        ubicacionLocal === 'abajo' ? estilos.abajo : estilos.arriba
+                    } ${claseAlineacion}`}
                     style={{ '--ajuste-x': `${ajusteX}px` }}
                 >
-                    {texto}
+                    {contenidoGlobo}
                 </span>
             )}
         </span>

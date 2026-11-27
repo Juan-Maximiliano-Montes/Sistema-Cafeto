@@ -1,7 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;600;700&family=Lora:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Lora:wght@500;600;700&display=swap');
+
+/* ==========================================================================
+   Cafeto × iRiS · Tokens globales AA/AAA (Oscuro por defecto + Claro 1 clic)
+   --------------------------------------------------------------------------
+   Fundamentos de marca + iRiS:
+     · Chasis Surround (--cf-chassis) envolviendo el lienzo redondeado (22px).
+     · Superficies planas: glass off · texture flat · glow 0 · hairline 1px.
+     · Usabilidad adulta: contraste AA/AAA, piso 15px, tabular-nums, foco 3px.
+     · Regla dura de marca: NUNCA texto en ámbar #FAB41F sobre fondo claro.
+   ========================================================================== */
 
 :root,
 :root[data-tema='oscuro'] {
+    /* Curva y radios iRiS */
+    --iris-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --cf-radio-lienzo: 22px;
+    --cf-radio-modal: 18px;
+    --cf-radio-tarjeta: 16px;
+    --cf-radio-control: 12px;
+    --cf-radio-pildora: 999px;
+
+    /* Paleta oficial del Manual de Identidad Visual */
     --morado-noche: #121128;
     --purpura-medianoche: #1B1B3A;
     --ambar-cafeto: #FAB41F;
@@ -11,122 +30,232 @@
     --negro-cartel: #161616;
     --crema: #F4F1EA;
 
-    --fondo-pagina: #121128;
-    --superficie: #1B1B3A;
-    --superficie-sutil: rgba(27, 27, 58, 0.52);
-    --superficie-profunda: rgba(18, 17, 40, 0.72);
-    --superficie-translucida: rgba(18, 17, 40, 0.80);
-    --superficie-modal: rgba(24, 23, 52, 0.90);
-    --superficie-pildora: rgba(20, 19, 44, 0.92);
-    --superficie-paleta: rgba(18, 17, 40, 0.95);
-    --superficie-desplegable: rgba(22, 21, 48, 0.96);
-    --superficie-sidebar: #161533;
-    --superficie-hover: rgba(250, 180, 31, 0.09);
+    /* Tokens Cafeto × iRiS (Oscuro) */
+    --cf-chassis: #0B0A19;
+    --cf-chassis-fg: #DCE1F4;
+    --cf-chassis-fg-strong: #F2F5FC;
+    --cf-chassis-muted: #BAC2DC;
+    --cf-chassis-surface: rgba(255, 255, 255, 0.07);
+    --cf-chassis-surface-hover: rgba(255, 255, 255, 0.14);
+    --cf-chassis-line: rgba(255, 255, 255, 0.13);
+    --cf-chassis-pill-fg: #F2E2A4;
 
-    --texto-principal: #E2E8F0;
-    --texto-fuerte: #FFFFFF;
-    --texto-titular: #F2E2A4;
-    --texto-secundario: #CBD5E1;
-    --texto-acento: #FAB41F;
-    --texto-sobre-ambar: #161616;
+    --cf-canvas: #141329;
+    --cf-surface: #1E1D3B;
+    --cf-surface-2: #27264B;
+    --cf-line: #353466;
+    --cf-line-strong: #4F4D8A;
 
-    --borde-suave: rgba(255, 255, 255, 0.12);
-    --borde-sutil: var(--borde-suave);
-    --borde-fuerte: rgba(255, 255, 255, 0.22);
-    --borde-ambar: rgba(250, 180, 31, 0.30);
-    --borde-acento: #FAB41F;
+    --cf-text: #F2F5FC;
+    --cf-muted: #BAC2DC;
+    --cf-subtle: #9BA4C4;
+    --cf-title: #F2E2A4;
 
-    --input-fondo: rgba(18, 17, 40, 0.85);
-    --input-borde: rgba(250, 180, 31, 0.34);
-    --input-placeholder: rgba(226, 232, 240, 0.52);
+    --cf-accent: #FAB41F;
+    --cf-accent-hover: #E9A50F;
+    --cf-accent-soft: #2E2611;
+    --cf-on-accent: #121128;
 
-    --exito: #4ADE80;
-    --exito-fondo: rgba(74, 222, 128, 0.14);
-    --exito-borde: #4ADE80;
-    --peligro: #FCA5A5;
+    --cf-ok: #4BE38D;
+    --cf-ok-bg: #15382B;
+    --cf-ok-border: #2F7D5C;
+
+    --cf-danger: #FF7B70;
+    --cf-danger-bg: #3E1D28;
+    --cf-danger-border: #823B4B;
+
+    --cf-warn: #F7D47A;
+    --cf-warn-bg: #3E2D0C;
+    --cf-warn-border: #8F6A1A;
+
+    --cf-info: #8AB4FF;
+    --cf-info-bg: #1A284A;
+    --cf-info-border: #3B5C9E;
+
+    --cf-rail-active-fg: #F2F5FC;
+    --cf-tab-fg: #F2F5FC;
+
+    --cf-kbd-bg: rgba(0, 0, 0, 0.28);
+    --cf-kbd-border: rgba(242, 245, 252, 0.28);
+    --cf-kbd-fg: #E2E8F0;
+
+    --cf-login-frame: #0B0A19;
+    --cf-login-input: #1A1935;
+    --cf-shadow: 0 12px 32px rgba(0, 0, 0, 0.42);
+
+    /* Compatibilidad con tokens existentes de Sistema-Cafeto */
+    --fondo-pagina: var(--cf-canvas);
+    --superficie: var(--cf-surface);
+    --superficie-sutil: var(--cf-surface);
+    --superficie-profunda: var(--cf-surface-2);
+    --superficie-translucida: var(--cf-chassis);
+    --superficie-modal: var(--cf-surface);
+    --superficie-pildora: var(--cf-chassis);
+    --superficie-paleta: var(--cf-surface);
+    --superficie-desplegable: var(--cf-surface);
+    --superficie-sidebar: var(--cf-chassis);
+    --superficie-hover: var(--cf-surface-2);
+
+    --texto-principal: var(--cf-text);
+    --texto-fuerte: var(--cf-text);
+    --texto-titular: var(--cf-title);
+    --texto-secundario: var(--cf-muted);
+    --texto-acento: var(--cf-accent);
+    --texto-sobre-ambar: var(--cf-on-accent);
+
+    --borde-suave: var(--cf-line);
+    --borde-sutil: var(--cf-line);
+    --borde-fuerte: var(--cf-line-strong);
+    --borde-ambar: var(--cf-warn-border);
+    --borde-acento: var(--cf-accent);
+
+    --input-fondo: var(--cf-surface-2);
+    --input-borde: var(--cf-line-strong);
+    --input-placeholder: var(--cf-subtle);
+
+    --exito: var(--cf-ok);
+    --exito-fondo: var(--cf-ok-bg);
+    --exito-borde: var(--cf-ok-border);
+    --peligro: var(--cf-danger);
     --peligro-solido: #DC2626;
-    --peligro-fondo: rgba(248, 113, 113, 0.14);
-    --peligro-borde: #F87171;
-    --aviso-texto: #FDE68A;
-    --aviso-fondo: rgba(250, 180, 31, 0.14);
-    --aviso-borde: #FAB41F;
-    --info-texto: #BFDBFE;
-    --info-fondo: rgba(96, 165, 250, 0.14);
-    --info-borde: #60A5FA;
+    --peligro-fondo: var(--cf-danger-bg);
+    --peligro-borde: var(--cf-danger-border);
+    --aviso-texto: var(--cf-warn);
+    --aviso-fondo: var(--cf-warn-bg);
+    --aviso-borde: var(--cf-warn-border);
+    --info-texto: var(--cf-info);
+    --info-fondo: var(--cf-info-bg);
+    --info-borde: var(--cf-info-border);
 
-    --borde-error: var(--peligro-borde);
-    --borde-exito: var(--exito-borde);
+    --borde-error: var(--cf-danger-border);
+    --borde-exito: var(--cf-ok-border);
 
-    --sombra: 0 8px 24px rgba(0, 0, 0, 0.32);
+    --sombra: var(--cf-shadow);
     --sombra-modal: 0 22px 54px rgba(0, 0, 0, 0.58);
-    --backdrop-modal: rgba(10, 9, 24, 0.68);
-    --foco-color: #FAB41F;
+    --backdrop-modal: rgba(7, 6, 18, 0.66);
+    --foco-color: var(--cf-accent);
 
-    --radio: 10px;
+    --radio: var(--cf-radio-control);
     --alto-navbar: 77px;
 
     --fuente-titulo: 'Caveat', cursive;
-    --fuente-subtitulo: 'Lora', serif;
-    --fuente-cuerpo: 'Inter', system-ui, sans-serif;
+    --fuente-subtitulo: 'Lora', Georgia, serif;
+    --fuente-cuerpo: 'Inter', system-ui, -apple-system, sans-serif;
+    --fuente-mono: ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, Consolas, monospace;
 
     color-scheme: dark;
 }
 
 :root[data-tema='claro'] {
-    --fondo-pagina: #F4F1EA;
-    --superficie: #FFFFFF;
-    --superficie-sutil: rgba(255, 255, 255, 0.72);
-    --superficie-profunda: #EAE4D7;
-    --superficie-translucida: rgba(244, 241, 234, 0.84);
-    --superficie-modal: rgba(255, 255, 255, 0.92);
-    --superficie-pildora: rgba(255, 255, 255, 0.92);
-    --superficie-paleta: rgba(255, 255, 255, 0.95);
-    --superficie-desplegable: rgba(255, 255, 255, 0.96);
-    --superficie-sidebar: #FAF8F3;
-    --superficie-hover: rgba(22, 22, 22, 0.05);
+    /* Tokens Cafeto × iRiS (Claro · Regla dura: cero texto #FAB41F sobre claro) */
+    --cf-chassis: #E6E0D4;
+    --cf-chassis-fg: #161616;
+    --cf-chassis-fg-strong: #161616;
+    --cf-chassis-muted: #474D63;
+    --cf-chassis-surface: rgba(22, 22, 22, 0.055);
+    --cf-chassis-surface-hover: rgba(22, 22, 22, 0.11);
+    --cf-chassis-line: rgba(22, 22, 22, 0.14);
+    --cf-chassis-pill-fg: #161616;
 
-    --texto-principal: #161616;
-    --texto-fuerte: #161616;
-    --texto-titular: #161616;
-    --texto-secundario: #3D3A35;
-    --texto-acento: #6B4600;
-    --texto-sobre-ambar: #161616;
+    --cf-canvas: #F4F1EA;
+    --cf-surface: #FFFFFF;
+    --cf-surface-2: #F6F3EB;
+    --cf-line: #DDD6C7;
+    --cf-line-strong: #C2B9A5;
 
-    --borde-suave: rgba(22, 22, 22, 0.12);
-    --borde-sutil: var(--borde-suave);
-    --borde-fuerte: rgba(22, 22, 22, 0.24);
-    --borde-ambar: rgba(107, 70, 0, 0.28);
-    --borde-acento: #7C5100;
+    --cf-text: #161616;
+    --cf-muted: #474D63;
+    --cf-subtle: #575E75;
+    --cf-title: #161616;
 
-    --input-fondo: #FFFFFF;
-    --input-borde: rgba(22, 22, 22, 0.28);
-    --input-placeholder: #59554E;
+    --cf-accent: #FAB41F;
+    --cf-accent-hover: #E9A50F;
+    --cf-accent-soft: #FFF3D6;
+    --cf-on-accent: #121128;
 
-    --exito: #14532D;
-    --exito-fondo: rgba(22, 163, 74, 0.12);
-    --exito-borde: #15803D;
-    --peligro: #7F1D1D;
+    --cf-ok: #0F6B37;
+    --cf-ok-bg: #E7F7EE;
+    --cf-ok-border: #9FD9B8;
+
+    --cf-danger: #B3261E;
+    --cf-danger-bg: #FDECEC;
+    --cf-danger-border: #F2B5B0;
+
+    --cf-warn: #8A6100;
+    --cf-warn-bg: #FFF3D6;
+    --cf-warn-border: #E8C56E;
+
+    --cf-info: #224E9E;
+    --cf-info-bg: #EAF1FD;
+    --cf-info-border: #A9C1EC;
+
+    --cf-rail-active-fg: #161616;
+    --cf-tab-fg: #161616;
+
+    --cf-kbd-bg: #ECE7DC;
+    --cf-kbd-border: #B8B09E;
+    --cf-kbd-fg: #161616;
+
+    --cf-login-frame: #E6E0D4;
+    --cf-login-input: #FFFFFF;
+    --cf-shadow: 0 10px 28px rgba(18, 17, 40, 0.12);
+
+    /* Compatibilidad con tokens existentes de Sistema-Cafeto */
+    --fondo-pagina: var(--cf-canvas);
+    --superficie: var(--cf-surface);
+    --superficie-sutil: var(--cf-surface);
+    --superficie-profunda: var(--cf-surface-2);
+    --superficie-translucida: var(--cf-chassis);
+    --superficie-modal: var(--cf-surface);
+    --superficie-pildora: var(--cf-chassis);
+    --superficie-paleta: var(--cf-surface);
+    --superficie-desplegable: var(--cf-surface);
+    --superficie-sidebar: var(--cf-chassis);
+    --superficie-hover: var(--cf-surface-2);
+
+    --texto-principal: var(--cf-text);
+    --texto-fuerte: var(--cf-text);
+    --texto-titular: var(--cf-title);
+    --texto-secundario: var(--cf-muted);
+    --texto-acento: #7D5600;
+    --texto-sobre-ambar: var(--cf-on-accent);
+
+    --borde-suave: var(--cf-line);
+    --borde-sutil: var(--cf-line);
+    --borde-fuerte: var(--cf-line-strong);
+    --borde-ambar: var(--cf-warn-border);
+    --borde-acento: #7D5600;
+
+    --input-fondo: var(--cf-surface);
+    --input-borde: var(--cf-line-strong);
+    --input-placeholder: var(--cf-subtle);
+
+    --exito: var(--cf-ok);
+    --exito-fondo: var(--cf-ok-bg);
+    --exito-borde: var(--cf-ok-border);
+    --peligro: var(--cf-danger);
     --peligro-solido: #B91C1C;
-    --peligro-fondo: rgba(220, 38, 38, 0.10);
-    --peligro-borde: #B91C1C;
-    --aviso-texto: #6B4600;
-    --aviso-fondo: rgba(250, 180, 31, 0.24);
-    --aviso-borde: #855800;
-    --info-texto: #1E3A8A;
-    --info-fondo: rgba(37, 99, 235, 0.10);
-    --info-borde: #1D4ED8;
+    --peligro-fondo: var(--cf-danger-bg);
+    --peligro-borde: var(--cf-danger-border);
+    --aviso-texto: var(--cf-warn);
+    --aviso-fondo: var(--cf-warn-bg);
+    --aviso-borde: var(--cf-warn-border);
+    --info-texto: var(--cf-info);
+    --info-fondo: var(--cf-info-bg);
+    --info-borde: var(--cf-info-border);
 
-    --borde-error: var(--peligro-borde);
-    --borde-exito: var(--exito-borde);
+    --borde-error: var(--cf-danger-border);
+    --borde-exito: var(--cf-ok-border);
 
-    --sombra: 0 6px 20px rgba(22, 22, 22, 0.08);
-    --sombra-modal: 0 22px 54px rgba(22, 22, 22, 0.22);
+    --sombra: var(--cf-shadow);
+    --sombra-modal: 0 22px 54px rgba(18, 17, 40, 0.22);
     --backdrop-modal: rgba(22, 22, 22, 0.45);
     --foco-color: #161616;
 
     color-scheme: light;
 }
 
+/* ---------- Base tipográfica adulta y reset ---------- */
 *,
 *::before,
 *::after {
@@ -141,10 +270,11 @@ html {
 
 body {
     margin: 0;
-    background: var(--fondo-pagina);
-    color: var(--texto-principal);
+    background: var(--cf-canvas);
+    color: var(--cf-text);
     font-family: var(--fuente-cuerpo);
-    line-height: 1.55;
+    font-size: 0.9375rem; /* 15px piso cómodo para adultos */
+    line-height: 1.45;
     min-height: 100vh;
     overflow-x: clip;
 }
@@ -154,6 +284,34 @@ body {
     display: flex;
     flex-direction: column;
     overflow-x: clip;
+}
+
+/* Chasis Surround iRiS bloqueado a los 4 bordes físicos de la ventana */
+html:has([data-iris-shell]),
+body:has([data-iris-shell]),
+#root:has([data-iris-shell]) {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+    background: var(--cf-chassis);
+}
+
+/* Login Surround sin scroll innecesario en escritorio */
+@media (min-width: 901px) {
+    html:has([data-iris-login]),
+    body:has([data-iris-login]),
+    #root:has([data-iris-login]) {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100dvh;
+        overflow: hidden;
+        background: var(--cf-login-frame);
+    }
 }
 
 img {
@@ -172,9 +330,53 @@ button:disabled {
     cursor: not-allowed;
 }
 
-:focus-visible {
-    outline: 3px solid var(--foco-color);
-    outline-offset: 3px;
+/* ---------- Foco visible AA/AAA (teclado y navegación accesible) ---------- */
+:where(a:any-link, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid var(--cf-accent);
+    outline-offset: 2px;
+}
+
+:root[data-tema='claro'] :where(a:any-link, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid #161616;
+    box-shadow: 0 0 0 5px var(--cf-accent);
+}
+
+/* ---------- Utilidades globales iRiS ---------- */
+.iris-num {
+    font-variant-numeric: tabular-nums;
+}
+
+.iris-keycap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 6px;
+    font-family: var(--fuente-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    border: 1px solid var(--cf-kbd-border);
+    background: var(--cf-kbd-bg);
+    color: var(--cf-kbd-fg);
+    box-shadow: inset 0 -1.5px 0 rgba(0, 0, 0, 0.22);
+    flex-shrink: 0;
+}
+
+.iris-keycap-chassis {
+    background: var(--cf-chassis-surface);
+    border-color: var(--cf-chassis-line);
+    color: var(--cf-chassis-fg-strong);
+}
+
+.iris-keycap-on-accent {
+    background: rgba(18, 17, 40, 0.14);
+    border-color: rgba(18, 17, 40, 0.32);
+    color: var(--cf-on-accent);
+    box-shadow: inset 0 -1.5px 0 rgba(18, 17, 40, 0.18);
 }
 
 @media (prefers-reduced-motion: reduce) {

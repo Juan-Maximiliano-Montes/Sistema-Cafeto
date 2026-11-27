@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useDeferredValue, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
     getProductos,
@@ -8,6 +8,7 @@ import {
     mensajeDeError,
     tienePermiso,
 } from '../../api/api';
+import { useAtajos } from '../../hooks/useAtajos';
 import { useTema } from '../../hooks/useTema';
 import EncabezadoPagina from '../../components/EncabezadoPagina/EncabezadoPagina';
 import AvisoError from '../../components/AvisoError/AvisoError';
@@ -15,6 +16,7 @@ import { BarraCarga, EsqueletoCatalogo } from '../../components/BarraCarga/Barra
 import BarraFlotante from '../../components/BarraFlotante/BarraFlotante';
 import MenuDesplegable from '../../components/MenuDesplegable/MenuDesplegable';
 import Paginacion from '../../components/Paginacion/Paginacion';
+import SubTabsIris from '../../components/SubTabsIris/SubTabsIris';
 import Tooltip from '../../components/Tooltip/Tooltip';
 import { desplazarAlInicioListado } from '../../utils/desplazamiento';
 import {
@@ -137,6 +139,15 @@ function Productos() {
     const [hayMas, setHayMas] = useState(false);
 
     const inicioListadoRef = useRef(null);
+    const busquedaRef = useRef(null);
+    const busquedaDiferida = useDeferredValue(busqueda);
+
+    useAtajos({
+        '/': () => busquedaRef.current?.focus(),
+        r: () => {
+            if (!cargando) setIntento((n) => n + 1);
+        },
+    });
 
     const consultaPorCodigo = puedeVerStockInterno && esCodigoBarras(consulta);
     const modoStock = seccion === 'STOCK' || consultaPorCodigo;
@@ -235,7 +246,7 @@ function Productos() {
 
     const productosSeguros = Array.isArray(productos) ? productos.filter(Boolean) : [];
     const rubrosSeguros = Array.isArray(rubros) ? rubros.filter(Boolean) : [];
-    const palabras = normalizar(busqueda).split(/\s+/).filter(Boolean);
+    const palabras = normalizar(busquedaDiferida).split(/\s+/).filter(Boolean);
     const productosFiltrados = [
         ...productosSeguros.filter((item) => (!soloConStock || Boolean(item?.disponible)) && coincide(item, palabras)),
     ].sort((a, b) => {
@@ -409,21 +420,18 @@ function Productos() {
                 }
             />
 
-            <div ref={inicioListadoRef} className={estilos.cabeceraListado}>
+            <div ref={inicioListadoRef}>
+                <SubTabsIris
+                    ariaLabel="Sección del catálogo"
+                    activa={seccion}
+                    onCambiar={cambiarSeccion}
+                    pestanas={secciones.map(({ valor, texto }) => ({
+                        id: valor,
+                        etiqueta: texto,
+                    }))}
+                >
+                <div className={estilos.cabeceraListado}>
                 <div className={estilos.barraAcciones}>
-                    <div className={estilos.selectorSeccion} role="group" aria-label="Sección o modo de consulta">
-                        {secciones.map(({ valor, texto }) => (
-                            <button
-                                key={valor}
-                                type="button"
-                                className={`${estilos.botonSeccion} ${seccion === valor ? estilos.botonSeccionActivo : ''}`}
-                                aria-pressed={seccion === valor}
-                                onClick={() => cambiarSeccion(valor)}
-                            >
-                                {texto}
-                            </button>
-                        ))}
-                    </div>
 
                     {seccion !== 'STOCK' && rubrosSeguros.length > 0 && (
                         <div className={estilos.selectorRubro}>
@@ -452,12 +460,13 @@ function Productos() {
 
                     <div className={estilos.barraBusqueda}>
                         <input
+                            ref={busquedaRef}
                             type="search"
                             className={estilos.inputBusqueda}
                             placeholder={
                                 puedeVerStockInterno
-                                    ? 'Buscar por nombre, rubro, marca o código...'
-                                    : 'Buscar por nombre, rubro o marca...'
+                                    ? 'Buscar por nombre, rubro, marca o código (tecla /)...'
+                                    : 'Buscar por nombre, rubro o marca (tecla /)...'
                             }
                             aria-label="Buscar productos"
                             value={busqueda}
@@ -718,6 +727,8 @@ function Productos() {
                     />
                 </>
             )}
+                </SubTabsIris>
+            </div>
 
             <BarraFlotante />
         </section>

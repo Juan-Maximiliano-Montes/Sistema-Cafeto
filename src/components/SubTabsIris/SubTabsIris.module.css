@@ -1,0 +1,298 @@
+/* ==========================================================================
+   Sub-pestañas soldadas Cafeto × iRiS ("carpeta física real")
+   ========================================================================== */
+
+.contenedor {
+    display: flex;
+    flex-direction: column;
+}
+
+.cabecera {
+    margin-bottom: 0;
+}
+
+.filaDesktop {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 2px 4px 0 0;
+}
+
+.tiraPestanas {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    min-width: 0;
+    flex: 1 1 auto;
+    padding-top: 2px;
+}
+
+.pestana {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 42px;
+    padding: 9px 15px 10px;
+    border: 0;
+    border-radius: 15px 15px 0 0;
+    background: transparent;
+    color: var(--cf-muted);
+    font-size: 0.88rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.pestana:hover:not(:disabled) {
+    color: var(--cf-text);
+    background: rgba(128, 128, 160, 0.12);
+}
+
+.pestana:disabled {
+    opacity: 0.45;
+}
+
+.icono {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.conteo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 20px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: var(--cf-surface-2);
+    border: 1px solid var(--cf-line);
+    color: var(--cf-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* Pestaña activa soldada a 0px sobre --cf-surface con curvas cóncavas de 14px */
+.activa,
+.activa:hover {
+    background: var(--cf-surface);
+    color: var(--cf-tab-fg);
+    font-weight: 700;
+    z-index: 2;
+}
+
+.activa .icono {
+    color: var(--cf-accent);
+}
+
+:global([data-tema='claro']) .activa .icono {
+    color: #8A6100;
+}
+
+.activa .conteo {
+    background: var(--cf-accent-soft);
+    border-color: var(--cf-warn-border);
+    color: var(--texto-acento);
+}
+
+.activa::before,
+.activa::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+}
+
+.activa::before {
+    left: -14px;
+    background: radial-gradient(circle at 0 0, transparent 14px, var(--cf-surface) 14.5px);
+}
+
+.activa::after {
+    right: -14px;
+    background: radial-gradient(circle at 14px 0, transparent 14px, var(--cf-surface) 14.5px);
+}
+
+.primera.activa::before {
+    display: none;
+}
+
+.lateralDerecho {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.meta {
+    font-family: var(--fuente-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--cf-muted);
+    white-space: nowrap;
+}
+
+/* Cuerpo de carpeta física elevado en --cf-surface */
+.cuerpo {
+    background: var(--cf-surface);
+    border-radius: 0 var(--cf-radio-tarjeta) var(--cf-radio-tarjeta) var(--cf-radio-tarjeta);
+    padding: 20px 22px 22px;
+    border: 1px solid var(--cf-line);
+    border-top-color: transparent;
+}
+
+:global([data-tema='claro']) .cuerpo {
+    box-shadow: 0 2px 10px rgba(18, 17, 40, 0.05);
+}
+
+/* ---------- Móvil (<= 640px): selector táctil + Bottom Sheet ---------- */
+.filaMovil {
+    display: none;
+}
+
+.sheet {
+    padding: 0;
+    margin: auto auto 0;
+    width: 100%;
+    max-width: 520px;
+    border: 1px solid var(--cf-line-strong);
+    border-bottom: 0;
+    border-radius: 20px 20px 0 0;
+    background: var(--cf-surface);
+    color: var(--cf-text);
+    box-shadow: var(--cf-shadow);
+}
+
+.sheet::backdrop {
+    background: var(--backdrop-modal);
+}
+
+.sheetCabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--cf-line);
+}
+
+.sheetTitulo {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--cf-text);
+}
+
+.sheetCerrar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--cf-line);
+    background: var(--cf-surface-2);
+    color: var(--cf-text);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+.sheetLista {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+.sheetOpcion {
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--cf-line);
+    background: var(--cf-surface-2);
+    color: var(--cf-text);
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+}
+
+.sheetOpcionActiva {
+    background: var(--cf-accent-soft);
+    border-color: var(--cf-warn-border);
+    font-weight: 700;
+}
+
+.sheetOpcionTexto {
+    flex: 1;
+}
+
+@media (max-width: 640px) {
+    .filaDesktop {
+        display: none;
+    }
+
+    .filaMovil {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .selectorMovil {
+        width: 100%;
+        min-height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 14px;
+        border: 1px solid var(--cf-line-strong);
+        background: var(--cf-surface);
+        color: var(--cf-text);
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .selectorIzq {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+    }
+
+    .selectorTitulo {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .selectorBadge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.78rem;
+        color: var(--cf-muted);
+        flex-shrink: 0;
+    }
+
+    .accionesMovil {
+        width: 100%;
+    }
+
+    .cuerpo {
+        border-radius: var(--cf-radio-tarjeta);
+        border-top-color: var(--cf-line);
+        padding: 16px 14px;
+    }
+}

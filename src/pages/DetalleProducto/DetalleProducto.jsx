@@ -9,6 +9,7 @@ import {
     tienePermiso,
     URL_WEB_DJANGO,
 } from '../../api/api';
+import { useNotificacion } from '../../hooks/useNotificacion';
 import { useTema } from '../../hooks/useTema';
 import EncabezadoPagina from '../../components/EncabezadoPagina/EncabezadoPagina';
 import AvisoError from '../../components/AvisoError/AvisoError';
@@ -59,7 +60,24 @@ function DetalleProducto() {
     const usuario = getUsuarioActual();
     const puedeVerStock = tienePermiso(usuario, 'ver_productos');
     const { esClaro } = useTema();
+    const { notificar } = useNotificacion();
     const isotipo = esClaro ? isotipoNegro : isotipoBlanco;
+
+    const copiarCodigoBarras = async (codigo) => {
+        if (!codigo) return;
+        try {
+            await navigator.clipboard.writeText(String(codigo));
+            notificar({
+                texto: `Código de barras copiado: ${codigo}`,
+                tono: 'exito',
+            });
+        } catch {
+            notificar({
+                texto: 'No pudimos acceder al portapapeles en este navegador.',
+                tono: 'aviso',
+            });
+        }
+    };
 
     const productoInicial =
         location.state?.producto && String(location.state.producto.id) === String(id)
@@ -336,7 +354,18 @@ function DetalleProducto() {
                                 {producto.codigo_barras && (
                                     <div className={estilos.dato}>
                                         <dt>Código de barras</dt>
-                                        <dd>{producto.codigo_barras}</dd>
+                                        <dd>
+                                            <Tooltip texto="Clic para copiar el código de barras" posicion="arriba">
+                                                <button
+                                                    type="button"
+                                                    className="iris-keycap"
+                                                    onClick={() => copiarCodigoBarras(producto.codigo_barras)}
+                                                    style={{ cursor: 'pointer', height: 'auto', padding: '4px 9px' }}
+                                                >
+                                                    {producto.codigo_barras}
+                                                </button>
+                                            </Tooltip>
+                                        </dd>
                                     </div>
                                 )}
                                 {producto.stock_actual != null && (

@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useDeferredValue, useEffect, useRef, useState } from 'react';
 import { getUsuarioActual, mensajeDeError, URL_WEB_DJANGO, verificarSesion } from '../../api/api';
 import EncabezadoPagina from '../../components/EncabezadoPagina/EncabezadoPagina';
 import AvisoError from '../../components/AvisoError/AvisoError';
 import { BarraCarga } from '../../components/BarraCarga/BarraCarga';
 import Tooltip from '../../components/Tooltip/Tooltip';
+import { useAtajos } from '../../hooks/useAtajos';
+import { normalizar } from '../../utils/formato';
 import {
+    IconoBuscar,
     IconoEstadoError,
     IconoEstadoInfo,
     IconoEstadoOk,
@@ -69,6 +72,13 @@ function Usuarios() {
     const [verificando, setVerificando] = useState(true);
     const [error, setError] = useState(null);
     const [intento, setIntento] = useState(0);
+    const [busquedaPermiso, setBusquedaPermiso] = useState('');
+    const buscadorRef = useRef(null);
+    const busquedaDiferida = useDeferredValue(busquedaPermiso);
+
+    useAtajos({
+        '/': () => buscadorRef.current?.focus(),
+    });
 
     useEffect(() => {
         const controlador = new AbortController();
@@ -103,12 +113,18 @@ function Usuarios() {
     }
 
     const permisos = Array.isArray(usuario.permisos) ? usuario.permisos : [];
+    const palabrasPermiso = normalizar(busquedaDiferida).split(/\s+/).filter(Boolean);
     const grupos = ORDEN_CATEGORIAS
         .map((categoria) => ({
             categoria,
             items: permisos
                 .map((codigo) => ({ codigo, ...describirPermiso(codigo) }))
-                .filter((item) => item.categoria === categoria),
+                .filter((item) => {
+                    if (item.categoria !== categoria) return false;
+                    if (palabrasPermiso.length === 0) return true;
+                    const fuente = normalizar(`${item.etiqueta} ${item.categoria} ${item.codigo} ${item.enApp ? 'app' : 'web panel'}`);
+                    return palabrasPermiso.every((p) => fuente.includes(p));
+                }),
         }))
         .filter((grupo) => grupo.items.length > 0);
 
@@ -204,6 +220,18 @@ function Usuarios() {
                         </p>
                     </div>
                     <div className={estilos.leyenda}>
+                        <div className={estilos.buscadorPermisos}>
+                            <IconoBuscar size={15} />
+                            <input
+                                ref={buscadorRef}
+                                type="search"
+                                className={estilos.inputPermisos}
+                                placeholder="Filtrar permisos (tecla /)..."
+                                aria-label="Filtrar permisos habilitados"
+                                value={busquedaPermiso}
+                                onChange={(e) => setBusquedaPermiso(e.target.value)}
+                            />
+                        </div>
                         <span className={`${estilos.etiquetaAlcance} ${estilos.alcanceApp}`}>
                             <IconoEstadoOk size={12} />
                             <span>En esta app</span>

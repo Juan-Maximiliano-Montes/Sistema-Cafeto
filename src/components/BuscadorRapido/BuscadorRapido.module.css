@@ -1,19 +1,16 @@
 .dialogo {
     padding: 0;
-    margin: 72px auto auto;
-    width: min(600px, calc(100vw - 28px));
-    border-radius: 16px;
-    border: 1.5px solid var(--borde-ambar);
-    background: var(--superficie-paleta);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    color: var(--texto-principal);
-    box-shadow: var(--sombra-modal);
+    margin: 68px auto auto;
+    width: min(620px, calc(100vw - 28px));
+    border-radius: var(--cf-radio-modal);
+    border: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface);
+    color: var(--cf-text);
+    box-shadow: var(--cf-shadow);
 }
 
 .dialogo::backdrop {
     background: var(--backdrop-modal);
-    backdrop-filter: blur(4px);
 }
 
 .caja {
@@ -22,34 +19,32 @@
 }
 
 .barraInput {
-    position: relative;
     display: flex;
     align-items: center;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--borde-suave);
-    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--cf-line);
+    gap: 10px;
 }
 
 .iconoInput {
     display: inline-flex;
-    color: var(--texto-acento);
-    padding-left: 4px;
+    color: var(--cf-muted);
     flex: none;
 }
 
 .input {
     flex: 1;
-    min-height: 44px;
-    border: none;
+    min-height: 42px;
+    border: 0;
     background: transparent;
-    color: var(--texto-fuerte);
-    font-size: 1rem;
-    padding: 6px 4px;
+    color: var(--cf-text);
+    font-size: 0.98rem;
+    padding: 4px 2px;
     outline: none;
 }
 
 .input::placeholder {
-    color: var(--input-placeholder);
+    color: var(--cf-subtle);
 }
 
 .input::-webkit-search-cancel-button {
@@ -57,45 +52,45 @@
 }
 
 .botonCerrar {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    border: 1px solid var(--borde-suave);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 8px;
+    border: 0;
     background: transparent;
-    color: var(--texto-principal);
     cursor: pointer;
     flex: none;
 }
 
 .botonCerrar:hover {
-    border-color: var(--borde-acento);
-    background: var(--superficie-hover);
+    background: var(--cf-surface-2);
 }
 
 .resultados {
-    max-height: min(58dvh, 420px);
+    max-height: min(60dvh, 440px);
     overflow-y: auto;
     padding: 10px 12px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cf-line-strong) transparent;
 }
 
 .grupo {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
 }
 
 .etiquetaGrupo {
     padding: 0 8px;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--texto-acento);
+    color: var(--cf-muted);
 }
 
 .lista {
@@ -104,7 +99,7 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
 }
 
 .opcion {
@@ -114,19 +109,19 @@
     align-items: center;
     gap: 12px;
     padding: 8px 10px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid transparent;
     background: transparent;
-    color: var(--texto-principal);
+    color: var(--cf-text);
     text-align: left;
     cursor: pointer;
-    transition: background-color 0.14s ease, border-color 0.14s ease;
+    transition: background-color 140ms ease, border-color 140ms ease;
 }
 
 .opcionActiva,
 .opcion:hover {
-    background: var(--superficie-hover);
-    border-color: var(--borde-ambar);
+    background: var(--cf-surface-2);
+    border-color: var(--cf-line-strong);
 }
 
 .iconoOpcion {
@@ -134,11 +129,21 @@
     place-items: center;
     width: 34px;
     height: 34px;
-    border-radius: 8px;
-    background: var(--aviso-fondo);
-    border: 1px solid var(--borde-ambar);
-    color: var(--texto-acento);
+    border-radius: 10px;
+    background: var(--cf-surface-2);
+    border: 1px solid var(--cf-line);
+    color: var(--cf-accent);
     flex: none;
+}
+
+:global([data-tema='claro']) .iconoOpcion {
+    color: #8A6100;
+}
+
+.opcionActiva .iconoOpcion {
+    background: var(--cf-accent);
+    border-color: var(--cf-accent);
+    color: var(--cf-on-accent);
 }
 
 .textoOpcion {
@@ -151,12 +156,12 @@
 
 .textoOpcion strong {
     font-size: 0.92rem;
-    color: var(--texto-titular);
+    color: var(--cf-text);
 }
 
 .textoOpcion small {
     font-size: 0.78rem;
-    color: var(--texto-secundario);
+    color: var(--cf-muted);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -173,17 +178,25 @@
 .vacio {
     margin: 4px 8px;
     font-size: 0.88rem;
-    color: var(--texto-secundario);
+    color: var(--cf-muted);
 }
 
 .pie {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 16px;
-    border-top: 1px solid var(--borde-suave);
-    font-size: 0.76rem;
-    color: var(--texto-secundario);
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--cf-line);
+    font-size: 0.78rem;
+    color: var(--cf-muted);
+}
+
+.pieGrupo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .oculto {

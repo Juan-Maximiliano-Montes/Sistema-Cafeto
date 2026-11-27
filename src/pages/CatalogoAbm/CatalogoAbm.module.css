@@ -475,17 +475,14 @@
     max-height: 100dvh;
     width: min(460px, 100vw);
     border: none;
-    border-left: 1px solid var(--borde-ambar);
-    background: var(--superficie-modal);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: var(--texto-principal);
-    box-shadow: var(--sombra-modal);
+    border-left: 1px solid var(--cf-line-strong);
+    background: var(--cf-surface);
+    color: var(--cf-text);
+    box-shadow: var(--cf-shadow);
 }
 
 .panelLateral::backdrop {
     background: var(--backdrop-modal);
-    backdrop-filter: blur(4px);
 }
 
 .cajaPanel {

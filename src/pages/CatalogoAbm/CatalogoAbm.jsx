@@ -19,9 +19,13 @@ import EncabezadoPagina from '../../components/EncabezadoPagina/EncabezadoPagina
 import AvisoError from '../../components/AvisoError/AvisoError';
 import { BarraCarga } from '../../components/BarraCarga/BarraCarga';
 import BarraFlotante from '../../components/BarraFlotante/BarraFlotante';
+import CampoFormulario from '../../components/CampoFormulario/CampoFormulario';
 import Confirmacion from '../../components/Confirmacion/Confirmacion';
 import Paginacion from '../../components/Paginacion/Paginacion';
+import SubTabsIris from '../../components/SubTabsIris/SubTabsIris';
 import Tooltip from '../../components/Tooltip/Tooltip';
+import { useAtajos } from '../../hooks/useAtajos';
+import { useNotificacion } from '../../hooks/useNotificacion';
 import { desplazarAlInicioListado } from '../../utils/desplazamiento';
 import {
     IconoActualizar,
@@ -36,7 +40,7 @@ import {
     IconoEtiqueta,
     IconoMas,
 } from '../../components/Iconos/Iconos';
-import { formatearNumero } from '../../utils/formato';
+import { formatearNumero, normalizar } from '../../utils/formato';
 import estilos from './CatalogoAbm.module.css';
 
 function CatalogoAbm() {
@@ -76,7 +80,7 @@ function CatalogoAbm() {
     const [intento, setIntento] = useState(0);
     const [conteos, setConteos] = useState({ MARCAS: null, RUBROS: null });
 
-    const [avisoExito, setAvisoExito] = useState('');
+    const { notificar } = useNotificacion();
     const [errorOperacion, setErrorOperacion] = useState('');
     const [cambiandoEstadoId, setCambiandoEstadoId] = useState(null);
 
@@ -89,6 +93,7 @@ function CatalogoAbm() {
     const [eliminando, setEliminando] = useState(false);
 
     const inicioListadoRef = useRef(null);
+    const busquedaRef = useRef(null);
     const dialogoRef = useRef(null);
     const idTituloPanel = useId();
 
@@ -98,19 +103,46 @@ function CatalogoAbm() {
         reset,
         setError,
         control,
-        formState: { errors },
+        formState: { errors, touchedFields },
     } = useForm({
         defaultValues: { nombre: '', descripcion: '', activo: true },
         mode: 'onBlur',
         reValidateMode: 'onChange',
     });
 
-    const activoWatch = useWatch({ control, name: 'activo', defaultValue: true });
+    const [nombreWatch = '', descripcionWatch = '', activoWatch = true] = useWatch({
+        control,
+        name: ['nombre', 'descripcion', 'activo'],
+    });
 
     const esMarcas = pestana === 'MARCAS';
     const permisosActuales = esMarcas ? permisosMarca : permisosRubro;
     const nombreEntidad = esMarcas ? 'marca' : 'rubro';
     const puedeEscribirAlgo = permisosActuales.crear || permisosActuales.editar || permisosActuales.eliminar;
+
+    const nombreNormalizado = normalizar(nombreWatch);
+    const posibleDuplicado = Boolean(
+        panelAbierto &&
+            nombreNormalizado.length >= 2 &&
+            items.some(
+                (item) =>
+                    item?.id !== editando?.id &&
+                    normalizar(item?.nombre || '') === nombreNormalizado
+            )
+    );
+
+    useAtajos(
+        {
+            '/': () => busquedaRef.current?.focus(),
+            n: () => {
+                if (permisosActuales.crear) abrirCrear('');
+            },
+            r: () => {
+                if (!cargando && permisosActuales.ver) setIntento((n) => n + 1);
+            },
+        },
+        { activo: !panelAbierto && !objetivoEliminar }
+    );
 
     useEffect(() => {
         const limpio = busqueda.trim();
@@ -206,7 +238,6 @@ function CatalogoAbm() {
         setBusqueda('');
         setErrorCarga(null);
         setErrorOperacion('');
-        setAvisoExito('');
         setSearchParams((prev) => {
             const copia = new URLSearchParams(prev);
             if (nueva === pestanaDefecto) copia.delete('pestana');
@@ -275,7 +306,6 @@ function CatalogoAbm() {
 
         setCambiandoEstadoId(rubro.id);
         setErrorOperacion('');
-        setAvisoExito('');
         setItems((previos) =>
             previos.map((r) => (r.id === rubro.id ? { ...r, activo: nuevoEstado } : r))
         );
@@ -287,11 +317,12 @@ function CatalogoAbm() {
                     (Array.isArray(previos) ? previos : []).map((r) => (r.id === actualizado.id ? actualizado : r))
                 );
             }
-            setAvisoExito(
-                actualizado?.activo
+            notificar({
+                texto: actualizado?.activo
                     ? `Activaste el rubro "${actualizado?.nombre || rubro.nombre}".`
-                    : `Pausaste el rubro "${actualizado?.nombre || rubro.nombre}".`
-            );
+                    : `Pausaste el rubro "${actualizado?.nombre || rubro.nombre}".`,
+                tono: 'exito',
+            });
         } catch (err) {
             setItems((previos) =>
                 (Array.isArray(previos) ? previos : []).map((r) => (r.id === rubro.id ? { ...r, activo: estadoPrevio } : r))
@@ -310,7 +341,6 @@ function CatalogoAbm() {
             setGuardando(true);
             setErrorFormulario('');
             setErrorOperacion('');
-            setAvisoExito('');
 
             const nombre = String(datosForm?.nombre ?? '').trim();
             const descripcion = String(datosForm?.descripcion ?? '').trim();
@@ -323,7 +353,10 @@ function CatalogoAbm() {
                             (Array.isArray(previos) ? previos : []).map((m) => (m.id === actualizada.id ? actualizada : m))
                         );
                     }
-                    setAvisoExito(`Actualizaste la marca "${actualizada?.nombre || nombre}".`);
+                    notificar({
+                        texto: `Actualizaste la marca "${actualizada?.nombre || nombre}".`,
+                        tono: 'exito',
+                    });
                 } else {
                     const creada = await crearMarca({ nombre, descripcion });
                     if (pagina > 1) {
@@ -334,7 +367,10 @@ function CatalogoAbm() {
                         }, { replace: true });
                     }
                     setIntento((n) => n + 1);
-                    setAvisoExito(`Creaste la marca "${creada?.nombre || nombre}".`);
+                    notificar({
+                        texto: `Creaste la marca "${creada?.nombre || nombre}".`,
+                        tono: 'exito',
+                    });
                 }
             } else if (editando) {
                 const actualizado = await editarRubro(editando.id, {
@@ -347,7 +383,10 @@ function CatalogoAbm() {
                         (Array.isArray(previos) ? previos : []).map((r) => (r.id === actualizado.id ? actualizado : r))
                     );
                 }
-                setAvisoExito(`Actualizaste el rubro "${actualizado?.nombre || nombre}".`);
+                notificar({
+                    texto: `Actualizaste el rubro "${actualizado?.nombre || nombre}".`,
+                    tono: 'exito',
+                });
             } else {
                 const creado = await crearRubro({
                     nombre,
@@ -362,7 +401,10 @@ function CatalogoAbm() {
                     }, { replace: true });
                 }
                 setIntento((n) => n + 1);
-                setAvisoExito(`Creaste el rubro "${creado?.nombre || nombre}".`);
+                notificar({
+                    texto: `Creaste el rubro "${creado?.nombre || nombre}".`,
+                    tono: 'exito',
+                });
             }
 
             setPanelAbierto(false);
@@ -390,7 +432,6 @@ function CatalogoAbm() {
         try {
             setEliminando(true);
             setErrorOperacion('');
-            setAvisoExito('');
 
             if (esMarcas) {
                 await eliminarMarca(objetivoEliminar.id);
@@ -408,7 +449,10 @@ function CatalogoAbm() {
             } else {
                 setIntento((n) => n + 1);
             }
-            setAvisoExito(`Diste de baja ${esMarcas ? 'la marca' : 'el rubro'} "${objetivoEliminar.nombre}".`);
+            notificar({
+                texto: `Diste de baja ${esMarcas ? 'la marca' : 'el rubro'} "${objetivoEliminar.nombre}".`,
+                tono: 'aviso',
+            });
             setObjetivoEliminar(null);
         } catch (err) {
             const detalleServidor = err?.response?.data?.detail;
@@ -436,98 +480,95 @@ function CatalogoAbm() {
                 titulo="Marcas y rubros"
                 subtitulo="Consultá, creá o actualizá las marcas y rubros que ordenan los productos de Cafeto."
             >
-                <button
-                    type="button"
-                    className={estilos.botonSecundario}
-                    onClick={() => setIntento((n) => n + 1)}
-                    disabled={cargando || !permisosActuales.ver}
-                >
-                    <IconoActualizar size={17} />
-                    <span>Actualizar</span>
-                </button>
-                {permisosActuales.crear && (
-                    <button type="button" className={estilos.botonPrincipal} onClick={() => abrirCrear('')}>
-                        <IconoMas size={18} />
-                        <span>{esMarcas ? 'Nueva marca' : 'Nuevo rubro'}</span>
+                <Tooltip texto="Actualizar listado" atajo="R" posicion="abajo">
+                    <button
+                        type="button"
+                        data-iris-tour="actualizar"
+                        className={estilos.botonSecundario}
+                        onClick={() => setIntento((n) => n + 1)}
+                        disabled={cargando || !permisosActuales.ver}
+                    >
+                        <IconoActualizar size={17} />
+                        <span>Actualizar</span>
                     </button>
+                </Tooltip>
+                {permisosActuales.crear && (
+                    <Tooltip texto={esMarcas ? 'Cargar nueva marca' : 'Cargar nuevo rubro'} atajo="N" posicion="abajo">
+                        <button type="button" className={estilos.botonPrincipal} onClick={() => abrirCrear('')}>
+                            <IconoMas size={18} />
+                            <span>{esMarcas ? 'Nueva marca' : 'Nuevo rubro'}</span>
+                        </button>
+                    </Tooltip>
                 )}
             </EncabezadoPagina>
 
-            <div ref={inicioListadoRef} className={estilos.barraSuperior}>
-                <div className={estilos.pestanas} role="tablist" aria-label="Tipo de catálogo">
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={esMarcas}
-                        className={`${estilos.pestana} ${esMarcas ? estilos.pestanaActiva : ''}`}
-                        onClick={() => cambiarPestana('MARCAS')}
-                    >
-                        <IconoEtiqueta size={17} />
-                        <span>Marcas</span>
-                        {permisosMarca.ver && textoConteo('MARCAS') && (
-                            <span className={estilos.conteo}>{textoConteo('MARCAS')}</span>
-                        )}
-                    </button>
-                    <button
-                        type="button"
-                        role="tab"
-                        aria-selected={!esMarcas}
-                        className={`${estilos.pestana} ${!esMarcas ? estilos.pestanaActiva : ''}`}
-                        onClick={() => cambiarPestana('RUBROS')}
-                    >
-                        <IconoEtiqueta size={17} />
-                        <span>Rubros</span>
-                        {permisosRubro.ver && textoConteo('RUBROS') && (
-                            <span className={estilos.conteo}>{textoConteo('RUBROS')}</span>
-                        )}
-                    </button>
-                </div>
-
-                {permisosActuales.ver && (
-                    <div className={estilos.barraBusqueda}>
-                        <input
-                            type="search"
-                            className={estilos.inputBusqueda}
-                            placeholder={`Buscar ${esMarcas ? 'marcas' : 'rubros'} por nombre...`}
-                            aria-label={`Buscar ${esMarcas ? 'marcas' : 'rubros'}`}
-                            value={busqueda}
-                            onChange={(e) => setBusqueda(e.target.value)}
-                        />
-                        {busqueda && (
-                            <span className={estilos.contenedorLimpiar}>
-                                <Tooltip texto="Borrar el texto buscado" posicion="abajo">
-                                    <button
-                                        type="button"
-                                        className={estilos.limpiar}
-                                        onClick={limpiarBusqueda}
-                                        aria-label="Limpiar búsqueda"
-                                    >
-                                        ×
-                                    </button>
-                                </Tooltip>
+            <div ref={inicioListadoRef}>
+                <SubTabsIris
+                    ariaLabel="Tipo de catálogo"
+                    activa={pestana}
+                    onCambiar={cambiarPestana}
+                    pestanas={[
+                        ...(permisosMarca.ver
+                            ? [
+                                  {
+                                      id: 'MARCAS',
+                                      etiqueta: 'Marcas',
+                                      icono: <IconoEtiqueta size={16} />,
+                                      conteo: textoConteo('MARCAS'),
+                                  },
+                              ]
+                            : []),
+                        ...(permisosRubro.ver
+                            ? [
+                                  {
+                                      id: 'RUBROS',
+                                      etiqueta: 'Rubros',
+                                      icono: <IconoEtiqueta size={16} />,
+                                      conteo: textoConteo('RUBROS'),
+                                  },
+                              ]
+                            : []),
+                    ]}
+                    acciones={
+                        permisosActuales.ver ? (
+                            <div className={estilos.barraBusqueda}>
+                                <input
+                                    ref={busquedaRef}
+                                    type="search"
+                                    className={estilos.inputBusqueda}
+                                    placeholder={`Buscar ${esMarcas ? 'marcas' : 'rubros'} (tecla /)...`}
+                                    aria-label={`Buscar ${esMarcas ? 'marcas' : 'rubros'}`}
+                                    value={busqueda}
+                                    onChange={(e) => setBusqueda(e.target.value)}
+                                />
+                                {busqueda && (
+                                    <span className={estilos.contenedorLimpiar}>
+                                        <Tooltip texto="Borrar el texto buscado" posicion="abajo">
+                                            <button
+                                                type="button"
+                                                className={estilos.limpiar}
+                                                onClick={limpiarBusqueda}
+                                                aria-label="Limpiar búsqueda"
+                                            >
+                                                ×
+                                            </button>
+                                        </Tooltip>
+                                    </span>
+                                )}
+                            </div>
+                        ) : null
+                    }
+                >
+                    {permisosActuales.ver && !puedeEscribirAlgo && (
+                        <div className={estilos.avisoSoloLectura} role="status">
+                            <IconoEstadoInfo size={16} />
+                            <span>
+                                Modo solo consulta: tu perfil puede ver {esMarcas ? 'marcas' : 'rubros'}, pero no crearlos ni modificarlos.
                             </span>
-                        )}
-                    </div>
-                )}
-            </div>
+                        </div>
+                    )}
 
-            {permisosActuales.ver && !puedeEscribirAlgo && (
-                <div className={estilos.avisoSoloLectura} role="status">
-                    <IconoEstadoInfo size={16} />
-                    <span>
-                        Modo solo consulta: tu perfil puede ver {esMarcas ? 'marcas' : 'rubros'}, pero no crearlos ni modificarlos.
-                    </span>
-                </div>
-            )}
-
-            {avisoExito && (
-                <div className={estilos.avisoExito} role="status">
-                    <IconoEstadoOk size={17} />
-                    <span>{avisoExito}</span>
-                </div>
-            )}
-
-            {errorOperacion && (
+                    {errorOperacion && (
                 <div className={estilos.avisoConflicto} role="alert">
                     <IconoEstadoAlerta size={18} />
                     <div className={estilos.textoConflicto}>
@@ -725,6 +766,8 @@ function CatalogoAbm() {
                     />
                 </div>
             )}
+                </SubTabsIris>
+            </div>
 
             <dialog
                 ref={dialogoRef}
@@ -771,54 +814,56 @@ function CatalogoAbm() {
                     )}
 
                     <form onSubmit={handleSubmit(alGuardar)} className={estilos.formulario} noValidate>
-                        <div className={estilos.campo}>
-                            <label htmlFor="abm-nombre" className={estilos.label}>
-                                Nombre <span aria-hidden="true">*</span>
-                            </label>
+                        <CampoFormulario
+                            id="abm-nombre"
+                            etiqueta="Nombre"
+                            requerido
+                            ayudaTooltip={`Nombre único para identificar ${esMarcas ? 'la marca' : 'el rubro'} en el catálogo.`}
+                            error={errors.nombre?.message || ''}
+                            valido={Boolean(touchedFields.nombre && nombreWatch.trim() && !errors.nombre)}
+                            longitudActual={nombreWatch.length}
+                            longitudMaxima={100}
+                            pista={
+                                posibleDuplicado
+                                    ? `Aviso: ya existe ${esMarcas ? 'una marca' : 'un rubro'} con un nombre igual en esta lista.`
+                                    : ''
+                            }
+                        >
                             <input
                                 id="abm-nombre"
                                 type="text"
                                 className={`${estilos.input} ${errors.nombre ? estilos.inputError : ''}`}
                                 placeholder={esMarcas ? 'Ej. La Virginia' : 'Ej. Panificados artesanales'}
                                 aria-invalid={errors.nombre ? 'true' : 'false'}
-                                aria-describedby={errors.nombre ? 'error-abm-nombre' : undefined}
+                                aria-describedby={errors.nombre ? 'abm-nombre-error' : undefined}
                                 disabled={guardando}
                                 {...register('nombre', {
                                     validate: (valor) => valor.trim() !== '' || `Ingresá el nombre ${esMarcas ? 'de la marca' : 'del rubro'}.`,
                                     maxLength: { value: 100, message: 'No puede superar los 100 caracteres.' },
                                 })}
                             />
-                            {errors.nombre && (
-                                <p id="error-abm-nombre" className={estilos.mensajeError} role="alert">
-                                    <IconoEstadoError size={14} />
-                                    <span>{errors.nombre.message}</span>
-                                </p>
-                            )}
-                        </div>
+                        </CampoFormulario>
 
-                        <div className={estilos.campo}>
-                            <label htmlFor="abm-descripcion" className={estilos.label}>
-                                Descripción (opcional)
-                            </label>
+                        <CampoFormulario
+                            id="abm-descripcion"
+                            etiqueta="Descripción (opcional)"
+                            error={errors.descripcion?.message || ''}
+                            longitudActual={descripcionWatch.length}
+                            longitudMaxima={300}
+                        >
                             <textarea
                                 id="abm-descripcion"
                                 rows={3}
                                 className={`${estilos.textarea} ${errors.descripcion ? estilos.inputError : ''}`}
                                 placeholder="Referencia breve para el equipo..."
                                 aria-invalid={errors.descripcion ? 'true' : 'false'}
-                                aria-describedby={errors.descripcion ? 'error-abm-desc' : undefined}
+                                aria-describedby={errors.descripcion ? 'abm-descripcion-error' : undefined}
                                 disabled={guardando}
                                 {...register('descripcion', {
                                     maxLength: { value: 300, message: 'No puede superar los 300 caracteres.' },
                                 })}
                             />
-                            {errors.descripcion && (
-                                <p id="error-abm-desc" className={estilos.mensajeError} role="alert">
-                                    <IconoEstadoError size={14} />
-                                    <span>{errors.descripcion.message}</span>
-                                </p>
-                            )}
-                        </div>
+                        </CampoFormulario>
 
                         {!esMarcas && (
                             <div className={estilos.campoToggle}>

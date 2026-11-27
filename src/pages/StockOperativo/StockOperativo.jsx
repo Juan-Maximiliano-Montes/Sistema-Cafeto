@@ -1,5 +1,5 @@
-import { useEffect, useId, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useDeferredValue, useEffect, useId, useRef, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { Link, useLocation } from 'react-router-dom';
 import {
     aprobarAjusteStock,
@@ -15,6 +15,11 @@ import EncabezadoPagina from '../../components/EncabezadoPagina/EncabezadoPagina
 import AvisoError from '../../components/AvisoError/AvisoError';
 import { BarraCarga } from '../../components/BarraCarga/BarraCarga';
 import BarraFlotante from '../../components/BarraFlotante/BarraFlotante';
+import CampoFormulario from '../../components/CampoFormulario/CampoFormulario';
+import SubTabsIris from '../../components/SubTabsIris/SubTabsIris';
+import Tooltip from '../../components/Tooltip/Tooltip';
+import { useAtajos } from '../../hooks/useAtajos';
+import { useNotificacion } from '../../hooks/useNotificacion';
 import {
     IconoActualizar,
     IconoBuscar,
@@ -102,8 +107,8 @@ function StockOperativo() {
     const [cargandoAjustes, setCargandoAjustes] = useState(puedeAutorizar);
     const [errorAjustes, setErrorAjustes] = useState(null);
 
+    const { notificar } = useNotificacion();
     const [intento, setIntento] = useState(0);
-    const [avisoExito, setAvisoExito] = useState('');
     const [errorAccion, setErrorAccion] = useState('');
 
     const [resolucion, setResolucion] = useState(null);
@@ -111,19 +116,34 @@ function StockOperativo() {
     const [errorModal, setErrorModal] = useState('');
 
     const dialogoRef = useRef(null);
+    const busquedaRef = useRef(null);
     const idTituloModal = useId();
+    const busquedaDiferida = useDeferredValue(busqueda);
 
     const {
         register,
         handleSubmit,
         reset,
         setError,
-        formState: { errors },
+        control,
+        formState: { errors, touchedFields },
     } = useForm({
         defaultValues: { observacion: '' },
         mode: 'onBlur',
         reValidateMode: 'onChange',
     });
+
+    const observacionWatch = useWatch({ control, name: 'observacion', defaultValue: '' });
+
+    useAtajos(
+        {
+            '/': () => busquedaRef.current?.focus(),
+            r: () => {
+                if (!cargandoAlertas && !cargandoAjustes) setIntento((n) => n + 1);
+            },
+        },
+        { activo: !resolucion }
+    );
 
     useEffect(() => {
         if (!puedeVerAlertas) {
@@ -193,7 +213,7 @@ function StockOperativo() {
     const alertasSeguras = Array.isArray(alertas) ? alertas.filter(Boolean) : [];
     const ajustesSeguros = Array.isArray(ajustes) ? ajustes.filter(Boolean) : [];
 
-    const palabras = normalizar(busqueda).split(/\s+/).filter(Boolean);
+    const palabras = normalizar(busquedaDiferida).split(/\s+/).filter(Boolean);
     const alertasFiltradas = alertasSeguras.filter((alerta) => {
         if (palabras.length === 0) return true;
         const nombreProd = textoSeguro(alerta?.producto?.nombre ?? alerta?.producto);
@@ -224,14 +244,19 @@ function StockOperativo() {
         try {
             setEnviandoResolucion(true);
             setErrorModal('');
-            setAvisoExito('');
 
             if (accion === 'APROBAR') {
                 await aprobarAjusteStock(ajuste.id, observacion);
-                setAvisoExito(`Aprobaste el ajuste #${ajuste.id} y se actualizó el stock.`);
+                notificar({
+                    texto: `Aprobaste el ajuste #${ajuste.id} y se actualizó el stock.`,
+                    tono: 'exito',
+                });
             } else {
                 await rechazarAjusteStock(ajuste.id, observacion);
-                setAvisoExito(`Rechazaste el ajuste #${ajuste.id} dejando constancia en auditoría.`);
+                notificar({
+                    texto: `Rechazaste el ajuste #${ajuste.id} dejando constancia en auditoría.`,
+                    tono: 'aviso',
+                });
             }
 
             setResolucion(null);
@@ -265,54 +290,47 @@ function StockOperativo() {
                 titulo="Stock: alertas y autorizaciones"
                 subtitulo="Seguí qué vence primero, faltantes de stock y resolvé ajustes pendientes con doble control."
             >
-                <button
-                    type="button"
-                    className={estilos.botonSecundario}
-                    onClick={() => setIntento((n) => n + 1)}
-                    disabled={cargandoActual}
-                >
-                    <IconoActualizar size={17} />
-                    <span>Actualizar</span>
-                </button>
+                <Tooltip texto="Actualizar alertas y autorizaciones" atajo="R" posicion="abajo">
+                    <button
+                        type="button"
+                        data-iris-tour="actualizar"
+                        className={estilos.botonSecundario}
+                        onClick={() => setIntento((n) => n + 1)}
+                        disabled={cargandoActual}
+                    >
+                        <IconoActualizar size={17} />
+                        <span>Actualizar</span>
+                    </button>
+                </Tooltip>
             </EncabezadoPagina>
 
-            <div className={estilos.pestanasPrincipales} role="tablist" aria-label="Secciones de stock">
-                <button
-                    type="button"
-                    role="tab"
-                    aria-selected={pestana === 'ALERTAS'}
-                    className={`${estilos.pestana} ${pestana === 'ALERTAS' ? estilos.pestanaActiva : ''}`}
-                    onClick={() => setPestana('ALERTAS')}
-                >
-                    <IconoStock size={18} />
-                    <span>Alertas de stock y vencimientos</span>
-                    {puedeVerAlertas && (
-                        <span className={estilos.conteo}>{formatearNumero(alertasSeguras.length)}</span>
-                    )}
-                </button>
-
-                <button
-                    type="button"
-                    role="tab"
-                    aria-selected={pestana === 'AUTORIZACIONES'}
-                    className={`${estilos.pestana} ${pestana === 'AUTORIZACIONES' ? estilos.pestanaActiva : ''}`}
-                    onClick={() => setPestana('AUTORIZACIONES')}
-                >
-                    <IconoEscudo size={18} />
-                    <span>Autorizaciones pendientes</span>
-                    {puedeAutorizar && (
-                        <span className={estilos.conteo}>{formatearNumero(ajustesSeguros.length)}</span>
-                    )}
-                </button>
-            </div>
-
-            {avisoExito && (
-                <div className={estilos.avisoExito} role="status">
-                    <IconoEstadoOk size={17} />
-                    <span>{avisoExito}</span>
-                </div>
-            )}
-
+            <SubTabsIris
+                ariaLabel="Secciones de stock"
+                activa={pestana}
+                onCambiar={setPestana}
+                pestanas={[
+                    ...(puedeVerAlertas
+                        ? [
+                              {
+                                  id: 'ALERTAS',
+                                  etiqueta: 'Alertas de stock y vencimientos',
+                                  icono: <IconoStock size={17} />,
+                                  conteo: formatearNumero(alertasSeguras.length),
+                              },
+                          ]
+                        : []),
+                    ...(puedeAutorizar
+                        ? [
+                              {
+                                  id: 'AUTORIZACIONES',
+                                  etiqueta: 'Autorizaciones pendientes',
+                                  icono: <IconoEscudo size={17} />,
+                                  conteo: formatearNumero(ajustesSeguros.length),
+                              },
+                          ]
+                        : []),
+                ]}
+            >
             {errorAccion && (
                 <AvisoError
                     titulo="No pudimos completar la acción"
@@ -352,9 +370,10 @@ function StockOperativo() {
                                     <IconoBuscar size={16} />
                                 </span>
                                 <input
+                                    ref={busquedaRef}
                                     type="search"
                                     className={estilos.inputBuscar}
-                                    placeholder="Buscar por producto, lote o detalle..."
+                                    placeholder="Buscar por producto, lote o detalle (tecla /)..."
                                     aria-label="Buscar en alertas de stock"
                                     value={busqueda}
                                     onChange={(e) => setBusqueda(e.target.value)}
@@ -664,6 +683,7 @@ function StockOperativo() {
                     })}
                 </div>
             )}
+            </SubTabsIris>
 
             <dialog
                 ref={dialogoRef}
@@ -715,12 +735,24 @@ function StockOperativo() {
                         )}
 
                         <form onSubmit={handleSubmit(confirmarResolucion)} className={estilos.formularioModal} noValidate>
-                            <div className={estilos.campo}>
-                                <label htmlFor="ajuste-observacion" className={estilos.label}>
-                                    {resolucion?.accion === 'RECHAZAR'
-                                        ? 'Motivo del rechazo (obligatorio)'
-                                        : 'Observación (opcional)'}
-                                </label>
+                            <CampoFormulario
+                                id="ajuste-observacion"
+                                etiqueta={
+                                    resolucion?.accion === 'RECHAZAR'
+                                        ? 'Motivo del rechazo'
+                                        : 'Observación (opcional)'
+                                }
+                                requerido={resolucion?.accion === 'RECHAZAR'}
+                                error={errors.observacion?.message || ''}
+                                valido={Boolean(
+                                    resolucion?.accion === 'RECHAZAR' &&
+                                        touchedFields.observacion &&
+                                        observacionWatch.trim() &&
+                                        !errors.observacion
+                                )}
+                                longitudActual={observacionWatch.length}
+                                longitudMaxima={400}
+                            >
                                 <textarea
                                     id="ajuste-observacion"
                                     rows={3}
@@ -731,7 +763,7 @@ function StockOperativo() {
                                             : 'Anotá una aclaración si hace falta...'
                                     }
                                     aria-invalid={errors.observacion ? 'true' : 'false'}
-                                    aria-describedby={errors.observacion ? 'error-ajuste-obs' : undefined}
+                                    aria-describedby={errors.observacion ? 'ajuste-observacion-error' : undefined}
                                     disabled={enviandoResolucion}
                                     {...register('observacion', {
                                         validate: (valor) => {
@@ -743,13 +775,7 @@ function StockOperativo() {
                                         maxLength: { value: 400, message: 'No puede superar los 400 caracteres.' },
                                     })}
                                 />
-                                {errors.observacion && (
-                                    <p id="error-ajuste-obs" className={estilos.mensajeError} role="alert">
-                                        <IconoEstadoError size={14} />
-                                        <span>{errors.observacion.message}</span>
-                                    </p>
-                                )}
-                            </div>
+                            </CampoFormulario>
 
                             <div className={estilos.accionesModal}>
                                 <button

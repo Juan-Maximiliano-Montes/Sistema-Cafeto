@@ -3,17 +3,26 @@ import Tooltip from '../Tooltip/Tooltip';
 import { IconoSubir } from '../Iconos/Iconos';
 import estilos from './BarraFlotante.module.css';
 
+const obtenerContenedorScroll = () => {
+    if (typeof document === 'undefined') return null;
+    return document.querySelector('[data-iris-lienzo="true"]');
+};
+
 function BarraFlotante() {
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
+        const lienzo = obtenerContenedorScroll();
+        const objetivo = lienzo || window;
+
         const alHacerScroll = () => {
-            setVisible(window.scrollY > 240);
+            const scrollActual = lienzo ? lienzo.scrollTop : window.scrollY;
+            setVisible(scrollActual > 240);
         };
 
         alHacerScroll();
-        window.addEventListener('scroll', alHacerScroll, { passive: true });
-        return () => window.removeEventListener('scroll', alHacerScroll);
+        objetivo.addEventListener('scroll', alHacerScroll, { passive: true });
+        return () => objetivo.removeEventListener('scroll', alHacerScroll);
     }, []);
 
     if (!visible) {
@@ -22,7 +31,13 @@ function BarraFlotante() {
 
     const subirArriba = () => {
         const sinAnimacion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-        window.scrollTo({ top: 0, behavior: sinAnimacion ? 'auto' : 'smooth' });
+        const behavior = sinAnimacion ? 'auto' : 'smooth';
+        const lienzo = obtenerContenedorScroll();
+        if (lienzo) {
+            lienzo.scrollTo({ top: 0, behavior });
+        } else {
+            window.scrollTo({ top: 0, behavior });
+        }
     };
 
     return (
