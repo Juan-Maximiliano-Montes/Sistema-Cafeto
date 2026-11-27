@@ -77,12 +77,60 @@
     scroll-margin-top: 64px;
 }
 
+.shellPublico {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    background: var(--cf-chassis);
+    overflow: hidden;
+    padding: 0 10px 10px;
+}
+
+.lienzoPublico {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--cf-chassis);
+    border-radius: var(--cf-radio-lienzo);
+    overflow-y: auto;
+    overflow-x: clip;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cf-line-strong) transparent;
+}
+
+.superficiePublica {
+    flex: 1 0 auto;
+    width: 100%;
+    background: var(--cf-canvas);
+    border-radius: var(--cf-radio-lienzo);
+}
+
+.lienzoPublico::-webkit-scrollbar {
+    width: 8px;
+}
+
+.lienzoPublico::-webkit-scrollbar-track {
+    background: transparent;
+    margin-block: 22px;
+}
+
+.lienzoPublico::-webkit-scrollbar-thumb {
+    background: var(--cf-line-strong);
+    border-radius: 999px;
+}
+
 .contenido {
-    flex: 1;
+    flex: 1 0 auto;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 24px 20px 72px;
+    padding: 28px 24px 64px;
 }
 
 .contenidoCompleto {

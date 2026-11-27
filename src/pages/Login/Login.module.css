@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Login Cafeto × iRiS Surround (foto real encerrada + Top Notch soldado)
+   Login Cafeto × iRiS Surround (100dvh · fiel a Django + View Transition)
    ========================================================================== */
 
 .pantalla {
@@ -45,12 +45,12 @@
     background: linear-gradient(
         180deg,
         rgba(11, 10, 25, 0.14) 0%,
-        rgba(11, 10, 25, 0.06) 50%,
+        rgba(11, 10, 25, 0.06) 52%,
         rgba(11, 10, 25, 0.88) 100%
     );
 }
 
-/* Top Notch soldado al marco Surround sobre la foto */
+/* Top Notch soldado al marco Surround (morphing con Header de Landing y Notch de Sistema) */
 .notchWrap {
     position: absolute;
     top: 0;
@@ -65,6 +65,7 @@
 .notch {
     position: relative;
     pointer-events: auto;
+    view-transition-name: cafeto-notch;
     background: var(--cf-login-frame);
     color: var(--cf-chassis-fg-strong);
     border-radius: 0 0 20px 20px;
@@ -122,47 +123,95 @@
     position: absolute;
     left: 28px;
     right: 28px;
-    bottom: 24px;
+    bottom: 22px;
     z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
 .etiquetaVisual {
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: #FAB41F;
 }
 
-.lema {
+.marcaFoto {
     margin: 0;
-    font-family: var(--fuente-subtitulo);
-    font-size: 1.32rem;
-    font-weight: 600;
-    line-height: 1.35;
-    color: #F2F5FC;
-    max-width: 440px;
+    font-family: var(--fuente-titulo);
+    font-size: clamp(2rem, 3.6vw, 2.7rem);
+    font-weight: 700;
+    line-height: 1.05;
+    color: #FFFFFF;
 }
 
-/* ---------- Panel derecho (lienzo plano iRiS) ---------- */
+/* ---------- Columna derecha directa sobre --cf-login-frame (igual a Django) ---------- */
 .panelFormulario {
-    flex: 0 0 min(480px, 46vw);
+    flex: 0 0 min(440px, 40vw);
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 22px 24px;
+    background: var(--cf-login-frame);
+}
+
+.cabeceraPanel {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 32px clamp(24px, 4vw, 48px);
-    background: var(--cf-canvas);
-    border-radius: var(--cf-radio-lienzo);
-    border: 1px solid var(--cf-line);
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.enlaceLogo {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 2px;
+    border-radius: 10px;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+}
+
+.controlesTop {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pillControl {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--cf-chassis-line);
+    background: var(--cf-chassis-surface);
+    color: var(--cf-chassis-fg-strong);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.pillControl:hover {
+    background: var(--cf-chassis-surface-hover);
+    border-color: var(--cf-accent);
+}
+
+.pillControlActivo {
+    border-color: var(--cf-accent);
 }
 
 .bloqueFormulario {
     width: 100%;
-    max-width: 390px;
+    max-width: 360px;
+    margin: auto;
 }
 
 .etiqueta {
@@ -175,17 +224,17 @@
 }
 
 .titulo {
-    font-family: var(--fuente-subtitulo);
-    font-size: clamp(1.75rem, 3vw, 2.15rem);
+    font-family: var(--fuente-titulo);
+    font-size: clamp(2.25rem, 3.6vw, 2.7rem);
     font-weight: 700;
-    line-height: 1.15;
+    line-height: 1.05;
     color: var(--cf-title);
-    margin: 6px 0 6px;
+    margin: 0 0 6px;
 }
 
 .subtitulo {
     margin: 0 0 20px;
-    font-size: 0.94rem;
+    font-size: 0.92rem;
     color: var(--cf-muted);
 }
 
@@ -230,7 +279,7 @@
 .formulario {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 15px;
 }
 
 .input {
@@ -287,7 +336,7 @@
     padding: 5px 10px;
     border-radius: 9px;
     cursor: pointer;
-    transition: border-color 140ms ease, background-color 140ms ease;
+    transition: border-color 140ms ease;
 }
 
 .botonVer:hover {
@@ -316,9 +365,9 @@
     font-size: 0.98rem;
     padding: 11px 16px;
     border: 0;
-    border-radius: var(--cf-radio-control);
+    border-radius: 999px;
     cursor: pointer;
-    margin-top: 4px;
+    margin-top: 6px;
     transition: background-color 150ms ease, opacity 150ms ease;
 }
 
@@ -331,30 +380,26 @@
 }
 
 .bloqueAyuda {
-    margin-top: 18px;
-    padding-top: 14px;
-    border-top: 1px solid var(--cf-line);
+    margin-top: 14px;
     display: flex;
     justify-content: center;
 }
 
 .botonOlvido {
-    min-height: 40px;
+    min-height: 38px;
     padding: 6px 14px;
     border-radius: 10px;
     border: 1px solid transparent;
     background: transparent;
-    color: var(--cf-text);
+    color: var(--cf-muted);
     font-size: 0.88rem;
     font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 4px;
     cursor: pointer;
 }
 
 .botonOlvido:hover {
-    background: var(--cf-surface);
-    border-color: var(--cf-line);
+    color: var(--cf-text);
+    background: var(--cf-chassis-surface);
 }
 
 /* ---------- Modal nativo plano iRiS ---------- */
@@ -448,15 +493,15 @@
     .pantalla {
         flex-direction: column;
         height: auto;
-        min-height: calc(100dvh - 69px);
+        min-height: 100dvh;
         overflow: visible;
         padding: 10px;
-        gap: 10px;
+        gap: 12px;
     }
 
     .panelVisual {
         flex: none;
-        min-height: 210px;
+        min-height: 220px;
     }
 
     .pieFoto {
@@ -465,12 +510,9 @@
         bottom: 16px;
     }
 
-    .lema {
-        font-size: 1.08rem;
-    }
-
     .panelFormulario {
         flex: 1 0 auto;
-        padding: 24px 20px 32px;
+        padding: 8px 10px 28px;
+        gap: 20px;
     }
 }

@@ -218,28 +218,29 @@ function EstructuraApp() {
                     />
                 </div>
             ) : esPantallaCompleta ? (
-                <>
-                    <Navbar />
-                    <main
-                        id="contenido-principal"
-                        tabIndex={-1}
-                        className={estilos.contenidoCompleto}
-                    >
-                        {contenidoRutas}
-                    </main>
-                </>
+                <main
+                    id="contenido-principal"
+                    tabIndex={-1}
+                    className={estilos.contenidoCompleto}
+                >
+                    {contenidoRutas}
+                </main>
             ) : (
-                <>
+                <div className={estilos.shellPublico} data-iris-shell="true">
                     <Navbar />
-                    <main
-                        id="contenido-principal"
-                        tabIndex={-1}
-                        className={estilos.contenido}
-                    >
-                        {contenidoRutas}
-                    </main>
-                    <Footer />
-                </>
+                    <div ref={lienzoRef} className={estilos.lienzoPublico} data-iris-lienzo="true">
+                        <div className={estilos.superficiePublica}>
+                            <main
+                                id="contenido-principal"
+                                tabIndex={-1}
+                                className={estilos.contenido}
+                            >
+                                {contenidoRutas}
+                            </main>
+                        </div>
+                        <Footer />
+                    </div>
+                </div>
             )}
         </>
     );

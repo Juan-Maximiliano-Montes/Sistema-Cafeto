@@ -1,8 +1,8 @@
 .pie {
-    background-color: var(--superficie-profunda);
-    border-top: 1px solid var(--borde-suave);
-    color: var(--texto-secundario);
-    padding: 24px 24px 28px;
+    background-color: var(--cf-chassis);
+    border-top: 0;
+    color: var(--cf-chassis-muted);
+    padding: 22px 24px 18px;
     font-family: var(--fuente-cuerpo);
     font-size: 0.85rem;
     margin-top: auto;
@@ -114,7 +114,14 @@
 .equipo {
     margin: 0;
     line-height: 1.5;
-    color: var(--texto-secundario);
+    color: var(--cf-chassis-muted);
+}
+
+.copyright {
+    margin-top: 2px;
+    font-size: 0.78rem;
+    color: var(--cf-chassis-muted);
+    opacity: 0.85;
 }
 
 .pieCompacto {

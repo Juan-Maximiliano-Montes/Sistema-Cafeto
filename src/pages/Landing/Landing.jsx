@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { haySesion, URL_WEB_DJANGO } from '../../api/api';
 import { useTema } from '../../hooks/useTema';
+import { navegarConTransicion } from '../../utils/transicion';
 import BarraFlotante from '../../components/BarraFlotante/BarraFlotante';
 import VistaModulos from '../../components/VistaModulos/VistaModulos';
 import {
@@ -10,7 +11,7 @@ import {
     IconoLote,
     IconoTaza,
 } from '../../components/Iconos/Iconos';
-import fotoFachada from '../../assets/foto de fachada nocturna del local.jpg';
+import fotoFachada from '../../assets/cafeto-fachada.jpg';
 import isotipoBlanco from '../../assets/cafeto-isotipo-blanco.svg';
 import isotipoNegro from '../../assets/cafeto-isotipo-negro.svg';
 import estilos from './Landing.module.css';
@@ -34,6 +35,7 @@ const PILARES_OPERATIVOS = [
 ];
 
 function Landing() {
+    const navigate = useNavigate();
     const sesionActiva = haySesion();
     const { esClaro } = useTema();
     const rutaPrincipal = sesionActiva ? '/inicio' : '/login';
@@ -57,7 +59,14 @@ function Landing() {
                         </p>
 
                         <div className={estilos.accionesHero}>
-                            <Link to={rutaPrincipal} className={estilos.botonPrincipal}>
+                            <Link
+                                to={rutaPrincipal}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    navegarConTransicion(navigate, rutaPrincipal);
+                                }}
+                                className={estilos.botonPrincipal}
+                            >
                                 {textoPrincipal}
                             </Link>
                             <a href="#modulos-sistema" className={estilos.botonSecundario}>

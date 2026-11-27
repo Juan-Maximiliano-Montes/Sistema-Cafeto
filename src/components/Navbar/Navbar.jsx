@@ -1,7 +1,8 @@
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { haySesion } from '../../api/api';
 import { useTamanoTexto } from '../../hooks/useTamanoTexto';
 import { useTema } from '../../hooks/useTema';
+import { navegarConTransicion } from '../../utils/transicion';
 import Tooltip from '../Tooltip/Tooltip';
 import { IconoLuna, IconoSol } from '../Iconos/Iconos';
 import logoNegativo from '../../assets/cafeto-horizontal-negativo.svg';
@@ -10,6 +11,7 @@ import estilos from './Navbar.module.css';
 
 function Navbar() {
     const { pathname } = useLocation();
+    const navigate = useNavigate();
     const { esGrande, alternarTamano } = useTamanoTexto();
     const { esClaro, alternarTema } = useTema();
 
@@ -74,6 +76,10 @@ function Navbar() {
                 {!estaEnLogin && (
                     <Link
                         to={sesionActiva ? '/inicio' : '/login'}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navegarConTransicion(navigate, sesionActiva ? '/inicio' : '/login');
+                        }}
                         className={estaEnPortada ? estilos.enlaceLoginContorno : estilos.enlaceLogin}
                     >
                         {sesionActiva ? 'Ir a mi panel' : 'Ingresar al turno'}

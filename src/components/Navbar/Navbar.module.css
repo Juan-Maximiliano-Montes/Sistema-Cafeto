@@ -1,14 +1,14 @@
 .barra {
-    position: sticky;
-    top: 0;
+    flex-shrink: 0;
     z-index: 1000;
+    view-transition-name: cafeto-notch;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 14px;
-    padding: 10px 26px;
+    padding: 8px 18px;
     background: var(--cf-chassis);
-    border-bottom: 1px solid var(--cf-chassis-line);
+    border-bottom: 0;
 }
 
 .enlaceLogo {

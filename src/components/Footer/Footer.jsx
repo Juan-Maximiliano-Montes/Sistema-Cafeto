@@ -61,6 +61,7 @@ function Footer({ modoAutenticado = false }) {
                         </span>
                         <span>{enLinea ? 'Sistema operativo en línea' : 'Sin conexión con el servidor'}</span>
                     </span>
+                    <span className={styles.copyright}>© 2026 Cafeto Las Lomitas</span>
                 </div>
 
                 <nav className={styles.columna} aria-label="Accesos rápidos del pie de página">
@@ -93,7 +94,7 @@ function Footer({ modoAutenticado = false }) {
                 <div className={styles.columna}>
                     <span className={styles.tituloColumna}>Equipo de desarrollo</span>
                     <p className={styles.equipo}>
-                        Camila Anahí Aramayo, Facundo Gabriel Espinosa, Juan Maximiliano Montes y Ariel Guevara Roldán · 2026
+                        Camila Anahí Aramayo, Facundo Gabriel Espinosa, Juan Maximiliano Montes y Ariel Guevara Roldán
                     </p>
                 </div>
             </div>

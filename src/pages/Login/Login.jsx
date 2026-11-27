@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
     esSesionVencida,
     guardarRutaPostLogin,
@@ -15,15 +15,22 @@ import {
 import CampoFormulario from '../../components/CampoFormulario/CampoFormulario';
 import Tooltip from '../../components/Tooltip/Tooltip';
 import { useNotificacion } from '../../hooks/useNotificacion';
+import { useTamanoTexto } from '../../hooks/useTamanoTexto';
+import { useTema } from '../../hooks/useTema';
+import { navegarConTransicion } from '../../utils/transicion';
 import {
     IconoEstadoAlerta,
     IconoEstadoError,
     IconoEstadoInfo,
     IconoEstadoOk,
     IconoExterno,
+    IconoLuna,
+    IconoSol,
 } from '../../components/Iconos/Iconos';
 import fotoFachada from '../../assets/cafeto-fachada.jpg';
 import iconoAmbar from '../../assets/cafeto-icono-ambar.svg';
+import logoNegativo from '../../assets/cafeto-horizontal-negativo.svg';
+import logoPositivo from '../../assets/cafeto-horizontal-positivo.svg';
 import estilos from './Login.module.css';
 
 const validarUsuarioODni = (valor) => {
@@ -50,6 +57,10 @@ function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const { notificar } = useNotificacion();
+    const { esClaro, alternarTema } = useTema();
+    const { esGrande, alternarTamano } = useTamanoTexto();
+    const logoActual = esClaro ? logoPositivo : logoNegativo;
+
     const aviso = location.state?.aviso;
     const esAvisoOk = location.state?.tipoAviso === 'ok' || (typeof aviso === 'string' && aviso.startsWith('Cerraste'));
     const esSesionExpirada = Boolean(location.state?.sesionExpirada) || esSesionVencida();
@@ -125,7 +136,7 @@ function Login() {
                 obtenerRutaPostLogin() ||
                 '/inicio';
             limpiarRutaPostLogin();
-            navigate(destino, { replace: true });
+            navegarConTransicion(navigate, destino, { replace: true });
         } catch (error) {
             if (error?.errores) {
                 for (const [campo, mensaje] of Object.entries(error.errores)) {
@@ -165,23 +176,67 @@ function Login() {
                     <div className={estilos.notch}>
                         <img src={iconoAmbar} alt="" className={estilos.notchLogo} aria-hidden="true" />
                         <span className={estilos.notchDot} aria-hidden="true" />
-                        <span className={estilos.notchTexto}>Cafeto · Las Lomitas</span>
+                        <span className={estilos.notchTexto}>Ruta 51 Km. 17 · Campo Quijano · Cafeto</span>
                     </div>
                 </div>
 
                 <div className={estilos.pieFoto}>
-                    <span className={estilos.etiquetaVisual}>Cafetería &amp; Minisúper</span>
-                    <p className={estilos.lema}>
-                        Gestión de salón, stock y cajas en tiempo real.
-                    </p>
+                    <span className={estilos.etiquetaVisual}>Salón · Stock · Cajas en tiempo real</span>
+                    <p className={estilos.marcaFoto}>Cafeto Las Lomitas</p>
                 </div>
             </div>
 
             <div className={estilos.panelFormulario}>
+                <header className={estilos.cabeceraPanel}>
+                    <Tooltip texto="Volver a la portada" posicion="abajo">
+                        <Link
+                            to="/"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                navegarConTransicion(navigate, '/');
+                            }}
+                            className={estilos.enlaceLogo}
+                            aria-label="Cafeto Las Lomitas, volver a la portada"
+                        >
+                            <img src={logoActual} alt="Cafeto Las Lomitas" className={estilos.logo} />
+                        </Link>
+                    </Tooltip>
+
+                    <div className={estilos.controlesTop}>
+                        <Tooltip
+                            texto={esGrande ? 'Volver al tamaño normal' : 'Agrandar letras'}
+                            posicion="abajo"
+                        >
+                            <button
+                                type="button"
+                                className={`${estilos.pillControl} ${esGrande ? estilos.pillControlActivo : ''}`}
+                                onClick={alternarTamano}
+                                aria-pressed={esGrande}
+                            >
+                                <span>{esGrande ? 'A- Normal' : 'A+ Agrandar'}</span>
+                            </button>
+                        </Tooltip>
+
+                        <Tooltip
+                            texto={esClaro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'}
+                            posicion="abajo"
+                        >
+                            <button
+                                type="button"
+                                className={estilos.pillControl}
+                                onClick={alternarTema}
+                                aria-pressed={esClaro}
+                            >
+                                {esClaro ? <IconoLuna size={15} /> : <IconoSol size={15} />}
+                                <span>{esClaro ? 'Oscuro' : 'Claro'}</span>
+                            </button>
+                        </Tooltip>
+                    </div>
+                </header>
+
                 <div className={estilos.bloqueFormulario}>
-                    <span className={estilos.etiqueta}>Acceso del equipo</span>
-                    <h1 id="titulo-login" className={estilos.titulo}>Ingreso de turno</h1>
-                    <p className={estilos.subtitulo}>Entrá con tu usuario operativo o tu DNI.</p>
+                    <h1 id="titulo-login" className={estilos.titulo}>¡Hola!</h1>
+                    <p className={estilos.subtitulo}>Ingresá con tu usuario operativo o tu DNI.</p>
 
                     {aviso && !errorAuth && (
                         <div
@@ -207,7 +262,7 @@ function Login() {
                     <form onSubmit={handleSubmit(onSubmit)} className={estilos.formulario} noValidate>
                         <CampoFormulario
                             id="usuario"
-                            etiqueta="Usuario o DNI"
+                            etiqueta="DNI o usuario"
                             requerido
                             ayudaTooltip="Podés usar tu nombre de usuario (ej. lopezm) o tu DNI sin puntos."
                             error={errors.usuario?.message || ''}
@@ -288,7 +343,7 @@ function Login() {
                             className={estilos.botonOlvido}
                             onClick={() => setModalClaveAbierto(true)}
                         >
-                            ¿Olvidaste tu contraseña?
+                            ¿Te olvidaste la clave?
                         </button>
                     </div>
                 </div>
@@ -305,7 +360,7 @@ function Login() {
                 <div className={estilos.cajaDialogo}>
                     <span className={estilos.etiqueta}>Ayuda para ingresar</span>
                     <h2 id={idTituloModal} className={estilos.tituloDialogo}>
-                        ¿Olvidaste tu contraseña?
+                        ¿Te olvidaste la clave?
                     </h2>
                     <p id={idDescModal} className={estilos.textoDialogo}>
                         Por seguridad, el blanqueo de claves queda registrado en el sistema central de Cafeto. Seguí estos pasos:

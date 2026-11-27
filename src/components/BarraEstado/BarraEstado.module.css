@@ -27,6 +27,7 @@
 /* Notch soldado al borde superior con curvas cóncavas ("goteo") de 22px */
 .notch {
     position: relative;
+    view-transition-name: cafeto-notch;
     background: var(--cf-chassis);
     color: var(--cf-chassis-fg-strong);
     border-radius: 0 0 22px 22px;

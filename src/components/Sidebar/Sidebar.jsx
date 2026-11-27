@@ -5,6 +5,7 @@ import { useNotificacion } from '../../hooks/useNotificacion';
 import { useTamanoTexto } from '../../hooks/useTamanoTexto';
 import { useTema } from '../../hooks/useTema';
 import { puedeVerModulo } from '../../utils/permisos';
+import { navegarConTransicion } from '../../utils/transicion';
 import Confirmacion from '../Confirmacion/Confirmacion';
 import Tooltip from '../Tooltip/Tooltip';
 import {
@@ -114,7 +115,7 @@ function Sidebar({ colapsado, onAlternarColapso, onAbrirAyuda }) {
         setConfirmandoSalida(false);
         setMasMovilAbierto(false);
         setPerfilAbierto(false);
-        navigate('/login', {
+        navegarConTransicion(navigate, '/login', {
             replace: true,
             state: {
                 aviso: 'Cerraste la sesión. ¡Hasta la próxima!',
